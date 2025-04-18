@@ -1,0 +1,58 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/app/production/Dockerfile
+        restart: unless-stopped
+        ports:
+            - "${APP_PORT:-9000}:9000"
+        volumes:
+            - storage:/var/www/html/storage:rw
+            - public:/var/www/html/public:rw
+        depends_on:
+            - db
+    queue-worker:
+        build:
+            context: .
+            dockerfile: docker/app/production/Dockerfile
+        restart: unless-stopped
+        command: php artisan queue:work
+        environment:
+            IS_WORKER: "true"
+        depends_on:
+            - db
+        volumes:
+            - storage:/var/www/html/storage:rw
+            - public:/var/www/html/public:rw
+    nginx:
+        image: nginx:1-alpine
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./docker/app/production/nginx.conf:/etc/nginx/conf.d/default.conf
+            - storage:/var/www/html/storage:rw
+            - public:/var/www/html/public:ro
+        depends_on:
+            - app
+            - queue-worker
+    db:
+        image: "mariadb:11"
+        platform: linux/amd64
+        ports:
+            - "${FORWARD_DB_PORT:-3306}:3306"
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: "${DB_DATABASE}"
+            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - "db-data:/var/lib/mysql"
+
+volumes:
+    storage:
+    public:
+    db-data:
