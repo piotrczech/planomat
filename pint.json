@@ -1,0 +1,48 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "ordered_imports": false,
+        "concat_space": false,
+        "single_line_empty_body": false,
+        "not_operator_with_successor_space": false,
+        "declare_strict_types": true,
+        "no_useless_else": true,
+        "no_empty_comment": true,
+        "mb_str_functions": true,
+        "lambda_not_used_import": true,
+        "void_return": true,
+        "array_push": true,
+        "assign_null_coalescing_to_coalesce_equal": true,
+        "explicit_indirect_variable": true,
+        "blank_line_before_statement": {
+            "statements": ["break", "continue", "declare", "return", "throw", "try", "while", "for", "foreach", "if", "switch", "yield"]
+        },
+        "class_attributes_separation": {
+            "elements": {
+                "const": "one",
+                "method": "one",
+                "property": "one",
+                "trait_import": "none"
+            }
+        },
+        "global_namespace_import": {
+            "import_classes": true,
+            "import_constants": true,
+            "import_functions": true
+        },
+        "method_argument_space": {
+            "on_multiline": "ensure_fully_multiline",
+            "keep_multiple_spaces_after_comma": false
+        },
+        "method_chaining_indentation": true,
+        "no_php4_constructor": true,
+        "no_useless_return": true,
+        "nullable_type_declaration_for_default_null_value": {
+            "use_nullable_type_declaration": true
+        },
+        "phpdoc_order": true,
+        "trailing_comma_in_multiline": {
+            "elements": ["arrays", "arguments", "parameters"]
+        }
+    }
+}

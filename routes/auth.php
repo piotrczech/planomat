@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest')->group(function (): void {
     Volt::route('login', 'auth.login')
         ->name('login');
 
@@ -19,7 +21,7 @@ Route::middleware('guest')->group(function () {
 
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function (): void {
     Volt::route('verify-email', 'auth.verify-email')
         ->name('verification.notice');
 
