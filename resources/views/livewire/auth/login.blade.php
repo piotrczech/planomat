@@ -33,7 +33,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => __('app.auth.failed'),
             ]);
         }
 
@@ -57,7 +57,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => __('auth.throttle', [
+            'email' => __('app.auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -74,33 +74,33 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+    <x-auth-header :title="__('app.Log in to your account')" :description="__('app.Enter your email and password below to log in')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
-        <flux:input wire:model="email" :label="__('Email address')" type="email" required autofocus autocomplete="email"
+        <flux:input wire:model="email" :label="__('app.Email address')" type="email" required autofocus autocomplete="email"
             placeholder="email@example.com" />
 
         <!-- Password -->
         <div class="relative">
-            <flux:input wire:model="password" :label="__('Password')" type="password" required
-                autocomplete="current-password" :placeholder="__('Password')" />
+            <flux:input wire:model="password" :label="__('app.Password')" type="password" required
+                autocomplete="current-password" :placeholder="__('app.Password')" />
 
             @if (Route::has('password.request'))
                 <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-                    {{ __('Forgot your password?') }}
+                    {{ __('app.Forgot your password?') }}
                 </flux:link>
             @endif
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        <flux:checkbox wire:model="remember" :label="__('app.Remember me')" />
 
         <div class="flex items-center justify-end">
-            <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
+            <flux:button variant="primary" type="submit" class="w-full">{{ __('app.Log in') }}</flux:button>
         </div>
     </form>
 </div>

@@ -22,7 +22,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'password' => $this->password,
         ])) {
             throw ValidationException::withMessages([
-                'password' => __('auth.password'),
+                'password' => __('app.auth.password'),
             ]);
         }
 
@@ -34,8 +34,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
 <div class="flex flex-col gap-6">
     <x-auth-header
-        :title="__('Confirm password')"
-        :description="__('This is a secure area of the application. Please confirm your password before continuing.')"
+        :title="__('app.Confirm password')"
+        :description="__('app.This is a secure area of the application. Please confirm your password before continuing.')"
     />
 
     <!-- Session Status -->
@@ -45,13 +45,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Password -->
         <flux:input
             wire:model="password"
-            :label="__('Password')"
+            :label="__('app.Password')"
             type="password"
             required
             autocomplete="new-password"
-            :placeholder="__('Password')"
+            :placeholder="__('app.Password')"
         />
 
-        <flux:button variant="primary" type="submit" class="w-full">{{ __('Confirm') }}</flux:button>
+        <flux:button variant="primary" type="submit" class="w-full">{{ __('app.Confirm') }}</flux:button>
     </form>
 </div>

@@ -13,32 +13,29 @@
 
             <flux:navbar class="-mb-px max-lg:hidden">
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
+                    {{ __('app.Dashboard') }}
                 </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
 
             <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-                <flux:tooltip :content="__('Search')" position="bottom">
-                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
-                </flux:tooltip>
-                <flux:tooltip :content="__('Repository')" position="bottom">
+                <flux:tooltip :content="__('app.Repository')" position="bottom">
                     <flux:navbar.item
                         class="h-10 max-lg:hidden [&>div>svg]:size-5"
                         icon="folder-git-2"
-                        href="https://github.com/laravel/livewire-starter-kit"
+                        href="https://github.com/piotrczech/planomat"
                         target="_blank"
-                        :label="__('Repository')"
+                        :label="__('app.Repository')"
                     />
                 </flux:tooltip>
-                <flux:tooltip :content="__('Documentation')" position="bottom">
+                <flux:tooltip :content="__('app.Documentation')" position="bottom">
                     <flux:navbar.item
                         class="h-10 max-lg:hidden [&>div>svg]:size-5"
                         icon="book-open-text"
-                        href="https://laravel.com/docs/starter-kits"
+                        href="https://github.com/piotrczech/planomat"
                         target="_blank"
-                        label="Documentation"
+                        :label="__('app.Documentation')"
                     />
                 </flux:tooltip>
             </flux:navbar>
@@ -65,6 +62,7 @@
                                 <div class="grid flex-1 text-start text-sm leading-tight">
                                     <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
                                     <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                    <span class="truncate text-xs">{{ auth()->user()->role->label() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +71,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('app.Settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -81,7 +79,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('app.Log Out') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -97,9 +95,9 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
+                <flux:navlist.group :heading="__('app.Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
+                    {{ __('app.Dashboard') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
@@ -108,11 +106,11 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
+                {{ __('app.Repository') }}
                 </flux:navlist.item>
 
                 <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
-                {{ __('Documentation') }}
+                {{ __('app.Documentation') }}
                 </flux:navlist.item>
             </flux:navlist>
         </flux:sidebar>

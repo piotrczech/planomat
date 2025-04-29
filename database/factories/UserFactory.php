@@ -7,6 +7,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Enums\RoleEnum;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -31,6 +32,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => fake()->randomElement(RoleEnum::values()),
         ];
     }
 
@@ -42,5 +44,33 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Ustawia użytkownikowi konkretną rolę.
+     */
+    public function withRole(RoleEnum $role): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => $role,
+        ]);
+    }
+
+    /** @see RoleEnum::SCIENTIFIC_WORKER */
+    public function scientificWorker(): static
+    {
+        return $this->withRole(RoleEnum::SCIENTIFIC_WORKER);
+    }
+
+    /** @see RoleEnum::DEAN_OFFICE_WORKER */
+    public function deanOfficeWorker(): static
+    {
+        return $this->withRole(RoleEnum::DEAN_OFFICE_WORKER);
+    }
+
+    /** @see RoleEnum::ADMINISTRATOR */
+    public function administrator(): static
+    {
+        return $this->withRole(RoleEnum::ADMINISTRATOR);
     }
 }
