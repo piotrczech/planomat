@@ -6,5 +6,5 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\VoltServiceProvider::class,
     Modules\Consultation\Providers\ConsultationServiceProvider::class,
-    Modules\Desideratum\Providers\DesideratumServiceProvider::class,
+    Modules\Desiderata\Providers\DesiderataServiceProvider::class,
 ];

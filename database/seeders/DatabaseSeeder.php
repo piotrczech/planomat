@@ -10,11 +10,12 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
+        $this->call([
+            TimeSlotSeeder::class,
+        ]);
+
         User::factory()->scientificWorker()->create([
             'name' => 'Naukowiec Testowy',
             'email' => 'prowadzacy@pwr.edu.pl',

@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/desiderata",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Desiderata\\": "app/",
+            "Modules\\Desiderata\\Database\\Factories\\": "database/factories/",
+            "Modules\\Desiderata\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Desiderata\\Tests\\": "tests/"
+        }
+    }
+}

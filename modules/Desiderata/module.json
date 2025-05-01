@@ -1,0 +1,11 @@
+{
+    "name": "Desiderata",
+    "alias": "desiderata",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Desiderata\\Providers\\DesiderataServiceProvider"
+    ],
+    "files": []
+}
