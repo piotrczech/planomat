@@ -6,6 +6,8 @@ namespace Modules\Desiderata\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Modules\Desiderata\Http\Livewire\Dashboard\DesiderataCard;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +29,7 @@ class DesiderataServiceProvider extends ServiceProvider
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
+        $this->registerComponents();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
     }
@@ -96,6 +99,20 @@ class DesiderataServiceProvider extends ServiceProvider
                     $this->mergeConfigFrom($file->getPathname(), $key);
                 }
             }
+        }
+    }
+
+    /**
+     * Register components.
+     */
+    protected function registerComponents(): void
+    {
+        $components = [
+            'dashboard.desiderata-card' => DesiderataCard::class,
+        ];
+
+        foreach ($components as $alias => $component) {
+            Livewire::component("{$this->nameLower}::{$alias}", $component);
         }
     }
 

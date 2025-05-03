@@ -6,6 +6,12 @@ namespace Modules\Consultation\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Modules\Consultation\Http\Livewire\Dashboard\Components\CalendarAppointment;
+use Modules\Consultation\Http\Livewire\Dashboard\Components\CalendarDay;
+use Modules\Consultation\Http\Livewire\Dashboard\Components\ConsultationItem;
+use Modules\Consultation\Http\Livewire\Dashboard\ConsultationCalendar;
+use Modules\Consultation\Http\Livewire\Dashboard\ConsultationsCard;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +33,7 @@ class ConsultationServiceProvider extends ServiceProvider
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
+        $this->registerComponents();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
     }
@@ -96,6 +103,24 @@ class ConsultationServiceProvider extends ServiceProvider
                     $this->mergeConfigFrom($file->getPathname(), $key);
                 }
             }
+        }
+    }
+
+    /**
+     * Register components.
+     */
+    protected function registerComponents(): void
+    {
+        $components = [
+            'dashboard.consultations-card' => ConsultationsCard::class,
+            'dashboard.consultation-calendar' => ConsultationCalendar::class,
+            'dashboard.calendar-day' => CalendarDay::class,
+            'dashboard.calendar-appointment' => CalendarAppointment::class,
+            'dashboard.consultation-item' => ConsultationItem::class,
+        ];
+
+        foreach ($components as $alias => $component) {
+            Livewire::component("{$this->nameLower}::{$alias}", $component);
         }
     }
 
