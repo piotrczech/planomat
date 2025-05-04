@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Desiderata\Http\Livewire\Dashboard;
+namespace Modules\Desiderata\Presentation\Livewire\Dashboard;
 
 use Livewire\Component;
 
@@ -14,7 +14,7 @@ class DesiderataCard extends Component
 
     public function redirectToForm()
     {
-        return redirect()->route('dashboard');
+        return redirect()->route('desiderata.scientific-worker.my-desiderata');
     }
 
     public function render()

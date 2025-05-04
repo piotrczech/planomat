@@ -13,6 +13,7 @@
     "concurrently": "^9.0.1",
     "laravel-vite-plugin": "^1.0",
     "tailwindcss": "^4.1.4",
+    "tom-select": "^2.4.3",
     "vite": "^6.0"
   },
   "optionalDependencies": {

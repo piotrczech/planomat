@@ -7,7 +7,10 @@ namespace Modules\Desiderata\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\Desiderata\Http\Livewire\Dashboard\DesiderataCard;
+use Modules\Desiderata\Presentation\Livewire\Dashboard\DesiderataCard;
+use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormAvailabilityStepComponent;
+use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormPreferencesStepComponent;
+use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormWizardComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -109,6 +112,9 @@ class DesiderataServiceProvider extends ServiceProvider
     {
         $components = [
             'dashboard.desiderata-card' => DesiderataCard::class,
+            'desideratum.scientific-worker.desiderata-form-wizard' => DesiderataFormWizardComponent::class,
+            'desideratum.scientific-worker.desiderata-form-availability-step' => DesiderataFormAvailabilityStepComponent::class,
+            'desideratum.scientific-worker.desiderata-form-preferences-step' => DesiderataFormPreferencesStepComponent::class,
         ];
 
         foreach ($components as $alias => $component) {

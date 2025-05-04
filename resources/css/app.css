@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
+@import 'tom-select/dist/css/tom-select.default.css';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -45,6 +46,15 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+
+    /* Heading hierarchy */
+    h1 { @apply text-4xl font-extrabold leading-tight mb-4; }
+    h2 { @apply text-3xl font-bold leading-tight mb-3; }
+    h3 { @apply text-2xl font-semibold leading-snug mb-2; }
+    h4 { @apply text-xl font-medium leading-snug mb-2; }
+
+    /* Paragraphs */
+    p { @apply text-base leading-relaxed mb-4; }
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {
@@ -61,6 +71,35 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+.ts-wrapper .ts-control {
+    @apply w-full border rounded-lg block disabled:shadow-none dark:shadow-none appearance-none text-base sm:text-sm py-2 h-10 leading-[1.375rem] ps-3 pe-3 bg-white dark:bg-white/10 dark:disabled:bg-white/[7%] text-zinc-700 disabled:text-zinc-500 placeholder-zinc-400 disabled:placeholder-zinc-400/70 dark:text-zinc-300 dark:disabled:text-zinc-400 dark:placeholder-zinc-400 dark:disabled:placeholder-zinc-500 shadow-xs border-zinc-200 border-b-zinc-300/80 disabled:border-b-zinc-200 dark:border-white/10 dark:disabled:border-white/5;
+}
+
+.ts-wrapper.multi.has-items .ts-control {
+    @apply px-1 !py-0;
+}
+
+.ts-wrapper .ts-dropdown {
+    @apply rounded-lg shadow-md mt-1;
+}
+
+.ts-wrapper.multi .ts-control > div,
+.ts-wrapper.multi .ts-control [data-value] {
+    background-image: unset;
+    text-shadow: none;
+    box-shadow: none;
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-600 rounded-md px-2 py-1 text-sm m-1;
+}
+
+.ts-wrapper.multi .ts-control > div.active,
+.ts-wrapper.multi .ts-control [data-value].active {
+    background-image: unset;
+    text-shadow: none;
+    box-shadow: none;
+    @apply bg-gray-700 dark:bg-gray-100 text-gray-100 dark:text-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2 py-1 text-sm m-1;
+}
+
+.ts-wrapper.plugin-remove_button .item .remove:hover,
+.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
+    @apply !border-gray-200 dark:!border-gray-600 border-l;
+}
