@@ -15,6 +15,28 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('app.Dashboard') }}
                 </flux:navbar.item>
+
+                @if(Module::isEnabled('Desiderata'))
+                    <flux:navbar.item icon="ticket" :href="route('desiderata.scientific-worker.my-desiderata')" :current="request()->routeIs('desiderata.scientific-worker.my-desiderata')" wire:navigate>
+                        {{ __('app.My Desiderata') }}
+                    </flux:navbar.item>
+                @endif
+
+                @if(Module::isEnabled('Consultation'))
+                    <flux:navbar.item
+                        icon="megaphone"
+                        :href="route('consultations.scientific-worker.my-semester-consultation')"
+                        :current="
+                            request()->routeIs('consultations.scientific-worker.my-semester-consultation')
+                            || request()->routeIs('consultations.scientific-worker.my-session-consultation')
+                            || request()->routeIs('consultations.scientific-worker.my-consultation')
+                        "
+                        wire:navigate
+                    >
+                        {{ __('app.My Consultation') }}
+                    </flux:navbar.item>
+                @endif
+
             </flux:navbar>
 
             <flux:spacer />

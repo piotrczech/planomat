@@ -205,5 +205,9 @@
         hydrateSelects();
         Livewire.hook('morphed', hydrateSelects);
     });
+
+    new TomSelect('#can-teach-courses', { plugins: ['remove_button'] });
+    new TomSelect('#want-to-teach');
+    new TomSelect('#dont-want-to-teach', { maxItems: 2 });
 </script>
 @endscript

@@ -7,11 +7,11 @@ namespace Modules\Consultation\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\Consultation\Http\Livewire\Dashboard\Components\CalendarAppointment;
-use Modules\Consultation\Http\Livewire\Dashboard\Components\CalendarDay;
-use Modules\Consultation\Http\Livewire\Dashboard\Components\ConsultationItem;
-use Modules\Consultation\Http\Livewire\Dashboard\ConsultationCalendar;
-use Modules\Consultation\Http\Livewire\Dashboard\ConsultationsCard;
+use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\MySemesterConsultationCalendarComponent;
+use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\MySessionConsultationCalendarComponent;
+use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\NewSemesterConsultationComponent;
+use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\NewSessionConsultationComponent;
+use Modules\Consultation\Presentation\Livewire\Dashboard\ConsultationsCard;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -113,10 +113,10 @@ class ConsultationServiceProvider extends ServiceProvider
     {
         $components = [
             'dashboard.consultations-card' => ConsultationsCard::class,
-            'dashboard.consultation-calendar' => ConsultationCalendar::class,
-            'dashboard.calendar-day' => CalendarDay::class,
-            'dashboard.calendar-appointment' => CalendarAppointment::class,
-            'dashboard.consultation-item' => ConsultationItem::class,
+            'consultations.scientific-worker.new-semester-consultation' => NewSemesterConsultationComponent::class,
+            'consultations.scientific-worker.new-session-consultation' => NewSessionConsultationComponent::class,
+            'consultations.scientific-worker.my-semester-consultation-calendar' => MySemesterConsultationCalendarComponent::class,
+            'consultations.scientific-worker.my-session-consultation-calendar' => MySessionConsultationCalendarComponent::class,
         ];
 
         foreach ($components as $alias => $component) {

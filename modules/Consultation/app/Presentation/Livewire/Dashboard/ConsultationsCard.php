@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Consultation\Http\Livewire\Dashboard;
+namespace Modules\Consultation\Presentation\Livewire\Dashboard;
 
 use App\Enums\WeekdayEnum;
 use App\Enums\WeekTypeEnum;

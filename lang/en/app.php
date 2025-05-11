@@ -9,6 +9,8 @@ return [
     'Repository' => 'Repository',
     'Documentation' => 'Documentation',
     'Platform' => 'Platform',
+    'My Desiderata' => 'My Desiderata',
+    'My Consultation' => 'My Consultation',
 
     // Auth/Login
     'Log in to your account' => 'Log in to your account',
