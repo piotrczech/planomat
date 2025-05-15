@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum CoursePreferenceTypeEnum: string
+enum CoursePreferenceTypeEnum: int
 {
-    case CAN = 'can';
-    case WANT = 'want';
-    case NOT_WANT = 'not_want';
+    case WANTED = 1;
+    case COULD = 2;
+    case UNWANTED = 3;
 
     public function label(): string
     {
         return match ($this) {
-            self::CAN => __('course_preference_type.can'),
-            self::WANT => __('course_preference_type.want'),
-            self::NOT_WANT => __('course_preference_type.not_want'),
+            self::WANTED => __('course_preference_type.wanted'),
+            self::COULD => __('course_preference_type.could'),
+            self::UNWANTED => __('course_preference_type.not_want'),
         };
     }
 
+    /**
+     * Zwraca wszystkie wartości enum jako tablicę
+     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');

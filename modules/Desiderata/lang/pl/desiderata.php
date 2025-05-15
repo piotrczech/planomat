@@ -11,6 +11,10 @@ return [
     'Dezyderaty' => 'Dezyderaty',
     'Please complete your teaching preferences for the upcoming semester' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
+    'Information' => 'Informacja',
+    'You already have desiderata submitted. You can still edit them.' => 'Masz już uzupełnione dezyderaty. Nadal masz możliwość je edytować.',
+    'Success' => 'Sukces',
+    'Error' => 'Błąd',
 
     // Kroki formularza
     'Preferences' => 'Preferencje',
@@ -69,6 +73,7 @@ return [
     'Next step' => 'Następny krok',
     'Previous step' => 'Poprzedni krok',
     'Save preferences' => 'Zapisz preferencje',
+    'Saving...' => 'Zapisywanie...',
 
     // Dodatkowe informacje
     'Additional information' => 'Dodatkowe informacje',
@@ -79,4 +84,11 @@ return [
     'Availability schedule placeholder' => 'Wpisz plan dostępności...',
     'Please select time slots when you are NOT available' => 'Wybierz bloki czasowe, w których NIE jesteś dostępny',
     'Please select time slots when you are available' => 'Wybierz bloki czasowe, w których jesteś dostępny',
+
+    // Walidacja i błędy biznesowe
+    'You can select up to 2 unwanted courses' => 'Można wybrać maksymalnie 2 niechciane kursy',
+    'You can select up to 5 unavailable time slots' => 'Można wybrać maksymalnie 5 niedostępnych terminów',
+    'You must select at least one form of studies' => 'Należy wybrać co najmniej jedną formę studiów (stacjonarne lub niestacjonarne)',
+    'Desiderata have been saved successfully' => 'Dezyderaty zostały zapisane pomyślnie',
+    'An error occurred while saving desiderata' => 'Wystąpił błąd podczas zapisywania dezyderatów',
 ];

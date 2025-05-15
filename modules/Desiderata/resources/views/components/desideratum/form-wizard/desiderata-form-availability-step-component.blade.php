@@ -89,6 +89,7 @@
             rows="4"
             class="w-full"
             aria-labelledby="additional-info-legend"
+            wire:model="additionalNotes"
         />
     </div>
 
@@ -103,11 +104,18 @@
         </flux:button>
         
         <flux:button 
-            wire:click="saveForm" 
+            wire:click="saveDesideratum" 
             variant="primary"
             class="px-6 py-3"
+            wire:loading.attr="disabled"
         >
-            {{ __('desiderata::desiderata.Save preferences') }}
+            <span wire:loading.remove wire:target="saveDesideratum">
+                {{ __('desiderata::desiderata.Save preferences') }}
+            </span>
+            <span wire:loading wire:target="saveDesideratum" class="flex items-center">
+                <flux:icon name="arrow-path" class="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                {{ __('desiderata::desiderata.Saving...') }}
+            </span>
         </flux:button>
     </div>
 </div>

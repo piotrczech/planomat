@@ -7,6 +7,9 @@ namespace Modules\Desiderata\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
+use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
+use Modules\Desiderata\Infrastructure\Repositories\EloquentDesideratumRepository;
 use Modules\Desiderata\Presentation\Livewire\Dashboard\DesiderataCard;
 use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormAvailabilityStepComponent;
 use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormPreferencesStepComponent;
@@ -44,6 +47,19 @@ class DesiderataServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        // Rejestracja repozytorium
+        $this->app->bind(
+            DesideratumRepositoryInterface::class,
+            EloquentDesideratumRepository::class,
+        );
+
+        // Rejestracja przypadku użycia
+        $this->app->bind(UpdateOrCreateDesideratumUseCase::class, function ($app) {
+            return new UpdateOrCreateDesideratumUseCase(
+                $app->make(DesideratumRepositoryInterface::class),
+            );
+        });
     }
 
     /**

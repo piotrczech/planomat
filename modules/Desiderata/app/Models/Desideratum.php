@@ -7,10 +7,12 @@ namespace Modules\Desiderata\Models;
 use App\Models\Course;
 use App\Models\Semester;
 use App\Models\User;
+use App\Enums\CoursePreferenceTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Desideratum extends Model
 {
@@ -45,24 +47,69 @@ class Desideratum extends Model
         return $this->belongsTo(User::class, 'scientific_worker_id');
     }
 
-    public function wantedCourses(): HasMany
+    /**
+     * Pobiera wszystkie preferencje kursów
+     */
+    public function coursePreferences(): HasMany
     {
-        return $this->hasMany(Course::class, 'id', 'course_id')
-            ->where('status', 'wanted');
+        return $this->hasMany(DesideratumCoursePreference::class);
     }
 
-    public function couldCourses(): HasMany
+    /**
+     * Relacja do wszystkich kursów
+     */
+    public function courses(): BelongsToMany
     {
-        return $this->hasMany(Course::class, 'id', 'course_id')
-            ->where('status', 'could');
+        return $this->belongsToMany(
+            Course::class,
+            'desideratum_course_preferences',
+            'desideratum_id',
+            'course_id',
+        )->withPivot('type');
     }
 
-    public function notWantedCourses(): HasMany
+    /**
+     * Pobiera kursy, które pracownik chce prowadzić
+     */
+    public function wantedCourses(): BelongsToMany
     {
-        return $this->hasMany(Course::class, 'id', 'course_id')
-            ->where('status', 'not_want');
+        return $this->belongsToMany(
+            Course::class,
+            'desideratum_course_preferences',
+            'desideratum_id',
+            'course_id',
+        )->wherePivot('type', CoursePreferenceTypeEnum::WANTED->value);
     }
 
+    /**
+     * Pobiera kursy, które pracownik mógłby prowadzić
+     */
+    public function couldCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Course::class,
+            'desideratum_course_preferences',
+            'desideratum_id',
+            'course_id',
+        )->wherePivot('type', CoursePreferenceTypeEnum::COULD->value);
+    }
+
+    /**
+     * Pobiera kursy, których pracownik nie chce prowadzić
+     */
+    public function notWantedCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Course::class,
+            'desideratum_course_preferences',
+            'desideratum_id',
+            'course_id',
+        )->wherePivot('type', CoursePreferenceTypeEnum::UNWANTED->value);
+    }
+
+    /**
+     * Pobiera niedostępne sloty czasowe
+     */
     public function unavailableTimeSlots(): HasMany
     {
         return $this->hasMany(DesideratumUnavailableTimeSlot::class);

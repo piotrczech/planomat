@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
 use App\Enums\WeekdayEnum;
+use Illuminate\Support\Facades\Auth;
+use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
+use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
+use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Spatie\LivewireWizard\Components\StepComponent;
 
 class DesiderataFormAvailabilityStepComponent extends StepComponent
@@ -15,9 +19,41 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
 
     public int $maxUnavailableSlots = 5;
 
-    public function mount(): void
+    public string $additionalNotes = '';
+
+    public function mount(DesideratumRepositoryInterface $repository): void
     {
+        // Inicjalizujemy strukturę slotów czasowych
         $this->initTimeSlots();
+
+        // Pobieramy aktualne dane, jeśli istnieją
+        $currentUserId = Auth::id();
+        $semesterId = 1; // Tutaj można dodać logikę pobierania aktualnego semestru
+
+        $existingDesideratum = $repository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
+
+        if ($existingDesideratum) {
+            // Ustawiamy dodatkowe notatki
+            $this->additionalNotes = $existingDesideratum->additionalNotes;
+
+            // Ustawiamy niedostępne sloty czasowe
+            if (!empty($existingDesideratum->unavailableTimeSlots)) {
+                $this->selectedSlotsCount = 0;
+
+                foreach ($existingDesideratum->unavailableTimeSlots as $day => $slotIds) {
+                    if (!isset($this->unavailableTimeSlots[$day]) || !is_array($slotIds)) {
+                        continue;
+                    }
+
+                    foreach ($slotIds as $slotId) {
+                        if (isset($this->unavailableTimeSlots[$day][$slotId])) {
+                            $this->unavailableTimeSlots[$day][$slotId]['selected'] = true;
+                            $this->selectedSlotsCount++;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function render()
@@ -45,6 +81,7 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
             foreach ($timeSlots as $slot) {
                 $this->unavailableTimeSlots[$day->value][$slot['id']] = [
                     'selected' => false,
+                    'id' => $slot['id'],
                     'range' => $slot['range'],
                 ];
             }
@@ -65,5 +102,32 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
             $this->unavailableTimeSlots[$day][$slotId]['selected'] = true;
             $this->selectedSlotsCount++;
         }
+    }
+
+    public function saveDesideratum(UpdateOrCreateDesideratumUseCase $useCase): void
+    {
+        $preferencesState = $this->state()->forStepClass(DesiderataFormPreferencesStepComponent::class);
+        $availabilityState = $this->state()->forStepClass(DesiderataFormAvailabilityStepComponent::class);
+
+        $unavailableTimeSlots = array_map(
+            fn (array $dayTimeSlots) => array_column(
+                array_filter(
+                    $dayTimeSlots,
+                    fn (array $slot) => $slot['selected'] ?? false,
+                ),
+                'id',
+            ),
+            $availabilityState['unavailableTimeSlots'],
+        );
+
+        $desideratumDto = UpdateOrCreateDesideratumDto::from([
+            ...$preferencesState,
+            'unavailableTimeSlots' => $unavailableTimeSlots,
+            'additionalNotes' => $availabilityState['additionalNotes'],
+        ]);
+
+        $useCase->execute($desideratumDto);
+        $this->dispatch('desideratumSaved');
+        $this->previousStep();
     }
 }
