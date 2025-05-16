@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('consultation::consultation.My Semester Consultation')">
     <div class="max-w-7xl mx-auto pb-10">
-        <x-consultation::consultations.consultation-header />
+        <x-consultation::consultations.consultation-header :lastUpdateDate="$lastUpdateDate" />
 
         <div class="flex flex-col lg:flex-row gap-6">
             <div class="flex-1">

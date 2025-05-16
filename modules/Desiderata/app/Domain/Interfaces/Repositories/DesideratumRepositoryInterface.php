@@ -14,4 +14,6 @@ interface DesideratumRepositoryInterface
     ): ?UpdateOrCreateDesideratumDto;
 
     public function updateOrCreate(UpdateOrCreateDesideratumDto $dto): int;
+
+    public function getLastUpdateDateByScientificWorker(int $workerId): ?string;
 }

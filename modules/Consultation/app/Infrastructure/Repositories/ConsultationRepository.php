@@ -13,14 +13,13 @@ use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
 use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 use App\Enums\WeekdayEnum;
 use App\Enums\WeekTypeEnum;
-use App\Models\Semester;
 
 final class ConsultationRepository implements ConsultationRepositoryInterface
 {
     public function createNewSemesterConsultation(CreateNewSemesterConsultationDto $dto): int
     {
         $scientificWorkerId = Auth::id();
-        $currentSemester = Semester::where('is_current', true)->first();
+        $currentSemesterId = 1;
 
         if (in_array($dto->consultationWeekday, [
             WeekdayEnum::MONDAY->value,
@@ -31,14 +30,14 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         ])) {
             return $this->createWeekdayConsultation(
                 $scientificWorkerId,
-                $currentSemester->id,
+                $currentSemesterId,
                 $dto,
             ) ? 1 : 0;
         }
 
         return $this->createWeekendConsultations(
             $scientificWorkerId,
-            $currentSemester->id,
+            $currentSemesterId,
             $dto,
         );
     }
@@ -189,5 +188,23 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         }
 
         return (bool) $consultation->delete();
+    }
+
+    public function getLastSemesterConsultationUpdateDate(int $scientificWorkerId): ?string
+    {
+        $latestConsultation = ConsultationSemester::where('scientific_worker_id', $scientificWorkerId)
+            ->orderByDesc('updated_at')
+            ->first();
+
+        return $latestConsultation?->updated_at?->toDateString();
+    }
+
+    public function getLastSessionConsultationUpdateDate(int $scientificWorkerId): ?string
+    {
+        $latestConsultation = ConsultationSession::where('scientific_worker_id', $scientificWorkerId)
+            ->orderByDesc('updated_at')
+            ->first();
+
+        return $latestConsultation?->updated_at?->toDateString();
     }
 }

@@ -11,6 +11,7 @@ return [
     'Dezyderaty' => 'Dezyderaty',
     'Please complete your teaching preferences for the upcoming semester' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
+    'Never' => 'Nigdy',
     'Information' => 'Informacja',
     'You already have desiderata submitted. You can still edit them.' => 'Masz już uzupełnione dezyderaty. Nadal masz możliwość je edytować.',
     'Success' => 'Sukces',

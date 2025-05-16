@@ -229,4 +229,13 @@ class EloquentDesideratumRepository implements DesideratumRepositoryInterface
             default => null,
         };
     }
+
+    public function getLastUpdateDateByScientificWorker(int $workerId): ?string
+    {
+        $desideratum = Desideratum::where('scientific_worker_id', $workerId)
+            ->orderByDesc('updated_at')
+            ->first();
+
+        return $desideratum?->updated_at?->toDateString();
+    }
 }

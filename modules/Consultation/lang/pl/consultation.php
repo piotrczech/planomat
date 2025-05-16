@@ -14,8 +14,8 @@ return [
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
     'Total consultation time in your schedule' => 'Łączny czas konsultacji w Twoim kalendarzu',
     'My Semester Consultation Description' => [
-        'Dark' => 'Interfejs do zarządzania harmonogramem konsultacji został podzielony na dwie sekcje: konsultacje semestralne oraz konsultacje w sesji. Pod poniższym opisem znajdują się dwa przyciski, które umożliwiają nawigowanie się między sekcjami (kolorem białym oznaczono aktywny widok).',
-        'Light' => 'Interfejs do zarządzania harmonogramem konsultacji został podzielony na dwie sekcje: konsultacje semestralne oraz konsultacje w sesji. Pod poniższym opisem znajdują się dwa przyciski, które umożliwiają nawigowanie się między sekcjami (kolorem czarnym oznaczono aktywny widok).',
+        'Dark' => 'Łatwo zarządzaj swoim harmonogramem konsultacji semestralnych. Dodawaj, edytuj lub usuwaj terminy konsultacji, aby Twoja dostępność dla studentów była zawsze aktualna. Upewnij się, że Twój harmonogram jest dokładny i dostępny.',
+        'Light' => 'Łatwo zarządzaj swoim harmonogramem konsultacji semestralnych. Dodawaj, edytuj lub usuwaj terminy konsultacji, aby Twoja dostępność dla studentów była zawsze aktualna. Upewnij się, że Twój harmonogram jest dokładny i dostępny.',
     ],
 
     // Typy konsultacji
@@ -25,7 +25,7 @@ return [
     'Semester Consultation' => 'Konsultacja semestralna',
     'Session Consultation' => 'Konsultacja sesyjna',
     'Semester Consultations' => 'Konsultacje semestralne',
-    'Session Consultations' => 'Konsultacje w sesji',
+    'Session Consultations' => 'Konsultacje sesyjne',
 
     // Sekcje formularza
     'Add new consultation' => 'Dodaj nową konsultację',
@@ -125,4 +125,5 @@ return [
     'Error: :message' => 'Błąd: :message',
     'Delete consultation' => 'Usuń konsultację',
     'Are you sure you want to delete this consultation?' => 'Czy na pewno chcesz usunąć tę konsultację?',
+    'Never' => 'Nigdy',
 ];

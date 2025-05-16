@@ -11,6 +11,7 @@ return [
     'Dezyderaty' => 'Desiderata',
     'Please complete your teaching preferences for the upcoming semester' => 'Please complete your teaching preferences for the upcoming semester',
     'Last updated by You' => 'Last updated by You',
+    'Never' => 'Never',
 
     // Form steps
     'Preferences' => 'Preferences',

@@ -64,7 +64,11 @@
                 </flux:text>
             </div>
             <flux:text variant="subtle" class="text-right min-w-56">
-                <p>{{ __('desiderata::desiderata.Last updated by You') }}: 2025-05-04</p>
+                @if(isset($lastUpdateDate) && $lastUpdateDate)
+                    <p>{{ __('desiderata::desiderata.Last updated by You') }}: {{ $lastUpdateDate }}</p>
+                @else
+                    <p>{{ __('desiderata::desiderata.Last updated by You') }}: {{ __('desiderata::desiderata.Never') }}</p>
+                @endif
             </flux:text>
         </div>
 

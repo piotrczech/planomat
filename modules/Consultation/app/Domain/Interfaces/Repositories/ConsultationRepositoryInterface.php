@@ -33,4 +33,8 @@ interface ConsultationRepositoryInterface
     public function getSessionConsultations(int $scientificWorkerId): array;
 
     public function deleteSessionConsultation(int $consultationId, int $scientificWorkerId): bool;
+
+    public function getLastSemesterConsultationUpdateDate(int $scientificWorkerId): ?string;
+
+    public function getLastSessionConsultationUpdateDate(int $scientificWorkerId): ?string;
 }
