@@ -108,4 +108,21 @@ return [
     'No consultations on this day' => 'Brak konsultacji w tym dniu',
     'consultation_singular' => 'konsultacja',
     'consultations_plural' => 'konsultacje',
+
+    // Komunikaty sukcesu i błędu
+    'Success' => 'Sukces',
+    'Error' => 'Błąd',
+    'Successfully created' => 'Pomyślnie utworzono',
+    'consultation sessions' => 'sesje konsultacji',
+    'Error while creating consultation' => 'Błąd podczas tworzenia konsultacji',
+    'Failed to create consultation: :message' => 'Nie udało się utworzyć konsultacji: :message',
+    'Successfully created :count consultation sessions' => 'Pomyślnie utworzono :count sesji konsultacji',
+    'Adding...' => 'Dodawanie...',
+    'No active semester found' => 'Nie znaleziono aktywnego semestru',
+    'Failed to load consultations: :message' => 'Nie udało się załadować konsultacji: :message',
+    'Failed to delete consultation' => 'Nie udało się usunąć konsultacji',
+    'Consultation successfully deleted' => 'Konsultacja została pomyślnie usunięta',
+    'Error: :message' => 'Błąd: :message',
+    'Delete consultation' => 'Usuń konsultację',
+    'Are you sure you want to delete this consultation?' => 'Czy na pewno chcesz usunąć tę konsultację?',
 ];

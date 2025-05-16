@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Modules\Consultation\Http\Controllers\ScientificWorkerConsultationController;
+use Modules\Consultation\Presentation\Http\Controllers\ScientificWorkerConsultationController;
 
 Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function (): void {
 

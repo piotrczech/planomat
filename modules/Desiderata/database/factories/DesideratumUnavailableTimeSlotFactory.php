@@ -7,8 +7,8 @@ namespace Modules\Desiderata\Database\Factories;
 use App\Enums\WeekdayEnum;
 use App\Models\TimeSlot;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Desiderata\Models\Desideratum;
-use Modules\Desiderata\Models\DesideratumUnavailableTimeSlot;
+use Modules\Desiderata\Infrastructure\Models\Desideratum;
+use Modules\Desiderata\Infrastructure\Models\DesideratumUnavailableTimeSlot;
 
 class DesideratumUnavailableTimeSlotFactory extends Factory
 {

@@ -6,13 +6,13 @@ namespace Modules\Desiderata\Infrastructure\Repositories;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
-use Modules\Desiderata\Models\Desideratum;
+use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use App\Enums\CoursePreferenceTypeEnum;
 use App\Enums\WeekdayEnum;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
-use Modules\Desiderata\Models\DesideratumUnavailableTimeSlot;
-use Modules\Desiderata\Models\DesideratumCoursePreference;
+use Modules\Desiderata\Infrastructure\Models\DesideratumUnavailableTimeSlot;
+use Modules\Desiderata\Infrastructure\Models\DesideratumCoursePreference;
 
 class EloquentDesideratumRepository implements DesideratumRepositoryInterface
 {

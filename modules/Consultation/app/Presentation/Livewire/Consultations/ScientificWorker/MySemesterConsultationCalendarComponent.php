@@ -5,48 +5,58 @@ declare(strict_types=1);
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\App;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetSemesterConsultationsUseCase;
+use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSemesterConsultationUseCase;
+use Exception;
 
 class MySemesterConsultationCalendarComponent extends Component
 {
     public array $consultationEvents = [];
 
+    public ?string $successMessage = null;
+
+    public ?string $errorMessage = null;
+
     public function mount(): void
     {
-        // Przykładowe wydarzenia konsultacji (weekday to liczby 0-6, gdzie 0=poniedziałek)
-        $this->consultationEvents = [
-            [
-                'id' => 1,
-                'weekday' => 0, // Poniedziałek
-                'startTime' => '09:05',
-                'endTime' => '10:30',
-                'location' => 'Sala 204, Budynek Główny',
-                'weekType' => 'every',
-            ],
-            [
-                'id' => 2,
-                'weekday' => 2, // Środa
-                'startTime' => '13:15',
-                'endTime' => '14:45',
-                'location' => 'Sala konferencyjna',
-                'weekType' => 'even',
-            ],
-            [
-                'id' => 3,
-                'weekday' => 3, // Czwartek
-                'startTime' => '16:00',
-                'endTime' => '17:30',
-                'location' => 'Gabinet 312',
-                'weekType' => 'odd',
-            ],
-        ];
+        $this->loadConsultations();
+    }
+
+    public function loadConsultations(): void
+    {
+        try {
+            $useCase = App::make(GetSemesterConsultationsUseCase::class);
+            $this->consultationEvents = $useCase->execute(1); // ID semestru = 1 (tymczasowo hardcoded)
+        } catch (Exception $e) {
+            $this->errorMessage = __('consultation::consultation.Failed to load consultations: :message', [
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function removeConsultation(int $eventId): void
     {
-        $this->consultationEvents = array_filter(
-            $this->consultationEvents,
-            fn ($event) => $event['id'] !== $eventId,
-        );
+        try {
+            $useCase = App::make(DeleteSemesterConsultationUseCase::class);
+            $result = $useCase->execute($eventId);
+
+            if ($result) {
+                $this->consultationEvents = array_filter(
+                    $this->consultationEvents,
+                    fn ($event) => $event['id'] !== $eventId,
+                );
+
+                $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
+                $this->dispatch('consultationDeleted');
+            } else {
+                $this->errorMessage = __('consultation::consultation.Failed to delete consultation');
+            }
+        } catch (Exception $e) {
+            $this->errorMessage = __('consultation::consultation.Error: :message', [
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function render()

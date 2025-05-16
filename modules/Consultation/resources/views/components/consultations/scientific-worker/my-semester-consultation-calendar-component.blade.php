@@ -1,4 +1,37 @@
-<div>
+<div
+    x-data="{ 
+        showSuccessAlert: false,
+        showErrorAlert: false,
+    }"
+    x-init="
+        $watch('$wire.successMessage', (value) => {
+            if (value) {
+                showSuccessAlert = true;
+                setTimeout(() => { 
+                    showSuccessAlert = false;
+                    $wire.successMessage = null;
+                }, 5000);
+            }
+        });
+        
+        $watch('$wire.errorMessage', (value) => {
+            if (value) {
+                showErrorAlert = true;
+                setTimeout(() => { 
+                    showErrorAlert = false;
+                    $wire.errorMessage = null;
+                }, 5000);
+            }
+        });
+        
+        $wire.on('consultationDeleted', () => {
+            showSuccessAlert = true;
+            setTimeout(() => { 
+                showSuccessAlert = false;
+            }, 5000);
+        });
+    "
+>
     <flux:heading
         size="xl"
         level="2"
@@ -18,6 +51,35 @@
             {{ __('consultation::consultation.Total consultation time in your schedule') }}:
             6h 15min
         </flux:badge>
+    </div>
+
+    <!-- Komunikaty sukcesu i błędu -->
+    <div x-show="showSuccessAlert" x-transition class="mb-6">
+        <flux:callout 
+            variant="success" 
+            icon="check-circle" 
+        >
+            <flux:callout.heading>{{ __('consultation::consultation.Success') }}</flux:callout.heading>
+            <flux:callout.text>{{ $successMessage }}</flux:callout.text>
+
+            <x-slot name="controls">
+                <flux:button icon="x-mark" variant="ghost" x-on:click="showSuccessAlert = false" />
+            </x-slot>
+        </flux:callout>
+    </div>
+
+    <div x-show="showErrorAlert" x-transition class="mb-6">
+        <flux:callout 
+            variant="danger" 
+            icon="exclamation-circle" 
+        >
+            <flux:callout.heading>{{ __('consultation::consultation.Error') }}</flux:callout.heading>
+            <flux:callout.text>{{ $errorMessage }}</flux:callout.text>
+
+            <x-slot name="controls">
+                <flux:button icon="x-mark" variant="ghost" x-on:click="showErrorAlert = false" />
+            </x-slot>
+        </flux:callout>
     </div>
 
     <!-- Widok mobilny - lista konsultacji -->

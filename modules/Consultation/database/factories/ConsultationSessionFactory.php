@@ -6,11 +6,11 @@ namespace Modules\Consultation\Database\Factories;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Consultation\Models\ConsultationSemester;
-use Modules\Consultation\Models\ConsultationSession;
+use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
+use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Consultation\Models\ConsultationSession>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Consultation\Infrastructure\Models\ConsultationSession>
  */
 class ConsultationSessionFactory extends Factory
 {

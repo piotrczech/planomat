@@ -7,7 +7,7 @@ namespace Modules\Desiderata\Application\UseCases\ScientificWorker;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 
-final class UpdateOrCreateDesideratumUseCase
+class UpdateOrCreateDesideratumUseCase
 {
     public function __construct(
         private readonly DesideratumRepositoryInterface $desideratumRepository,

@@ -7,7 +7,7 @@ namespace Modules\Desiderata\Database\Factories;
 use App\Models\Semester;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Desiderata\Models\Desideratum;
+use Modules\Desiderata\Infrastructure\Models\Desideratum;
 
 class DesideratumFactory extends Factory
 {

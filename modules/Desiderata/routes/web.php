@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Modules\Desiderata\Http\Controllers\ScientificWorkerDesiderataController;
+use Modules\Desiderata\Presentation\Http\Controllers\ScientificWorkerDesiderataController;
 
 Route::middleware(['auth', 'verified'])->prefix('desiderata')->group(function (): void {
 

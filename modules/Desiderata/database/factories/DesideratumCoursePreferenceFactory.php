@@ -7,8 +7,8 @@ namespace Modules\Desiderata\Database\Factories;
 use App\Enums\CoursePreferenceTypeEnum;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Desiderata\Models\Desideratum;
-use Modules\Desiderata\Models\DesideratumCoursePreference;
+use Modules\Desiderata\Infrastructure\Models\Desideratum;
+use Modules\Desiderata\Infrastructure\Models\DesideratumCoursePreference;
 
 class DesideratumCoursePreferenceFactory extends Factory
 {

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\WeekdayEnum;
 use App\Enums\WeekTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -28,7 +29,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->enum('day', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+            $table->enum('day', WeekdayEnum::values());
             $table->enum('week_type', WeekTypeEnum::values())->default(WeekTypeEnum::ALL);
 
             $table->time('start_time');

@@ -6,7 +6,7 @@ namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWor
 
 use Carbon\Carbon;
 use Livewire\Component;
-use Modules\Consultation\Models\ConsultationSession;
+use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 
 class MySessionConsultationCalendarComponent extends Component
 {

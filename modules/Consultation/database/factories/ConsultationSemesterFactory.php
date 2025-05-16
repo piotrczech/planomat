@@ -10,10 +10,10 @@ use App\Models\Semester;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Consultation\Models\ConsultationSemester;
+use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Consultation\Models\ConsultationSemester>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Consultation\Infrastructure\Models\ConsultationSemester>
  */
 class ConsultationSemesterFactory extends Factory
 {

@@ -5,6 +5,10 @@
         isWeekdaySelected: false,
         selectedWeekday: null,
         consultationDaysPickerInstance: null,
+        showSuccessAlert: false,
+        showErrorAlert: false,
+        errorMessage: '',
+        successMessage: '',
 
         get consultationDaysPickerOptions() {
             return {
@@ -75,6 +79,21 @@
         
         // Inicjalizacja pickera po załadowaniu strony
         $nextTick(() => initializeDatePicker());
+
+        // Nasłuchiwanie eventów
+        $wire.on('consultationSaved', (data) => {
+            showSuccessAlert = true;
+            successMessage = '{{ __('consultation::consultation.Successfully created') }}' + ' ' + data.count + ' {{ __('consultation::consultation.consultation sessions') }}';
+            window.scrollTo(0, 0);
+            setTimeout(() => { showSuccessAlert = false; }, 5000);
+        });
+
+        $wire.on('consultationError', (data) => {
+            showErrorAlert = true;
+            errorMessage = data.message || '{{ __('consultation::consultation.Error while creating consultation') }}';
+            window.scrollTo(0, 0);
+            setTimeout(() => { showErrorAlert = false; }, 5000);
+        });
     "
 >
     <flux:heading
@@ -91,6 +110,35 @@
         </p>
     </flux:text>
 
+    <!-- Komunikaty sukcesu i błędu -->
+    <div x-show="showSuccessAlert" x-transition class="mb-6">
+        <flux:callout 
+            variant="success" 
+            icon="check-circle" 
+        >
+            <flux:callout.heading>{{ __('consultation::consultation.Success') }}</flux:callout.heading>
+            <flux:callout.text x-text="successMessage"></flux:callout.text>
+
+            <x-slot name="controls">
+                <flux:button icon="x-mark" variant="ghost" x-on:click="showSuccessAlert = false" />
+            </x-slot>
+        </flux:callout>
+    </div>
+
+    <div x-show="showErrorAlert" x-transition class="mb-6">
+        <flux:callout 
+            variant="danger" 
+            icon="exclamation-circle" 
+        >
+            <flux:callout.heading>{{ __('consultation::consultation.Error') }}</flux:callout.heading>
+            <flux:callout.text x-text="errorMessage"></flux:callout.text>
+
+            <x-slot name="controls">
+                <flux:button icon="x-mark" variant="ghost" x-on:click="showErrorAlert = false" />
+            </x-slot>
+        </flux:callout>
+    </div>
+
     <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg mb-8">
         <div class="mb-6">
             <flux:label for="consultation-weekday" class="block mb-2 font-medium">
@@ -101,6 +149,7 @@
                 id="consultation-weekday" 
                 class="w-full"
                 aria-labelledby="consultation-weekday-legend"
+                wire:model="consultationWeekday"
             >
                 @foreach(\App\Enums\WeekdayEnum::cases() as $weekday)
                     <option value="{{ $weekday->value }}">
@@ -119,10 +168,13 @@
             <select
                 id="consultation-week-type"
                 class="w-full"
+                wire:model="dailyConsultationWeekType"
             >
-                <option value="every">{{ __('consultation::consultation.Every week') }}</option>
-                <option value="even">{{ __('consultation::consultation.Even weeks') }}</option>
-                <option value="odd">{{ __('consultation::consultation.Odd weeks') }}</option>
+                @foreach(\App\Enums\WeekTypeEnum::cases() as $weekType)
+                    <option value="{{ $weekType->value }}">
+                        {{ $weekType->label() }}
+                    </option>
+                @endforeach
             </select>
         </div>
 
@@ -137,6 +189,7 @@
                     x-ref="datesInput"
                     type="text"
                     class="w-full"
+                    wire:model="weeklyConsultationDates"
                 />
             </div>
         </div>
@@ -157,6 +210,9 @@
                             time_24hr: true,
                             minTime: '7:30',
                             maxTime: '19:30',
+                            onChange: function(selectedDates, dateStr, instance) {
+                                $wire.consultationStartTime = dateStr;
+                            }
                         });"
                         x-ref="input"
                         id="consultation-start-time"
@@ -181,6 +237,9 @@
                             time_24hr: true,
                             minTime: '8:30',
                             maxTime: '20:30',
+                            onChange: function(selectedDates, dateStr, instance) {
+                                $wire.consultationEndTime = dateStr;
+                            }
                         });"
                         x-ref="input"
                         id="consultation-end-time"
@@ -201,6 +260,7 @@
                 class="w-full"
                 :placeholder="__('consultation::consultation.Consultation location description')"
                 aria-labelledby="consultation-location-legend"
+                wire:model="consultationLocation"
             />
         </div>
 
@@ -208,8 +268,16 @@
             <flux:button
                 variant="primary"
                 class="px-6 py-3"
+                wire:click="addConsultation"
+                wire:loading.attr="disabled"
+                wire:target="addConsultation"
             >
-                {{ __('consultation::consultation.Add consultation') }}
+                <span wire:loading.remove wire:target="addConsultation">
+                    {{ __('consultation::consultation.Add consultation') }}
+                </span>
+                <span wire:loading wire:target="addConsultation">
+                    {{ __('consultation::consultation.Adding...') }}
+                </span>
             </flux:button>
         </div>
     </div>

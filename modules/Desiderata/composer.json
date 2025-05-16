@@ -9,7 +9,9 @@
     ],
     "extra": {
         "laravel": {
-            "providers": [],
+            "providers": [
+                "Modules\\Desiderata\\Infrastructure\\Providers\\DesiderataServiceProvider"
+            ],
             "aliases": {
 
             }

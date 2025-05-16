@@ -10,7 +10,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Modules\\Consultation\\Providers\\ConsultationServiceProvider"
+                "Modules\\Consultation\\Infrastructure\\Providers\\ConsultationServiceProvider"
             ],
             "aliases": {
 

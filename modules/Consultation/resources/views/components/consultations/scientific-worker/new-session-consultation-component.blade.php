@@ -27,6 +27,9 @@
                     x-ref="input"
                     x-init="flatpickr($refs.input, {
                         dateFormat: 'Y-m-d',
+                        onChange: function(selectedDates, dateStr, instance) {
+                            $wire.consultationDate = dateStr;
+                        }
                     });"
                     id="consultation-dates"
                     type="text"
@@ -50,7 +53,10 @@
                             dateFormat: 'H:i',
                             time_24hr: true,
                             minTime: '7:30',
-                            maxTime: '19:30'
+                            maxTime: '19:30',
+                            onChange: function(selectedDates, dateStr, instance) {
+                                $wire.consultationStartTime = dateStr;
+                            }
                         });"
                         x-ref="input"
                         id="consultation-start-time"
@@ -74,7 +80,10 @@
                             dateFormat: 'H:i',
                             time_24hr: true,
                             minTime: '8:30',
-                            maxTime: '20:30'
+                            maxTime: '20:30',
+                            onChange: function(selectedDates, dateStr, instance) {
+                                $wire.consultationEndTime = dateStr;
+                            }
                         });"
                         x-ref="input"
                         id="consultation-end-time"
@@ -95,6 +104,7 @@
                 class="w-full"
                 :placeholder="__('consultation::consultation.Consultation location description')"
                 aria-labelledby="consultation-location-legend"
+                wire:model="consultationLocation"
             />
         </div>
 
@@ -102,6 +112,7 @@
             <flux:button
                 variant="primary"
                 class="px-6 py-3 w-full"
+                wire:click="addConsultation"
             >
                 {{ __('consultation::consultation.Add consultation sessions') }}
             </flux:button>
