@@ -10,7 +10,9 @@
             </div>
 
             <x-common.card.base class="flex-2">
-                <livewire:consultation::consultations.scientific-worker.my-semester-consultation-calendar />
+                <livewire:consultation::consultations.scientific-worker.my-semester-consultation-calendar
+                    :consultationSummaryTime="$consultationSummaryTime"
+                />
             </x-common.card.base>
         </div>
     </div>

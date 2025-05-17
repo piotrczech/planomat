@@ -207,4 +207,25 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
         return $latestConsultation?->updated_at?->toDateString();
     }
+
+    public function getConsultationSummaryTime(int $scientificWorkerId): ?string
+    {
+        $consultations = ConsultationSemester::where('scientific_worker_id', $scientificWorkerId)
+            ->get();
+
+        $totalDuration = 0;
+
+        foreach ($consultations as $consultation) {
+            $startTime = Carbon::parse($consultation->start_time);
+            $endTime = Carbon::parse($consultation->end_time);
+
+            $totalDuration += $startTime->diffInMinutes($endTime);
+        }
+
+        if ($totalDuration % 60 === 0) {
+            return sprintf('%d h', floor($totalDuration / 60));
+        }
+
+        return sprintf('%d h %d min', floor($totalDuration / 60), $totalDuration % 60);
+    }
 }

@@ -14,25 +14,16 @@ class MySemesterConsultationCalendarComponent extends Component
 {
     public array $consultationEvents = [];
 
+    public ?string $consultationSummaryTime = null;
+
     public ?string $successMessage = null;
 
     public ?string $errorMessage = null;
 
-    public function mount(): void
-    {
-        $this->loadConsultations();
-    }
-
-    public function loadConsultations(): void
-    {
-        try {
-            $useCase = App::make(GetSemesterConsultationsUseCase::class);
-            $this->consultationEvents = $useCase->execute(1); // ID semestru = 1 (tymczasowo hardcoded)
-        } catch (Exception $e) {
-            $this->errorMessage = __('consultation::consultation.Failed to load consultations: :message', [
-                'message' => $e->getMessage(),
-            ]);
-        }
+    public function mount(
+        GetSemesterConsultationsUseCase $getSemesterConsultationsUseCase,
+    ): void {
+        $this->consultationEvents = $getSemesterConsultationsUseCase->execute();
     }
 
     public function removeConsultation(int $eventId): void

@@ -37,4 +37,6 @@ interface ConsultationRepositoryInterface
     public function getLastSemesterConsultationUpdateDate(int $scientificWorkerId): ?string;
 
     public function getLastSessionConsultationUpdateDate(int $scientificWorkerId): ?string;
+
+    public function getConsultationSummaryTime(int $scientificWorkerId): ?string;
 }

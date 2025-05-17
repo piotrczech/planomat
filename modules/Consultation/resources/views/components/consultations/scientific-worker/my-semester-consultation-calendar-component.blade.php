@@ -2,6 +2,19 @@
     x-data="{ 
         showSuccessAlert: false,
         showErrorAlert: false,
+        showConsultationDetails: false,
+        showNoConsultationMessage: false,
+        selectedConsultation: null,
+        showConfirmDeleteModal: false,
+        consultationToDeleteId: null,
+        truncateText(text, maxLength) {
+            if (!text) return '';
+            if (text == null || typeof text === 'undefined') return '';
+            if (text.length <= maxLength) {
+                return text;
+            }
+            return text.substring(0, maxLength) + '...';
+        }
     }"
     x-init="
         $watch('$wire.successMessage', (value) => {
@@ -32,26 +45,29 @@
         });
     "
 >
-    <flux:heading
-        size="xl"
-        level="2"
-        id="form-heading"
-    >
-        {{ __('consultation::consultation.My semester consultation') }}
-    </flux:heading>
+    <div class="flex justify-between items-center mb-2">
+        <flux:heading
+            size="xl"
+            level="2"
+            class="mb-0"
+            id="form-heading"
+        >
+            {{ __('consultation::consultation.My semester consultation') }}
+        </flux:heading>
+
+        <div class="flex justify-end mb-2 md:mb-0">
+            <flux:badge size="sm" color="indigo" class="text-right">
+                {{ __('consultation::consultation.Total consultation time in your schedule') }}:
+                {{ $consultationSummaryTime }}
+            </flux:badge>
+        </div>
+    </div>
 
     <flux:text class="mb-6">
         <p>
             {{ __('consultation::consultation.My semester consultation description') }}
         </p>
     </flux:text>
-
-    <div class="flex justify-end mb-2">
-        <flux:badge size="sm" color="indigo">
-            {{ __('consultation::consultation.Total consultation time in your schedule') }}:
-            6h 15min
-        </flux:badge>
-    </div>
 
     <!-- Komunikaty sukcesu i błędu -->
     <div x-show="showSuccessAlert" x-transition class="mb-6">
@@ -84,34 +100,50 @@
 
     <!-- Widok mobilny - lista konsultacji -->
     <div class="block md:hidden mb-6">
-        <div class="space-y-4">
+        <div class="space-y-3">
             @foreach ($consultationEvents as $event)
-                <div class="bg-indigo-50 dark:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-700 rounded-lg p-3">
+                <div class="bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-700/50 rounded-lg p-3 shadow-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <div class="font-semibold text-indigo-900 dark:text-white">
-                                {{ \App\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}, {{ $event['startTime'] }} - {{ $event['endTime'] }}
+                        <div class="w-full" @click="selectedConsultation = {{ json_encode($event) }}; showConsultationDetails = true;" style="cursor: pointer;">
+                            <div class="font-semibold text-indigo-800 dark:text-indigo-200 mb-1 flex items-center justify-between">
+                                <span>{{ \App\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
+                                @if (!empty($event['location']))
+                                    <span class="text-sm font-normal text-zinc-600 dark:text-zinc-300 truncate ml-2 max-w-[60%]" title="{{ $event['location'] }}">
+                                        {{ $event['location'] }}
+                                    </span>
+                                @endif
                             </div>
-                            @if (!empty($event['location']))
-                                <div class="text-sm text-indigo-800 dark:text-zinc-300 mt-1">
-                                    {{ $event['location'] }}
-                                </div>
-                            @endif
+                            <div class="flex items-center mb-1">
+                                <flux:icon name="clock" class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" />
+                                <span class="font-medium text-zinc-800 dark:text-zinc-100">{{ $event['startTime'] }} - {{ $event['endTime'] }}</span>
+                            </div>
+
                             @if (isset($event['weekType']) && $event['weekType'] !== 'every')
-                                <div class="text-sm font-medium text-indigo-700 dark:text-zinc-300 mt-1">
-                                    {{ $event['weekType'] === 'even' ? __('consultation::consultation.Even weeks') : __('consultation::consultation.Odd weeks') }}
+                                <div class="flex items-center text-xs text-indigo-600 dark:text-indigo-400 mb-1">
+                                    <flux:icon name="calendar-days" class="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400 mr-1.5" />
+                                    <span>{{ $event['weekType'] === 'even' ? __('consultation::consultation.Even weeks') : __('consultation::consultation.Odd weeks') }}</span>
                                 </div>
                             @endif
+
+                            <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+                                <flux:icon name="pencil-square" class="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400 mr-1.5" />
+                                <span>{{ __('consultation::consultation.Created') }}: 
+                                    @if(isset($event['created_at']))
+                                        {{ \Carbon\Carbon::parse($event['created_at'])->translatedFormat('d M Y, H:i') }}
+                                    @else
+                                        {{ __('consultation::consultation.N/A') }}
+                                    @endif
+                                </span>
+                            </div>
                         </div>
-                        <button 
-                            wire:click="removeConsultation({{ $event['id'] }})" 
-                            class="text-indigo-700 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 flex-shrink-0 p-1"
-                            title="{{ __('consultation::consultation.Remove') }}"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                        <flux:button
+                            @click="consultationToDeleteId = {{ $event['id'] }}; showConfirmDeleteModal = true;"
+                            variant="ghost"
+                            size="xs" 
+                            icon="trash"
+                            class="text-zinc-600 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 ml-2 flex-shrink-0"
+                            sr-text="{{ __('consultation::consultation.Remove') }}"
+                        />
                     </div>
                 </div>
             @endforeach
@@ -167,67 +199,188 @@
                                 };
                             @endphp
                             
-                            <!-- Etykiety godzin i linie poziome -->
+                            <!-- Hours labels and horizontal lines -->
                             @foreach ($timeLabels as $row => $time)
-                                <div class="border-r border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 flex items-center justify-center text-sm text-zinc-600 dark:text-zinc-400 font-medium" style="grid-row: {{ $row }} / span 4; grid-column: 1;">
+                                <div class="p-1 border-r border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 flex items-center justify-center text-sm text-zinc-600 dark:text-zinc-400 font-medium" style="grid-row: {{ $row }} / span 4; grid-column: 1;">
                                     {{ $time }}
                                 </div>
                             @endforeach
                             
-                            <!-- Komórki pustej siatki i linie pionowe -->
+                            <!-- Empty grid cells and vertical lines -->
                             @for ($row = 1; $row <= 56; $row++)
                                 @for ($col = 2; $col <= 8; $col++)
                                     <div class="border-r border-b border-zinc-100 dark:border-zinc-800" style="grid-row: {{ $row }}; grid-column: {{ $col }};"></div>
                                 @endfor
                             @endfor
                             
-                            <!-- Bloki konsultacji -->
+                            <!-- Consultation blocks -->
                             @foreach ($consultationEvents as $event)
                                 @php
                                     $startRow = (int)$timeToRowIndex($event['startTime']);
                                     $endRow = (int)$timeToRowIndex($event['endTime']);
                                     $rowSpan = $endRow - $startRow;
                                     
-                                    // Jeśli blok jest zbyt mały, ustaw minimalną wysokość
+                                    // If the block is too small, set the minimum height
                                     if ($rowSpan < 1) $rowSpan = 1;
                                     
-                                    // Kolumna odpowiadająca dniu tygodnia (+2 bo pierwsza kolumna to godziny, a indeks zaczyna się od 0)
+                                    // Column for the weekday (+2 because the first column is the hours, and the index starts at 0)
                                     $column = $event['weekday'] + 2;
                                 @endphp
                                 
-                                <div class="bg-indigo-100 dark:bg-indigo-900/80 border border-indigo-300 dark:border-indigo-700 rounded-md m-1 p-1 flex flex-col justify-between overflow-hidden" 
-                                     style="grid-row: {{ $startRow }} / span {{ $rowSpan }}; grid-column: {{ $column }};">
+                                <div
+                                    class="bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-700/60 rounded-md m-1 p-1 flex flex-col justify-between overflow-hidden relative group hover:bg-indigo-200 dark:hover:bg-indigo-800/80 transition-colors cursor-pointer" 
+                                    style="grid-row: {{ $startRow }} / span {{ $rowSpan }}; grid-column: {{ $column }};"
+                                    @click="selectedConsultation = {{ json_encode($event) }}; showConsultationDetails = true;"
+                                >
                                     
-                                    <div class="flex justify-between items-start">
-                                        <div class="text-sm font-medium text-indigo-900 dark:text-white whitespace-nowrap">
-                                            {{ $event['startTime'] }} - {{ $event['endTime'] }}
-                                        </div>
-                                        <button 
-                                            wire:click="removeConsultation({{ $event['id'] }})" 
-                                            class="text-indigo-700 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 flex-shrink-0"
-                                            title="{{ __('consultation::consultation.Remove') }}"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
+                                    <div class="text-sm font-medium text-indigo-900 dark:text-white whitespace-nowrap mb-0.5 flex items-center">
+                                        {{ $event['startTime'] }} - {{ $event['endTime'] }}
                                     </div>
-                                    
-                                    @if (!empty($event['location']))
-                                        <div class="text-sm text-indigo-800 dark:text-zinc-300 truncate">
-                                            {{ $event['location'] }}
-                                        </div>
-                                    @endif
-                                    
-                                    @if (isset($event['weekType']) && $event['weekType'] !== 'every')
-                                        <div class="text-sm font-medium text-indigo-700 dark:text-zinc-300">
-                                            {{ $event['weekType'] === 'even' ? __('consultation::consultation.Even weeks') : __('consultation::consultation.Odd weeks') }}
-                                        </div>
-                                    @endif
                                 </div>
                             @endforeach
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Consultation details popup -->
+    <div 
+        x-show="showConsultationDetails" 
+        x-cloak
+        class="fixed inset-0 z-50 overflow-y-auto"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+    >
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div 
+                class="fixed inset-0 bg-black opacity-30"
+                @click="showConsultationDetails = false"
+            ></div>
+            
+            <div class="relative bg-white dark:bg-zinc-800 rounded-lg shadow-xl mx-auto max-w-lg w-full p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <flux:heading
+                        size="lg"
+                        level="3"
+                        class="dark:text-zinc-100"
+                    >
+                        {{ __('consultation::consultation.Consultation details') }}
+                    </flux:heading>
+                    <flux:button
+                        @click="showConsultationDetails = false"
+                        variant="ghost"
+                        size="sm"
+                        icon="x-mark"
+                        sr-text="{{ __('consultation::consultation.Close') }}"
+                    />
+                </div>
+                
+                <div class="space-y-3" x-show="selectedConsultation">
+                    <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 dark:bg-zinc-850">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center">
+                                    <flux:icon 
+                                        name="clock" 
+                                        class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                    />
+                                    <span class="font-medium text-zinc-800 dark:text-zinc-100">
+                                        <span x-text="selectedConsultation?.startTime"></span> - <span x-text="selectedConsultation?.endTime"></span>
+                                    </span>
+                                </div>
+                                
+                                <div class="flex items-center mt-1" x-show="selectedConsultation?.location">
+                                    <flux:icon 
+                                        name="map-pin" 
+                                        class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                    />
+                                    <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="selectedConsultation?.location"></span>
+                                </div>
+                                
+                                <div class="flex items-center mt-1" x-show="selectedConsultation?.weekType && selectedConsultation?.weekType !== 'every'">
+                                    <flux:icon 
+                                        name="calendar-days" 
+                                        class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                    />
+                                    <span class="text-sm text-zinc-600 dark:text-zinc-300" 
+                                          x-text="selectedConsultation?.weekType === 'even' ? '{{ __('consultation::consultation.Even weeks') }}' : '{{ __('consultation::consultation.Odd weeks') }}'">
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <flux:button
+                                @click="consultationToDeleteId = selectedConsultation?.id; showConsultationDetails = false; showConfirmDeleteModal = true"
+                                variant="ghost"
+                                size="xs"
+                                icon="trash"
+                                sr-text="{{ __('consultation::consultation.Remove') }}"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div 
+        x-show="showConfirmDeleteModal" 
+        x-cloak
+        class="fixed inset-0 z-50 overflow-y-auto"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+    >
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div 
+                class="fixed inset-0 bg-black opacity-30"
+                @click="showConfirmDeleteModal = false"
+            ></div>
+            
+            <div class="relative bg-white dark:bg-zinc-800 rounded-lg shadow-xl mx-auto max-w-md w-full p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <flux:heading
+                        size="lg"
+                        level="3"
+                        class="dark:text-zinc-100"
+                    >
+                        {{ __('consultation::consultation.Confirm Deletion') }}
+                    </flux:heading>
+                    <flux:button
+                        @click="showConfirmDeleteModal = false"
+                        variant="ghost"
+                        size="sm"
+                        icon="x-mark"
+                        sr-text="{{ __('consultation::consultation.Close') }}"
+                    />
+                </div>
+                
+                <p class="text-zinc-700 dark:text-zinc-300 mb-4">
+                    {{ __('consultation::consultation.Are you sure you want to delete this consultation?') }}
+                </p>
+                
+                <div class="flex justify-end space-x-3">
+                    <flux:button
+                        @click="showConfirmDeleteModal = false"
+                        variant="outline"
+                        size="sm"
+                        label="{{ __('consultation::consultation.Cancel') }}"
+                    />
+                    <flux:button
+                        @click="$wire.removeConsultation(consultationToDeleteId); showConfirmDeleteModal = false"
+                        variant="danger"
+                        size="sm"
+                        label="{{ __('consultation::consultation.Yes, delete') }}"
+                    />
                 </div>
             </div>
         </div>

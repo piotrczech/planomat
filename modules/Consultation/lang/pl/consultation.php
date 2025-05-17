@@ -126,4 +126,11 @@ return [
     'Delete consultation' => 'Usuń konsultację',
     'Are you sure you want to delete this consultation?' => 'Czy na pewno chcesz usunąć tę konsultację?',
     'Never' => 'Nigdy',
+
+    'Consultation details' => 'Szczegóły konsultacji',
+    'Consultation date' => 'Data konsultacji',
+    'Consultation start time' => 'Godzina rozpoczęcia',
+    'Consultation end time' => 'Godzina zakończenia',
+    'Consultation location' => 'Miejsce',
+    'Consultation location description' => 'np. C-19, A2.12',
 ];
