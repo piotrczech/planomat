@@ -8,8 +8,10 @@ use Livewire\Component;
 use App\Enums\WeekdayEnum;
 use App\Enums\WeekTypeEnum;
 use Illuminate\Support\Facades\App;
+use Illuminate\Validation\ValidationException;
 use Modules\Consultation\Application\UseCases\ScientificWorker\CreateNewSemesterConsultationUseCase;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
+use Exception;
 
 class NewSemesterConsultationComponent extends Component
 {
@@ -27,6 +29,8 @@ class NewSemesterConsultationComponent extends Component
 
     public bool $isAddingConsultation = false;
 
+    public string $successMessage = '';
+
     public function mount(): void
     {
         $this->resetForm();
@@ -41,25 +45,40 @@ class NewSemesterConsultationComponent extends Component
     {
         $this->isAddingConsultation = true;
 
-        $dto = CreateNewSemesterConsultationDto::from([
-            'consultationWeekday' => $this->consultationWeekday,
-            'dailyConsultationWeekType' => $this->dailyConsultationWeekType,
-            'weeklyConsultationDates' => $this->weeklyConsultationDates,
-            'consultationStartTime' => $this->consultationStartTime,
-            'consultationEndTime' => $this->consultationEndTime,
-            'consultationLocation' => $this->consultationLocation,
-        ]);
+        try {
+            // Używamy metody validateAndCreate z DTO do walidacji i utworzenia obiektu
+            $data = [
+                'consultationWeekday' => $this->consultationWeekday,
+                'dailyConsultationWeekType' => $this->dailyConsultationWeekType,
+                'weeklyConsultationDates' => $this->weeklyConsultationDates,
+                'consultationStartTime' => $this->consultationStartTime,
+                'consultationEndTime' => $this->consultationEndTime,
+                'consultationLocation' => $this->consultationLocation,
+            ];
 
-        $useCase = App::make(CreateNewSemesterConsultationUseCase::class);
-        $createdCount = $useCase->execute($dto);
+            $dto = CreateNewSemesterConsultationDto::validateAndCreate($data);
 
-        // Resetujemy formularz
-        $this->resetForm();
+            $useCase = App::make(CreateNewSemesterConsultationUseCase::class);
+            $createdCount = $useCase->execute($dto);
 
-        // Wysyłamy event o powodzeniu
-        $this->dispatch('consultationSaved', [
-            'count' => $createdCount,
-        ]);
+            // Resetujemy formularz
+            $this->resetForm();
+
+            // Wysyłamy event o powodzeniu
+            $this->dispatch('consultationSaved', [
+                'count' => $createdCount,
+            ]);
+        } catch (ValidationException $e) {
+            $this->isAddingConsultation = false;
+
+            // Przesyłamy błędy walidacji do formularza
+            $this->setErrorBag($e->validator->getMessageBag());
+        } catch (Exception $e) {
+            $this->isAddingConsultation = false;
+
+            // Dla innych błędów dodajemy ogólny komunikat walidacji
+            $this->addError('consultationWeekday', $e->getMessage());
+        }
     }
 
     private function resetForm(): void
@@ -71,5 +90,7 @@ class NewSemesterConsultationComponent extends Component
         $this->consultationEndTime = '';
         $this->consultationLocation = '';
         $this->isAddingConsultation = false;
+        $this->resetErrorBag();
+        $this->successMessage = '';
     }
 }

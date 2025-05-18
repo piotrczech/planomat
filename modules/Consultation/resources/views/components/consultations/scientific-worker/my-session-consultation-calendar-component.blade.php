@@ -1,4 +1,39 @@
-<div>
+<div
+    x-data="{ 
+        showSuccessAlert: false,
+        showErrorAlert: false,
+        successMessage: null,
+        errorMessage: null,
+        showConsultationDetails: false, 
+        showNoConsultationMessage: false,
+        selectedDay: null,
+        noConsultationDate: null,
+        consultationsForDay: []
+    }"
+    x-init="
+        $watch('$wire.successMessage', (value) => {
+            if (value) {
+                showSuccessAlert = true;
+                successMessage = value;
+                setTimeout(() => { 
+                    showSuccessAlert = false;
+                    $wire.successMessage = null;
+                }, 5000);
+            }
+        });
+        
+        $watch('$wire.errorMessage', (value) => {
+            if (value) {
+                showErrorAlert = true;
+                errorMessage = value;
+                setTimeout(() => { 
+                    showErrorAlert = false;
+                    $wire.errorMessage = null;
+                }, 5000);
+            }
+        });
+    "
+>
     <flux:heading
         size="xl"
         level="2"
@@ -12,6 +47,36 @@
             {{ __('consultation::consultation.My semester consultation description') }}
         </p>
     </flux:text>
+
+    <!-- Komunikat sukcesu -->
+    <div x-show="showSuccessAlert" x-transition class="mb-6">
+        <flux:callout 
+            variant="success" 
+            icon="check-circle" 
+        >
+            <flux:callout.heading>{{ __('consultation::consultation.Success') }}</flux:callout.heading>
+            <flux:callout.text x-text="successMessage"></flux:callout.text>
+
+            <x-slot name="controls">
+                <flux:button icon="x-mark" variant="ghost" x-on:click="showSuccessAlert = false" />
+            </x-slot>
+        </flux:callout>
+    </div>
+
+    <!-- Ogólny komunikat o błędach -->
+    <div x-show="showErrorAlert" x-transition class="mb-6">
+        <flux:callout 
+            variant="danger" 
+            icon="exclamation-triangle" 
+        >
+            <flux:callout.heading>{{ __('consultation::consultation.Error') }}</flux:callout.heading>
+            <flux:callout.text x-text="errorMessage"></flux:callout.text>
+
+            <x-slot name="controls">
+                <flux:button icon="x-mark" variant="ghost" x-on:click="showErrorAlert = false" />
+            </x-slot>
+        </flux:callout>
+    </div>
 
     <!-- Widok kalendarza sesji egzaminacyjnej -->
     <div class="dark:bg-zinc-900 rounded-lg" 
@@ -188,7 +253,16 @@
                                     </div>
                                     
                                     <flux:button
-                                        @click="$wire.removeConsultation(consultation.id); showConsultationDetails = false"
+                                        @click="$wire.removeConsultation(consultation.id).then(() => { 
+                                            showConsultationDetails = false;
+                                            showSuccessAlert = true;
+                                            successMessage = '{{ __('consultation::consultation.Consultation successfully deleted') }}';
+                                            setTimeout(() => { showSuccessAlert = false }, 5000);
+                                        }).catch(error => {
+                                            showErrorAlert = true;
+                                            errorMessage = error.message || '{{ __('consultation::consultation.Failed to delete consultation') }}';
+                                            setTimeout(() => { showErrorAlert = false }, 5000);
+                                        })"
                                         variant="ghost"
                                         size="xs"
                                         icon="trash"

@@ -104,3 +104,8 @@ select:focus[data-flux-control] {
 .ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
     @apply !border-gray-200 dark:!border-gray-600 border-l;
 }
+
+.flatpickr-error input,
+.flatpickr-error .flatpickr-input {
+    @apply !border-red-500 dark:!border-red-400;
+}

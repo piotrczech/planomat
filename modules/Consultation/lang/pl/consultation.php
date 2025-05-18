@@ -117,6 +117,7 @@ return [
     'Error while creating consultation' => 'Błąd podczas tworzenia konsultacji',
     'Failed to create consultation: :message' => 'Nie udało się utworzyć konsultacji: :message',
     'Successfully created :count consultation sessions' => 'Pomyślnie utworzono :count sesji konsultacji',
+    'Successfully created consultation session' => 'Pomyślnie utworzono konsultację sesyjną',
     'Adding...' => 'Dodawanie...',
     'No active semester found' => 'Nie znaleziono aktywnego semestru',
     'Failed to load consultations: :message' => 'Nie udało się załadować konsultacji: :message',
@@ -133,4 +134,40 @@ return [
     'Consultation end time' => 'Godzina zakończenia',
     'Consultation location' => 'Miejsce',
     'Consultation location description' => 'np. C-19, A2.12',
+
+    // Nowe tłumaczenia dla komunikatów walidacji
+    'Validation errors' => 'Błędy walidacji',
+    'Please correct the errors in the form' => 'Proszę poprawić błędy w formularzu',
+    'The consultation start time must be between 7:30 and 19:30' => 'Czas rozpoczęcia konsultacji musi być pomiędzy 7:30 a 19:30',
+    'The consultation end time must be between 8:30 and 20:30' => 'Czas zakończenia konsultacji musi być pomiędzy 8:30 a 20:30',
+    'The consultation must be at least 60 minutes long' => 'Konsultacja musi trwać co najmniej 60 minut',
+    'The consultation cannot be longer than 180 minutes' => 'Konsultacja nie może trwać dłużej niż 180 minut',
+
+    // Tłumaczenia dla komunikatów z metody messages() w DTO
+    'Weekday is required' => 'Wybór dnia tygodnia jest wymagany',
+    'Invalid weekday selected' => 'Wybrano nieprawidłowy dzień tygodnia',
+    'Week type is required for weekday consultations' => 'Typ tygodnia jest wymagany dla konsultacji w dni robocze',
+    'Invalid week type selected' => 'Wybrano nieprawidłowy typ tygodnia',
+    'Consultation dates are required for weekend consultations' => 'Daty konsultacji są wymagane dla konsultacji weekendowych',
+    'Invalid date format. Use format: DD.MM' => 'Nieprawidłowy format daty. Użyj formatu: DD.MM',
+    'Start time is required' => 'Godzina rozpoczęcia jest wymagana',
+    'Invalid time format. Use format: HH:MM' => 'Nieprawidłowy format czasu. Użyj formatu: GG:MM',
+    'End time is required' => 'Godzina zakończenia jest wymagana',
+    'Location is required' => 'Miejsce konsultacji jest wymagane',
+    'Location must be at least 2 characters long' => 'Miejsce konsultacji musi zawierać co najmniej 2 znaki',
+
+    // Komunikaty dla elementów interfejsu
+    'Close' => 'Zamknij',
+    'Yes, delete' => 'Tak, usuń',
+    'Confirm Deletion' => 'Potwierdź usunięcie',
+    'Created' => 'Utworzono',
+    'N/A' => 'Brak danych',
+    'Remove' => 'Usuń',
+
+    // Nowe tłumaczenia dla walidacji konsultacji sesyjnych
+    'Consultation date is required' => 'Data konsultacji jest wymagana',
+    'Invalid date format' => 'Nieprawidłowy format daty',
+    'Date must be between session dates' => 'Data musi zawierać się w okresie sesji',
+    'Please correct the errors in the form' => 'Proszę poprawić błędy w formularzu',
+    'Validation errors' => 'Błędy walidacji',
 ];

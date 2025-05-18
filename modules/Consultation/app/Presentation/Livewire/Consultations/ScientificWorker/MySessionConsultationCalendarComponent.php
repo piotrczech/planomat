@@ -7,6 +7,7 @@ namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWor
 use Carbon\Carbon;
 use Livewire\Component;
 use Modules\Consultation\Infrastructure\Models\ConsultationSession;
+use Exception;
 
 class MySessionConsultationCalendarComponent extends Component
 {
@@ -36,6 +37,10 @@ class MySessionConsultationCalendarComponent extends Component
     public Carbon $sessionEnd;
 
     public array $availableMonths = [];
+
+    public ?string $successMessage = null;
+
+    public ?string $errorMessage = null;
 
     public function mount(): void
     {
@@ -197,13 +202,19 @@ class MySessionConsultationCalendarComponent extends Component
 
     public function removeConsultation(int $eventId): void
     {
-        // W rzeczywistej aplikacji usunęlibyśmy obiekt z bazy danych
-        // ConsultationSession::find($eventId)->delete();
+        try {
+            // W rzeczywistej aplikacji usunęlibyśmy obiekt z bazy danych
+            // ConsultationSession::find($eventId)->delete();
 
-        $this->consultationEvents = array_filter(
-            $this->consultationEvents,
-            fn ($event) => $event['id'] !== $eventId,
-        );
+            $this->consultationEvents = array_filter(
+                $this->consultationEvents,
+                fn ($event) => $event['id'] !== $eventId,
+            );
+
+            $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
+        } catch (Exception $e) {
+            $this->errorMessage = __('consultation::consultation.Failed to delete consultation');
+        }
 
         // Aktualizacja dni kalendarza
         $this->generateCalendarDays();
