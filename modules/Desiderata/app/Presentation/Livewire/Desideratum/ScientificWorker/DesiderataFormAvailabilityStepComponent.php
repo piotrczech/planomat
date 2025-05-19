@@ -7,9 +7,11 @@ namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 use App\Enums\WeekdayEnum;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
+use Modules\Desiderata\Domain\Dto\DesiderataFormAvailabilityDto;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Spatie\LivewireWizard\Components\StepComponent;
+use Exception;
 
 class DesiderataFormAvailabilityStepComponent extends StepComponent
 {
@@ -20,6 +22,8 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
     public int $maxUnavailableSlots = 5;
 
     public string $additionalNotes = '';
+
+    public $errorMessage = null;
 
     public function mount(DesideratumRepositoryInterface $repository): void
     {
@@ -106,28 +110,45 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
 
     public function saveDesideratum(UpdateOrCreateDesideratumUseCase $useCase): void
     {
-        $preferencesState = $this->state()->forStepClass(DesiderataFormPreferencesStepComponent::class);
-        $availabilityState = $this->state()->forStepClass(DesiderataFormAvailabilityStepComponent::class);
+        try {
+            // Walidacja danych z bieżącego kroku
+            $this->validate(DesiderataFormAvailabilityDto::rules(), DesiderataFormAvailabilityDto::messages());
 
-        $unavailableTimeSlots = array_map(
-            fn (array $dayTimeSlots) => array_column(
-                array_filter(
-                    $dayTimeSlots,
-                    fn (array $slot) => $slot['selected'] ?? false,
+            $preferencesState = $this->state()->forStepClass(DesiderataFormPreferencesStepComponent::class);
+            $availabilityState = $this->state()->forStepClass(DesiderataFormAvailabilityStepComponent::class);
+
+            $unavailableTimeSlots = array_map(
+                fn (array $dayTimeSlots) => array_column(
+                    array_filter(
+                        $dayTimeSlots,
+                        fn (array $slot) => $slot['selected'] ?? false,
+                    ),
+                    'id',
                 ),
-                'id',
-            ),
-            $availabilityState['unavailableTimeSlots'],
-        );
+                $availabilityState['unavailableTimeSlots'],
+            );
 
-        $desideratumDto = UpdateOrCreateDesideratumDto::from([
-            ...$preferencesState,
-            'unavailableTimeSlots' => $unavailableTimeSlots,
-            'additionalNotes' => $availabilityState['additionalNotes'],
-        ]);
+            $desideratumDto = UpdateOrCreateDesideratumDto::from([
+                ...$preferencesState,
+                'unavailableTimeSlots' => $unavailableTimeSlots,
+                'additionalNotes' => $availabilityState['additionalNotes'],
+            ]);
 
-        $useCase->execute($desideratumDto);
-        $this->dispatch('desideratumSaved');
-        $this->previousStep();
+            $useCase->execute($desideratumDto);
+            $this->dispatch('desideratumSaved');
+            $this->previousStep();
+        } catch (Exception $e) {
+            $this->errorMessage = $e->getMessage();
+        }
+    }
+
+    protected function rules(): array
+    {
+        return DesiderataFormAvailabilityDto::rules();
+    }
+
+    protected function messages(): array
+    {
+        return DesiderataFormAvailabilityDto::messages();
     }
 }

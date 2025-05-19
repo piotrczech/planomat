@@ -5,39 +5,20 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Domain\Dto;
 
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Optional;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
 
-class UpdateOrCreateDesideratumDto extends Data
+final class DesiderataFormPreferencesDto extends Data
 {
     public function __construct(
-        #[Required, BooleanType]
-        public readonly bool|null|Optional $wantStationary,
-        #[Required, BooleanType]
-        public readonly bool|null|Optional $wantNonStationary,
-        #[Required, BooleanType]
-        public readonly bool|null|Optional $agreeToOvertime,
-        #[ArrayType]
-        public readonly array|null|Optional $unwantedCourseIds,
-        #[ArrayType]
-        public readonly array|null|Optional $wantedCourseIds,
-        #[ArrayType]
-        public readonly array|null|Optional $proficientCourseIds,
-        #[Required, Min(0), Max(20)]
-        public readonly int|null|Optional $masterThesesCount,
-        #[Required, Min(0), Max(20)]
-        public readonly int|null|Optional $bachelorThesesCount,
-        #[Required, Min(1), Max(12)]
-        public readonly int|null|Optional $maxHoursPerDay,
-        #[Required, Min(1), Max(8)]
-        public readonly int|null|Optional $maxConsecutiveHours,
-        #[ArrayType]
-        public readonly array|null|Optional $unavailableTimeSlots,
-        public readonly string|null|Optional $additionalNotes,
+        public bool $wantStationary,
+        public bool $wantNonStationary,
+        public bool $agreeToOvertime,
+        public array $proficientCourseIds,
+        public array $wantedCourseIds,
+        public array $unwantedCourseIds,
+        public int $masterThesesCount,
+        public int $bachelorThesesCount,
+        public int $maxHoursPerDay,
+        public int $maxConsecutiveHours,
     ) {
     }
 
@@ -54,8 +35,6 @@ class UpdateOrCreateDesideratumDto extends Data
             'bachelorThesesCount' => ['required', 'integer', 'min:0', 'max:20'],
             'maxHoursPerDay' => ['required', 'integer', 'min:1', 'max:12'],
             'maxConsecutiveHours' => ['required', 'integer', 'min:1', 'max:8'],
-            'unavailableTimeSlots' => ['nullable', 'array'],
-            'additionalNotes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -85,7 +64,6 @@ class UpdateOrCreateDesideratumDto extends Data
             'maxConsecutiveHours.integer' => __('desiderata::desiderata.The maximum consecutive hours must be a number'),
             'maxConsecutiveHours.min' => __('desiderata::desiderata.The maximum consecutive hours must be at least 1'),
             'maxConsecutiveHours.max' => __('desiderata::desiderata.The maximum consecutive hours cannot exceed 8'),
-            'additionalNotes.max' => __('desiderata::desiderata.Additional notes cannot exceed 1000 characters'),
         ];
     }
 }

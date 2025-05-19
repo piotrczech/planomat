@@ -7,6 +7,36 @@
         <hr>
     </div>
     
+    <!-- Ogólny komunikat o błędach walidacji -->
+    @if ($errors->any())
+        <div class="mb-6">
+            <flux:callout
+                variant="danger"
+                icon="exclamation-triangle"
+            >
+                <flux:callout.heading>{{ __('desiderata::desiderata.Validation errors') }}</flux:callout.heading>
+                <flux:callout.text>
+                    {{ __('desiderata::desiderata.Please correct the errors in the form') }}
+                </flux:callout.text>
+            </flux:callout>
+        </div>
+    @endif
+
+    <!-- Komunikat o błędzie ogólnym -->
+    @if ($errorMessage)
+        <div class="mb-6">
+            <flux:callout
+                variant="danger"
+                icon="exclamation-triangle"
+            >
+                <flux:callout.heading>{{ __('desiderata::desiderata.Error') }}</flux:callout.heading>
+                <flux:callout.text>
+                    {{ $errorMessage }}
+                </flux:callout.text>
+            </flux:callout>
+        </div>
+    @endif
+    
     <!-- Informacja o wybranych slotach -->
     <div class="mb-6 flex justify-between items-center">
         <flux:text color="red">
@@ -72,6 +102,12 @@
                 </tbody>
             </table>
         </div>
+
+        @error('unavailableTimeSlots') 
+            <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                {{ $message }}
+            </flux:text>
+        @enderror
     </div>
 
     <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg mb-8">
@@ -87,10 +123,16 @@
             id="additional-info"
             name="additional-info"
             rows="4"
-            class="w-full"
+            class="w-full {{ $errors->has('additionalNotes') ? 'border-red-500 dark:border-red-400' : '' }}"
             aria-labelledby="additional-info-legend"
             wire:model="additionalNotes"
         />
+        
+        @error('additionalNotes') 
+            <flux:text class="text-red-500 dark:text-red-400 text-sm mt-2">
+                {{ $message }}
+            </flux:text>
+        @enderror
     </div>
 
     <div class="flex justify-between items-center">
@@ -108,6 +150,7 @@
             variant="primary"
             class="px-6 py-3"
             wire:loading.attr="disabled"
+            wire:target="saveDesideratum"
         >
             <span wire:loading.remove wire:target="saveDesideratum">
                 {{ __('desiderata::desiderata.Save preferences') }}

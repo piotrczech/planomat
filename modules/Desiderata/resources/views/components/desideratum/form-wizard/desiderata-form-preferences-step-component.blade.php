@@ -50,6 +50,21 @@
         </p>
     </flux:text>
 
+    <!-- Ogólny komunikat o błędach walidacji -->
+    @if ($errors->any())
+        <div class="mb-6">
+            <flux:callout
+                variant="danger"
+                icon="exclamation-triangle"
+            >
+                <flux:callout.heading>{{ __('desiderata::desiderata.Validation errors') }}</flux:callout.heading>
+                <flux:callout.text>
+                    {{ __('desiderata::desiderata.Please correct the errors in the form') }}
+                </flux:callout.text>
+            </flux:callout>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg">
             <flux:legend class="mb-4 text-lg font-semibold" id="teaching-mode-legend">
@@ -63,12 +78,23 @@
                     aria-labelledby="teaching-mode-legend"
                     wire:model="wantStationary"
                 />
+                @error('wantStationary') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
+                
                 <flux:switch
                     :label="__('desiderata::desiderata.Non-stationary studies')"
                     align="left"
                     aria-labelledby="teaching-mode-legend"
                     wire:model="wantNonStationary"
                 />
+                @error('wantNonStationary') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
             </div>
         </div>
         <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg">
@@ -82,6 +108,11 @@
                 aria-labelledby="overtime-legend"
                 wire:model="agreeToOvertime"
             />
+            @error('agreeToOvertime') 
+                <flux:text class="text-red-500 dark:text-red-400 text-sm mt-2">
+                    {{ $message }}
+                </flux:text>
+            @enderror
         </div>
     </div>
 
@@ -114,6 +145,12 @@
                     </option>
                 </select>
             </div>
+
+            @error('proficientCourseIds') 
+                <flux:text class="text-red-500 dark:text-red-400 text-sm mt-2">
+                    {{ $message }}
+                </flux:text>
+            @enderror
         </div>
 
         <flux:description class="mb-6">
@@ -142,6 +179,12 @@
                         </option>
                     </select>
                 </div>
+                
+                @error('wantedCourseIds') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm mt-2">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
             </div>
             <div>
                 <flux:label for="dont-want-to-teach" class="block mb-2 font-medium">
@@ -165,6 +208,12 @@
                         </option>
                     </select>
                 </div>
+
+                @error('unwantedCourseIds') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm mt-2">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
 
                 <div
                     x-show="showUnwantedCourseBadge"
@@ -194,20 +243,30 @@
                     min="0"
                     id="master-theses-count"
                     :label="__('desiderata::desiderata.Number of master theses')" 
-                    class="w-full"
+                    class="w-full {{ $errors->has('masterThesesCount') ? 'border-red-500 dark:border-red-400' : '' }}"
                     aria-labelledby="thesis-supervision-legend"
                     wire:model="masterThesesCount"
                 />
+                @error('masterThesesCount') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
 
                 <flux:input 
                     type="number" 
                     min="0"
                     id="bachelor-theses-count"
                     :label="__('desiderata::desiderata.Number of bachelor theses')" 
-                    class="w-full"
+                    class="w-full {{ $errors->has('bachelorThesesCount') ? 'border-red-500 dark:border-red-400' : '' }}"
                     aria-labelledby="thesis-supervision-legend"
                     wire:model="bachelorThesesCount"
                 />
+                @error('bachelorThesesCount') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
             </div>
         </div>
         
@@ -222,20 +281,30 @@
                     min="1"
                     id="max-hours-day"
                     :label="__('desiderata::desiderata.Maximum hours per day')" 
-                    class="w-full"
+                    class="w-full {{ $errors->has('maxHoursPerDay') ? 'border-red-500 dark:border-red-400' : '' }}"
                     aria-labelledby="working-hours-legend"
                     wire:model="maxHoursPerDay"
                 />
+                @error('maxHoursPerDay') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
 
                 <flux:input 
                     type="number" 
                     min="1"
                     id="max-consecutive-hours"
                     :label="__('desiderata::desiderata.Maximum consecutive hours')" 
-                    class="w-full"
+                    class="w-full {{ $errors->has('maxConsecutiveHours') ? 'border-red-500 dark:border-red-400' : '' }}"
                     aria-labelledby="working-hours-legend"
                     wire:model="maxConsecutiveHours"
                 />
+                @error('maxConsecutiveHours') 
+                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
+                        {{ $message }}
+                    </flux:text>
+                @enderror
             </div>
         </div>
     </div>
@@ -245,9 +314,17 @@
             wire:click="nextStep" 
             variant="primary"
             class="px-6 py-3"
+            wire:loading.attr="disabled"
+            wire:target="nextStep"
         >
-            {{ __('desiderata::desiderata.Next step') }}
-            <flux:icon.arrow-right class="inline-flex h-4 w-4 ml-2" aria-hidden="true" />
+            <span wire:loading.remove wire:target="nextStep">
+                {{ __('desiderata::desiderata.Next step') }}
+                <flux:icon.arrow-right class="inline-flex h-4 w-4 ml-2" aria-hidden="true" />
+            </span>
+            <span wire:loading wire:target="nextStep">
+                {{ __('desiderata::desiderata.Validating...') }}
+                <flux:icon name="arrow-path" class="w-4 h-4 ml-2 animate-spin" aria-hidden="true" />
+            </span>
         </flux:button>
     </div>
 </div>
