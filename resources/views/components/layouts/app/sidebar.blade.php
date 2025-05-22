@@ -14,6 +14,39 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('app.Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('app.Dashboard') }}</flux:navlist.item>
+                    
+                    {{-- Application Settings --}}
+                    <flux:navlist.item 
+                        icon="cog-8-tooth" 
+                        :href="route('admin.settings.index')" 
+                        :current="request()->routeIs('admin.settings.index') || request()->routeIs('admin.settings.general.*')" 
+                        wire:navigate
+                    >
+                        {{ __('admin_settings.Application Settings') }}
+                    </flux:navlist.item>
+
+                    @if(request()->routeIs('admin.settings.*'))
+                        <div class="pl-4">
+                            <flux:navlist.item 
+                                icon="academic-cap"
+                                :href="route('admin.settings.general.courses')" 
+                                :current="request()->routeIs('admin.settings.general.courses')" 
+                                wire:navigate
+                                class="text-sm"
+                            >
+                                {{ __('admin_settings.Manage Courses') }}
+                            </flux:navlist.item>
+                            <flux:navlist.item 
+                                icon="calendar-days"
+                                :href="route('admin.settings.general.semesters')" 
+                                :current="request()->routeIs('admin.settings.general.semesters')" 
+                                wire:navigate
+                                class="text-sm"
+                            >
+                                {{ __('admin_settings.Manage Semesters') }}
+                            </flux:navlist.item>
+                        </div>
+                    @endif
                 </flux:navlist.group>
             </flux:navlist>
 

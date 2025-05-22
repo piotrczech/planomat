@@ -42,4 +42,20 @@ return [
     'Go to Consultations' => 'Przejdź do konsultacji',
     'Desiderata Description' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
     'Consultations Description' => 'Zarządzaj swoim harmonogramem konsultacji dla studentów',
+
+    // Klucze dla admin-dean.blade.php
+    'Quick Actions' => 'Szybkie Akcje',
+    'Download All Desiderata PDF' => 'Pobierz Dezyderaty (PDF)',
+    'Download All Desiderata PDF Description' => 'Pobierz raport PDF ze wszystkimi dezyderatami.',
+    'Download All Consultations PDF' => 'Pobierz Konsultacje (PDF)',
+    'Download All Consultations PDF Description' => 'Pobierz raport PDF ze wszystkimi konsultacjami.',
+    'Go to Settings' => 'Ustawienia Systemu',
+    'Go to Settings Description' => 'Przejdź do panelu ustawień aplikacji.',
+    'Recent User Activities' => 'Ostatnie Aktywności Użytkowników',
+    'Recent activities placeholder' => 'Brak ostatnich aktywności do wyświetlenia lub moduł w budowie.',
+    'View all activities' => 'Zobacz wszystkie aktywności',
+
+    // Nowe klucze po ostatnich zmianach
+    'Modules' => 'Moduły',
+    'Activities last 2 weeks scrollable' => 'Wyświetlane są aktywności z ostatnich 2 tygodni (przewijalne).',
 ];

@@ -26,4 +26,8 @@ return [
     'Consultation calendar' => 'Kalendarz konsultacji',
     'Your office hours' => 'Twoje godziny konsultacji',
     'Edit' => 'Edytuj',
+
+    // Klucze dla admin-dean.blade.php (jeśli specyficzne dla tej karty w kontekście admina)
+    'Consultations Description' => 'Zarządzanie i podgląd zgłoszonych konsultacji przez pracowników.',
+    'Go to Consultations' => 'Zarządzaj Konsultacjami',
 ];

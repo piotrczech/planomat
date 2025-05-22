@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Desiderata\Presentation\Http\Controllers\DeanOffice\DesiderataExportController;
 use Modules\Desiderata\Presentation\Http\Controllers\ScientificWorkerDesiderataController;
 
 Route::middleware(['auth', 'verified'])->prefix('desiderata')->group(function (): void {
@@ -14,4 +15,8 @@ Route::middleware(['auth', 'verified'])->prefix('desiderata')->group(function ()
     });
 
     // Dean office worker
+    Route::group(['prefix' => 'dean-office'], function (): void {
+        Route::get('export/all/pdf', [DesiderataExportController::class, 'downloadAllPdf'])
+            ->name('desiderata.dean-office.export.all-desiderata.pdf');
+    });
 });

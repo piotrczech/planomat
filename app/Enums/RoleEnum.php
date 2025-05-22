@@ -6,18 +6,19 @@ namespace App\Enums;
 
 enum RoleEnum: int
 {
-    case ADMIN = 1;
-    case SCIENTIFIC_WORKER = 2;
-    case STUDENT = 3;
-    case TEACHER = 4;
+    case SCIENTIFIC_WORKER = 1;
+    case DEAN_OFFICE_WORKER = 2;
+    case ADMINISTRATOR = 3;
 
+    /**
+     * Get human readable role name
+     */
     public function label(): string
     {
         return match ($this) {
-            self::ADMIN => 'Administrator',
-            self::SCIENTIFIC_WORKER => 'Pracownik naukowy',
-            self::STUDENT => 'Student',
-            self::TEACHER => 'Nauczyciel',
+            self::SCIENTIFIC_WORKER => __('roles.scientific_worker'),
+            self::DEAN_OFFICE_WORKER => __('roles.dean_office_worker'),
+            self::ADMINISTRATOR => __('roles.administrator'),
         };
     }
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Consultation\Presentation\Http\Controllers\DeanOffice\ConsultationExportController;
 use Modules\Consultation\Presentation\Http\Controllers\ScientificWorkerConsultationController;
 
 Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function (): void {
@@ -18,4 +19,8 @@ Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function
     });
 
     // Dean office worker
+    Route::group(['prefix' => 'dean-office'], function (): void {
+        Route::get('export/all-consultations-pdf', [ConsultationExportController::class, 'downloadAllPdf'])
+            ->name('consultations.dean-office.export.all-consultations.pdf');
+    });
 });

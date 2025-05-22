@@ -1,5 +1,3 @@
-<x-layouts.app.header :title="$title ?? null">
-    <flux:main>
-        {{ $slot }}
-    </flux:main>
-</x-layouts.app.header>
+<x-user-layout :title="$title ?? null">
+    {{ $slot }}
+</x-user-layout>

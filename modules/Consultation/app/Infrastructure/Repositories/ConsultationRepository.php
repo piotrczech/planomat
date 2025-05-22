@@ -228,4 +228,90 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
         return sprintf('%d h %d min', floor($totalDuration / 60), $totalDuration % 60);
     }
+
+    public function fetchAllForPdfExport(): array
+    {
+        $result = [];
+
+        // Pobranie wszystkich pracowników naukowych, którzy mają jakiekolwiek konsultacje
+        // lub których chcemy uwzględnić (do doprecyzowania - na razie tych z konsultacjami)
+        $scientificWorkersSemester = ConsultationSemester::with('scientificWorker')->distinct()->pluck('scientific_worker_id');
+        $scientificWorkersSession = ConsultationSession::with('scientificWorker')->distinct()->pluck('scientific_worker_id');
+        $allWorkerIds = $scientificWorkersSemester->merge($scientificWorkersSession)->unique();
+
+        $workers = \App\Models\User::whereIn('id', $allWorkerIds)->get()->keyBy('id');
+
+        // Konsultacje semestralne
+        $semesterConsultations = ConsultationSemester::with('scientificWorker')
+            ->orderBy('scientific_worker_id') // Dla łatwiejszego grupowania, choć robimy to w PHP
+            ->orderBy('day') // Sortowanie wg specyfikacji
+            ->orderBy('start_time')
+            ->get();
+
+        foreach ($semesterConsultations as $consultation) {
+            $workerId = $consultation->scientific_worker_id;
+
+            if (!isset($result[$workerId])) {
+                $result[$workerId] = [
+                    'name' => $workers->get($workerId)?->name ?? 'Nieznany Pracownik',
+                    'consultations' => [],
+                ];
+            }
+            $result[$workerId]['consultations'][] = [
+                'type' => 'Semestralne',
+                'term_or_day' => WeekdayEnum::from($consultation->day->value)->label(),
+                'hours' => Carbon::parse($consultation->start_time)->format('H:i') . ' - ' . Carbon::parse($consultation->end_time)->format('H:i'),
+                'location' => $consultation->location,
+                'week_type' => WeekTypeEnum::from($consultation->week_type->value)->label(),
+            ];
+        }
+
+        // Konsultacje sesyjne
+        $sessionConsultations = ConsultationSession::with('scientificWorker')
+            ->orderBy('scientific_worker_id')
+            ->orderBy('consultation_date') // Sortowanie wg specyfikacji
+            ->orderBy('start_time')
+            ->get();
+
+        foreach ($sessionConsultations as $consultation) {
+            $workerId = $consultation->scientific_worker_id;
+
+            if (!isset($result[$workerId])) {
+                $result[$workerId] = [
+                    'name' => $workers->get($workerId)?->name ?? 'Nieznany Pracownik',
+                    'consultations' => [],
+                ];
+            }
+            $result[$workerId]['consultations'][] = [
+                'type' => 'Sesyjne',
+                'term_or_day' => Carbon::parse($consultation->consultation_date)->format('d.m.Y'),
+                'hours' => Carbon::parse($consultation->start_time)->format('H:i') . ' - ' . Carbon::parse($consultation->end_time)->format('H:i'),
+                'location' => $consultation->location,
+                'week_type' => '-', // Dla sesyjnych nie ma typu tygodnia
+            ];
+        }
+
+        // Opcjonalne sortowanie konsultacji wewnątrz każdego pracownika, jeśli nie zostało to w pełni załatwione przez SQL
+        foreach ($result as $workerId => &$data) {
+            usort($data['consultations'], function ($a, $b) {
+                // Prosta logika sortowania: najpierw semestralne, potem sesyjne
+                // W ramach typów można dodać bardziej szczegółowe sortowanie, jeśli potrzebne
+                if ($a['type'] === $b['type']) {
+                    if ($a['type'] === 'Semestralne') {
+                        // Można by tu porównywać dni tygodnia (potrzebna konwersja z nazwy na numer)
+                        // i potem godziny
+                        return strcmp($a['term_or_day'], $b['term_or_day']) ?: strcmp($a['hours'], $b['hours']);
+                    }   // Sesyjne
+
+                    return strcmp($a['term_or_day'], $b['term_or_day']) ?: strcmp($a['hours'], $b['hours']);
+
+                }
+
+                return $a['type'] === 'Semestralne' ? -1 : 1;
+            });
+        }
+        unset($data); // Usuń referencję po pętli
+
+        return $result;
+    }
 }
