@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetSemesterConsultationsUseCase;
 use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSemesterConsultationUseCase;
 use Exception;
+use Livewire\Attributes\On;
 
 class MySemesterConsultationCalendarComponent extends Component
 {
@@ -20,7 +21,13 @@ class MySemesterConsultationCalendarComponent extends Component
 
     public ?string $errorMessage = null;
 
-    public function mount(
+    public function mount(): void
+    {
+        $this->loadConsultations(App::make(GetSemesterConsultationsUseCase::class));
+    }
+
+    #[On('consultationSaved')]
+    public function loadConsultations(
         GetSemesterConsultationsUseCase $getSemesterConsultationsUseCase,
     ): void {
         $this->consultationEvents = $getSemesterConsultationsUseCase->execute();
@@ -39,6 +46,7 @@ class MySemesterConsultationCalendarComponent extends Component
                 );
 
                 $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
+                $this->loadConsultations(App::make(GetSemesterConsultationsUseCase::class));
                 $this->dispatch('consultationDeleted');
             } else {
                 $this->errorMessage = __('consultation::consultation.Failed to delete consultation');

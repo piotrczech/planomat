@@ -22,8 +22,9 @@ return [
     'From 12.06.2023 to 30.06.2023' => 'Od 12.06.2023 do 30.06.2023',
 
     // Nowe klucze dla przebudowanego dashboard
-    'Welcome message' => 'opis',
+    'Welcome message' => 'PlanoMAT to dedykowany system wspomagający komunikację z dziekanatem w zakresie planowania zajęć dydaktycznych. Aplikacja oferuje dwa moduły: dezyderaty oraz konsultacje.',
     'Important Actions' => 'Ważne zadania',
+    'Important Actions Description' => 'Poniżej przedstawiamy akcje, które nie zostały jeszcze uzupełnione. Zachęcamy do zapoznania się z nimi oraz ich realizacji.',
     'Complete Desiderata Form' => 'Uzupełnij formularz dezyderatów',
     'File Consultation Hours' => 'Uzupełnij godziny konsultacji',
     'Due days' => 'Pozostało dni: :days',
@@ -41,7 +42,7 @@ return [
     'Go to Desiderata' => 'Przejdź do dezyderatów',
     'Go to Consultations' => 'Przejdź do konsultacji',
     'Desiderata Description' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
-    'Consultations Description' => 'Zarządzaj swoim harmonogramem konsultacji dla studentów',
+    'Consultations Description' => 'Moduł konsultacji udostępnia dwa różne widoki: interaktywny kalendarz konsultacji w semestrze oraz formularz do zgłaszania konsultacji w sesji. Moduł automatycznie przesyła zaktualizowane dane do dziekanatu.',
 
     // Klucze dla admin-dean.blade.php
     'Quick Actions' => 'Szybkie Akcje',

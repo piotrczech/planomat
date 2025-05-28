@@ -92,20 +92,6 @@
                                 </div>
                             </div>
                         </li>
-                        {{-- Dodatkowy przykładowy wpis dla testu scrollowania (jeśli lista będzie długa) --}}
-                        <li class="p-3 sm:p-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/30 transition-colors">
-                            <div class="flex items-center justify-between space-x-3">
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-medium text-neutral-800 dark:text-neutral-100 truncate">
-                                        Administrator <span class="text-neutral-600 dark:text-neutral-300 font-normal">zmienił ustawienia modułu.</span>
-                                    </p>
-                                </div>
-                                <div class="text-right flex-shrink-0 space-x-2">
-                                    <span class="text-xs text-neutral-500 dark:text-neutral-400">3 dni temu, 11:05</span>
-                                    <flux:badge color="purple" variant="outline" size="sm">Konfiguracja</flux:badge>
-                                </div>
-                            </div>
-                        </li>
                         {{-- Dodatkowe przykładowe wpisy dla testu scrollowania --}}
                         <li class="p-3 sm:p-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/30 transition-colors">
                             <div class="flex items-center justify-between space-x-3">
@@ -130,32 +116,6 @@
                                 <div class="text-right flex-shrink-0 space-x-2">
                                     <span class="text-xs text-neutral-500 dark:text-neutral-400">5 dni temu, 12:00</span>
                                     <flux:badge color="green" variant="outline" size="sm">Dezyderaty</flux:badge>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="p-3 sm:p-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/30 transition-colors">
-                            <div class="flex items-center justify-between space-x-3">
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-medium text-neutral-800 dark:text-neutral-100 truncate">
-                                        System <span class="text-neutral-600 dark:text-neutral-300 font-normal">wykonał automatyczną kopię zapasową.</span>
-                                    </p>
-                                </div>
-                                <div class="text-right flex-shrink-0 space-x-2">
-                                    <span class="text-xs text-neutral-500 dark:text-neutral-400">6 dni temu, 03:00</span>
-                                    <flux:badge color="gray" variant="outline" size="sm">System</flux:badge>
-                                </div>
-                            </div>
-                        </li>
-                         <li class="p-3 sm:p-4 hover:bg-neutral-50 dark:hover:bg-neutral-700/30 transition-colors">
-                            <div class="flex items-center justify-between space-x-3">
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-medium text-neutral-800 dark:text-neutral-100 truncate">
-                                        Joanna Lewandowska <span class="text-neutral-600 dark:text-neutral-300 font-normal">zmieniła swoje hasło.</span>
-                                    </p>
-                                </div>
-                                <div class="text-right flex-shrink-0 space-x-2">
-                                    <span class="text-xs text-neutral-500 dark:text-neutral-400">7 dni temu, 10:00</span>
-                                    <flux:badge color="yellow" variant="outline" size="sm">Bezpieczeństwo</flux:badge>
                                 </div>
                             </div>
                         </li>

@@ -9,7 +9,6 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
-use Modules\Desiderata\Infrastructure\Repositories\EloquentDesideratumRepository;
 use Modules\Desiderata\Presentation\Livewire\Dashboard\DesiderataCard;
 use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormAvailabilityStepComponent;
 use Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker\DesiderataFormPreferencesStepComponent;
@@ -20,6 +19,7 @@ use RecursiveIteratorIterator;
 use Illuminate\Support\Facades\Gate;
 use Modules\Desiderata\Infrastructure\Authorization\DesideratumPolicy;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
+use Modules\Desiderata\Infrastructure\Repositories\DesideratumRepository;
 
 class DesiderataServiceProvider extends ServiceProvider
 {
@@ -56,7 +56,7 @@ class DesiderataServiceProvider extends ServiceProvider
 
         $this->app->bind(
             DesideratumRepositoryInterface::class,
-            EloquentDesideratumRepository::class,
+            DesideratumRepository::class,
         );
 
         $this->app->bind(UpdateOrCreateDesideratumUseCase::class, function ($app) {

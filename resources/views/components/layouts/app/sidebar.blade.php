@@ -93,7 +93,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('app.Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.appearance')" icon="cog" wire:navigate>{{ __('app.Settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -143,7 +143,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('app.Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.appearance')" icon="cog" wire:navigate>{{ __('app.Settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />

@@ -46,7 +46,6 @@ class NewSemesterConsultationComponent extends Component
         $this->isAddingConsultation = true;
 
         try {
-            // Używamy metody validateAndCreate z DTO do walidacji i utworzenia obiektu
             $data = [
                 'consultationWeekday' => $this->consultationWeekday,
                 'dailyConsultationWeekType' => $this->dailyConsultationWeekType,
@@ -61,22 +60,18 @@ class NewSemesterConsultationComponent extends Component
             $useCase = App::make(CreateNewSemesterConsultationUseCase::class);
             $createdCount = $useCase->execute($dto);
 
-            // Resetujemy formularz
             $this->resetForm();
 
-            // Wysyłamy event o powodzeniu
             $this->dispatch('consultationSaved', [
                 'count' => $createdCount,
             ]);
         } catch (ValidationException $e) {
             $this->isAddingConsultation = false;
 
-            // Przesyłamy błędy walidacji do formularza
             $this->setErrorBag($e->validator->getMessageBag());
         } catch (Exception $e) {
             $this->isAddingConsultation = false;
 
-            // Dla innych błędów dodajemy ogólny komunikat walidacji
             $this->addError('consultationWeekday', $e->getMessage());
         }
     }

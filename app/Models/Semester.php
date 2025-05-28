@@ -7,6 +7,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\SemesterSeasonEnum;
 
 class Semester extends Model
 {
@@ -24,6 +25,7 @@ class Semester extends Model
         'semester_start_date' => 'date',
         'session_start_date' => 'date',
         'end_date' => 'date',
+        'season' => SemesterSeasonEnum::class,
     ];
 
     public static function getCurrentSemester()

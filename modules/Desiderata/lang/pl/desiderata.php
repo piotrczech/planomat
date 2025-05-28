@@ -7,13 +7,13 @@ return [
     'My Desiderata' => 'Moje dezyderaty',
     'Stage: Teaching preferences' => 'Etap: Preferencje dydaktyczne',
     'Desiderata Form' => 'Formularz dezyderat',
-    'My Desiderata Description' => 'Dezyderaty to lista Twoich preferencji dotyczących prowadzenia zajęć w nadchodzącym semestrze. Uzupełnij swoje preferencje dotyczące kursów, godzin oraz dodatkowych czynników. Formularz został podzielony na dwa etapy: pierwszy dotyczy preferencji dydaktycznych, drugi dotyczy dostępności.',
+    'My Desiderata Description' => 'Dezyderaty to formularz, w którym można wskazać preferencje dotyczące prowadzenia zajęć w nadchodzącym semestrze – m.in. preferowane kursy, godziny oraz inne istotne czynniki. Formularz składa się z dwóch części: preferencji dydaktycznych oraz dostępności.',
     'Dezyderaty' => 'Dezyderaty',
     'Please complete your teaching preferences for the upcoming semester' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
     'Never' => 'Nigdy',
     'Information' => 'Informacja',
-    'You already have desiderata submitted. You can still edit them.' => 'Masz już uzupełnione dezyderaty. Nadal masz możliwość je edytować.',
+    'You already have desiderata submitted. You can still edit them.' => 'Dezyderaty zostały już przez uzupełnione - w razie potrzeby (jeszcze) można je edytować.',
     'Success' => 'Sukces',
     'Error' => 'Błąd',
 
@@ -23,12 +23,12 @@ return [
 
     // Preferencje dydaktyczne - nagłówki sekcji
     'Teaching preferences' => 'Preferencje dydaktyczne',
-    'Teaching preferences description' => 'Twoje preferencje dydaktyczne pomogą w optymalnym zaplanowaniu zajęć na nadchodzący semestr. Podaj swoje preferencje dotyczące kursów, godzin oraz dodatkowych czynników.',
+    'Teaching preferences description' => 'Na tym etapie należy wskazać preferencje dotyczące prowadzonych zajęć - w szczególności wybór kursów, formy prowadzenia oraz inne istotne czynniki. Informacje o dostępności czasowej będą uzupełniane w kolejnym kroku.',
     'Teaching mode' => 'Forma prowadzenia zajęć',
     'Overtime' => 'Nadgodziny',
     'Course preferences' => 'Preferencje kursów',
-    'Course preferences description' => 'Wybierz kursy, które możesz prowadzić w nadchodzącym semestrze. Możesz również określić swoje preferencje - które kursy chciałbyś prowadzić, a których nie.',
-    'Course preferences description after courses I can teach' => 'Z listy kursów, które możesz prowadzić, wskaż te, które chciałbyś prowadzić oraz te, których wolałbyś uniknąć.',
+    'Course preferences description' => 'Prosimy o wskazanie kursów oraz dziedzin, które są w zakresie Państwa kompetencji dydaktycznych - czyli te, które mogą zostać przez Państwa prowadzone. W tym etapie nie uwzględniamy osobistych preferencji dotyczących dziedziny.',
+    'Course preferences description after courses I can teach' => 'Teraz na podstawie kursów wybranych w poprzednim kroku prosimy o określenie, które z nich preferują Państwo prowadzić, a których – maksymalnie dwóch – chcieliby Państwo unikać. Lista do wyboru jest ograniczona do kursów wybranych w poprzednim kroku.',
     'Thesis supervision' => 'Prowadzone prace dyplomowe',
     'Working hours' => 'Obciążenie godzinowe',
     'Additional notes' => 'Dodatkowe uwagi',
@@ -66,6 +66,7 @@ return [
     // Dostępność czasowa
     'Time availability' => 'Dostępność czasowa',
     'Mark up to 5 time slots when you are NOT available' => 'Zaznacz maksymalnie 5 bloków czasowych, w których NIE jesteś dostępny',
+    'Availability schedule description' => 'Na tym etapie należy wskazać (nie)dostępność czasową na nadchodzący semestr. Prosimy o zaznaczenie bloków czasowych, w których Państwo nie będą Państwo dostępni do prowadzenia zajęć.',
     'Selected' => 'Wybrano',
     'Maximum limit reached' => 'Osiągnięto maksymalną liczbę',
     'Time' => 'Godzina',
@@ -82,9 +83,8 @@ return [
     'Additional information description' => 'Dodatkowe informacje dotyczące Twoich preferencji dydaktycznych',
     'Additional information placeholder' => 'Wpisz dodatkowe informacje...',
     'Availability schedule' => 'Plan dostępności',
-    'Availability schedule description' => 'Plan dostępności na nadchodzący semestr',
     'Availability schedule placeholder' => 'Wpisz plan dostępności...',
-    'Please select time slots when you are NOT available' => 'Wybierz bloki czasowe, w których NIE jesteś dostępny',
+    'Please select time slots when you are NOT available' => 'Poniżej znajduje się interaktywny kalendarz dostępności, który umożliwia wskazanie (nie)dostępności czasowej na nadchodzący semestr. Poprzez kliknięcie w "kółeczko" przy odpowiednim dniu i godzinie wskazują Państwo swoją niedostępność. Umożliwiamy wybór maksymalnie 5 takich bloków czasowych.',
     'Please select time slots when you are available' => 'Wybierz bloki czasowe, w których jesteś dostępny',
 
     // Walidacja i błędy biznesowe

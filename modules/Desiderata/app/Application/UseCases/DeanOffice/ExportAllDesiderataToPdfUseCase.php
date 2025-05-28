@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Application\UseCases\DeanOffice;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Modules\Desiderata\Domain\Repository\DesideratumRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
+use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 
 final class ExportAllDesiderataToPdfUseCase
 {

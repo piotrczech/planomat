@@ -57,8 +57,6 @@
     </style>
 </head>
 <body>
-    <div class="page-header-title">Wydział Matematyki Konsultacje pracowników w semestrze letnim 2024/2025</div>
-
     <div class="report-date">Wygenerowano: {{ $reportDate }}</div>
 
     @php
@@ -173,9 +171,6 @@
                                         }
                                         if (!empty($consultation['hours'])) {
                                             $terminParts[] = $consultation['hours'];
-                                        }
-                                        if (!empty($consultation['type']) && $consultation['type'] !== 'Stacjonarne') {
-                                           $terminParts[] = '['. $consultation['type'] .']';
                                         }
                                         echo implode(', ', $terminParts);
                                     @endphp

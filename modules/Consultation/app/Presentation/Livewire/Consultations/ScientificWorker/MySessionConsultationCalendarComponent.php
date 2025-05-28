@@ -8,10 +8,14 @@ use Carbon\Carbon;
 use Livewire\Component;
 use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 use Exception;
+use Illuminate\Support\Facades\App;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetSessionConsultationsUseCase;
+use Livewire\Attributes\On;
+use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSessionConsultationUseCase;
 
 class MySessionConsultationCalendarComponent extends Component
 {
-    public array $consultationEvents = [];
+    public array $consultationEvents;
 
     public Carbon $currentMonth;
 
@@ -128,49 +132,15 @@ class MySessionConsultationCalendarComponent extends Component
         ];
     }
 
+    #[On('consultationSaved')]
     public function loadConsultations(): void
     {
-        // W rzeczywistym kodzie, pobieralibyśmy dane z bazy
-        // $consultations = ConsultationSession::where('scientific_worker_id', auth()->id())
-        //    ->whereBetween('consultation_date', [$this->sessionStart->toDateString(), $this->sessionEnd->toDateString()])
-        //    ->orderBy('consultation_date')
-        //    ->orderBy('start_time')
-        //    ->get();
+        $this->consultationEvents = App::make(GetSessionConsultationsUseCase::class)->execute();
 
-        // Na potrzeby przykładu używamy tych samych danych co wcześniej
-        $consultations = collect([
-            [
-                'id' => 1,
-                'consultation_date' => '2025-01-13',
-                'start_time' => '09:05',
-                'end_time' => '10:30',
-                'location' => 'Sala 204, Budynek Główny',
-                'status' => 'upcoming',
-            ],
-            [
-                'id' => 2,
-                'consultation_date' => '2025-01-15',
-                'start_time' => '13:15',
-                'end_time' => '14:45',
-                'location' => 'Sala konferencyjna',
-                'status' => 'upcoming',
-            ],
-            [
-                'id' => 3,
-                'consultation_date' => '2025-02-10',
-                'start_time' => '16:00',
-                'end_time' => '17:30',
-                'location' => 'Gabinet 312',
-                'status' => 'upcoming',
-            ],
-        ]);
-
-        $this->consultationEvents = $consultations->toArray();
-
-        // Oznacz dni z konsultacjami w kalendarzu
         foreach ($this->calendarDays as &$day) {
-            $day['hasConsultation'] = $consultations->contains('consultation_date', $day['date']);
+            $day['hasConsultation'] = collect($this->consultationEvents)->contains('consultation_date', $day['date']);
         }
+        $this->dispatch('$refresh');
     }
 
     public function changeMonth(int $offset): void
@@ -203,20 +173,20 @@ class MySessionConsultationCalendarComponent extends Component
     public function removeConsultation(int $eventId): void
     {
         try {
-            // W rzeczywistej aplikacji usunęlibyśmy obiekt z bazy danych
-            // ConsultationSession::find($eventId)->delete();
+            $useCase = App::make(DeleteSessionConsultationUseCase::class);
+            $result = $useCase->execute($eventId);
 
-            $this->consultationEvents = array_filter(
-                $this->consultationEvents,
-                fn ($event) => $event['id'] !== $eventId,
-            );
-
-            $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
+            if ($result) {
+                $this->loadConsultations();
+                $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
+                $this->dispatch('consultationDeleted');
+            } else {
+                $this->errorMessage = __('consultation::consultation.Failed to delete consultation');
+            }
         } catch (Exception $e) {
             $this->errorMessage = __('consultation::consultation.Failed to delete consultation');
         }
 
-        // Aktualizacja dni kalendarza
         $this->generateCalendarDays();
         $this->loadConsultations();
     }

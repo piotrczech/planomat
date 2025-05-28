@@ -373,14 +373,16 @@
                         @click="showConfirmDeleteModal = false"
                         variant="outline"
                         size="sm"
-                        label="{{ __('consultation::consultation.Cancel') }}"
-                    />
+                    >
+                        {{ __('consultation::consultation.Cancel') }}
+                    </flux:button>
                     <flux:button
                         @click="$wire.removeConsultation(consultationToDeleteId); showConfirmDeleteModal = false"
                         variant="danger"
                         size="sm"
-                        label="{{ __('consultation::consultation.Yes, delete') }}"
-                    />
+                    >
+                        {{ __('consultation::consultation.Yes, delete') }}
+                    </flux:button>
                 </div>
             </div>
         </div>

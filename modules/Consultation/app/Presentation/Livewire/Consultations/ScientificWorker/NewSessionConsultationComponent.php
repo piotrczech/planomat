@@ -7,6 +7,8 @@ namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWor
 use Livewire\Component;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Exception;
+use Illuminate\Support\Facades\App;
+use Modules\Consultation\Application\UseCases\ScientificWorker\CreateNewSessionConsultationUseCase;
 
 class NewSessionConsultationComponent extends Component
 {
@@ -44,22 +46,18 @@ class NewSessionConsultationComponent extends Component
 
     public function addConsultation(): void
     {
-        // Używamy standardowej walidacji Livewire, która automatycznie wyświetli błędy pod polami
         $validatedData = $this->validate();
 
         try {
-            // Utworzenie DTO z zwalidowanych danych
             $requestData = CreateNewSessionConsultationDto::from($validatedData);
 
-            // TO DO: tutaj powinno być wywołanie odpowiedniego UseCase do zapisania konsultacji
-            // np. $useCase->execute($requestData);
+            $useCase = App::make(CreateNewSessionConsultationUseCase::class);
+            $useCase->execute($requestData);
 
-            // Powiadomienie o sukcesie
             $this->successMessage = __('consultation::consultation.Successfully created consultation session');
+            $this->dispatch('consultationSaved');
             $this->resetForm();
-
         } catch (Exception $e) {
-            // Ten kod będzie uruchamiany tylko w przypadku innych błędów niż walidacja
             $this->errorMessage = __('consultation::consultation.Error: :message', ['message' => $e->getMessage()]);
         }
     }

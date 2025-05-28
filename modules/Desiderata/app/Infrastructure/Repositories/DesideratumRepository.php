@@ -9,12 +9,13 @@ use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInter
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use App\Enums\CoursePreferenceTypeEnum;
 use App\Enums\WeekdayEnum;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Infrastructure\Models\DesideratumUnavailableTimeSlot;
 use Modules\Desiderata\Infrastructure\Models\DesideratumCoursePreference;
 
-class EloquentDesideratumRepository implements DesideratumRepositoryInterface
+class DesideratumRepository implements DesideratumRepositoryInterface
 {
     public function findByScientificWorkerAndSemester(
         int $workerId,
@@ -149,17 +150,17 @@ class EloquentDesideratumRepository implements DesideratumRepositoryInterface
 
     private function syncUnavailableTimeSlots(Desideratum $desideratum, UpdateOrCreateDesideratumDto $dto): void
     {
-        $newSlots = collect();
+        $newTimeSlotsData = [];
 
         if (!empty($dto->unavailableTimeSlots) && is_array($dto->unavailableTimeSlots)) {
-            foreach ($dto->unavailableTimeSlots as $day => $timeSlotIds) {
+            foreach ($dto->unavailableTimeSlots as $dayString => $timeSlotIds) {
                 if (!is_array($timeSlotIds) || empty($timeSlotIds)) {
                     continue;
                 }
 
-                $weekDay = $this->mapDayNameToEnum($day);
+                $weekDayEnum = $this->mapDayNameToEnum($dayString);
 
-                if ($weekDay === null) {
+                if ($weekDayEnum === null) {
                     continue;
                 }
 
@@ -167,48 +168,48 @@ class EloquentDesideratumRepository implements DesideratumRepositoryInterface
                     if (empty($timeSlotId) || !is_numeric($timeSlotId)) {
                         continue;
                     }
-
-                    $newSlots->push([
-                        'day' => $weekDay->value,
+                    $key = $weekDayEnum->value . '_' . (int) $timeSlotId;
+                    $newTimeSlotsData[$key] = [
+                        'day' => $weekDayEnum->value,
                         'time_slot_id' => (int) $timeSlotId,
-                        'slot_key' => $weekDay->value . '_' . (int) $timeSlotId,
-                    ]);
+                    ];
                 }
             }
         }
 
-        // Pobieramy istniejące sloty
-        $existingSlots = $desideratum->unavailableTimeSlots()
+        $existingTimeSlots = $desideratum->unavailableTimeSlots()
             ->get()
-            ->map(fn (DesideratumUnavailableTimeSlot $slot) => [
-                'id' => $slot->id,
-                'day' => $slot->day,
-                'time_slot_id' => $slot->time_slot_id,
-                'slot_key' => "{$slot->day->value}_{$slot->time_slot_id}",
-            ]);
+            ->keyBy(function (DesideratumUnavailableTimeSlot $slot) {
+                // Klucz unikalny dla porównania
+                return $slot->day->value . '_' . $slot->time_slot_id;
+            });
 
-        // Znajdujemy sloty do usunięcia
-        $slotsToDelete = $existingSlots
-            ->whereNotIn('slot_key', $newSlots->pluck('slot_key'))
-            ->pluck('id');
+        $newTimeSlotsKeys = array_keys($newTimeSlotsData);
+        $existingTimeSlotsKeys = $existingTimeSlots->keys()->toArray();
 
-        // Znajdujemy sloty do dodania (te, które nie istnieją)
-        $slotsToAdd = $newSlots
-            ->whereNotIn('slot_key', $existingSlots->pluck('slot_key'))
-            ->map(fn (array $slot) => [
-                'day' => $slot['day'],
-                'time_slot_id' => $slot['time_slot_id'],
-            ]);
+        $slotsToAddKeys = array_diff($newTimeSlotsKeys, $existingTimeSlotsKeys);
+        $slotsToAdd = [];
 
-        // Usuwamy niepotrzebne sloty
-        if ($slotsToDelete->isNotEmpty()) {
-            $desideratum->unavailableTimeSlots()
-                ->whereIn('id', $slotsToDelete)
-                ->delete();
+        foreach ($slotsToAddKeys as $key) {
+            $slotsToAdd[] = $newTimeSlotsData[$key];
         }
 
-        // Dodajemy nowe sloty
-        if ($slotsToAdd->isNotEmpty()) {
+        $slotsToDeleteKeys = array_diff($existingTimeSlotsKeys, $newTimeSlotsKeys);
+
+        if (!empty($slotsToDeleteKeys)) {
+            foreach ($slotsToDeleteKeys as $keyToDelete) {
+                $slotInstance = $existingTimeSlots->get($keyToDelete);
+
+                if ($slotInstance) {
+                    $desideratum->unavailableTimeSlots()
+                        ->where('day', $slotInstance->day->value)
+                        ->where('time_slot_id', $slotInstance->time_slot_id)
+                        ->delete();
+                }
+            }
+        }
+
+        if (!empty($slotsToAdd)) {
             $desideratum->unavailableTimeSlots()->createMany($slotsToAdd);
         }
     }
@@ -237,5 +238,23 @@ class EloquentDesideratumRepository implements DesideratumRepositoryInterface
             ->first();
 
         return $desideratum?->updated_at?->toDateString();
+    }
+
+    public function getAllDesiderataForPdfExport(): Collection
+    {
+        $allDesiderata = Desideratum::with([
+            'scientificWorker',
+            'semester',
+            'wantedCourses',
+            'couldCourses',
+            'notWantedCourses',
+            'unavailableTimeSlots.timeSlot',
+        ])->get();
+
+        return $allDesiderata->sortBy(function (Desideratum $desideratum) {
+            if ($desideratum->scientificWorker) {
+                return mb_strtolower($desideratum->scientificWorker->surname ?? '') . ' ' . mb_strtolower($desideratum->scientificWorker->name ?? '');
+            }
+        })->values();
     }
 }

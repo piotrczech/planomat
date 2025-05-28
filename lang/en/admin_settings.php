@@ -24,4 +24,32 @@ return [
     'semester_manager.Semester List Description' => 'Below is a list of all semesters defined in the system.',
     'semester_manager.Add Semester' => 'Add Semester',
     'semester_manager.Semester table placeholder' => 'No semesters defined. Click "Add Semester" to get started.',
+
+    'course_manager' => [
+        'Search courses' => 'Search courses...',
+        'Add Course' => 'Add Course',
+        'Name' => 'Name',
+        'Actions' => 'Actions',
+        'Edit' => 'Edit',
+        'Delete' => 'Delete',
+        'No courses found' => 'No courses found.',
+        'Edit Course' => 'Edit Course',
+        'Course Name' => 'Course Name',
+        'Save' => 'Save',
+        'Cancel' => 'Cancel',
+        'Delete Course' => 'Delete Course',
+        'Are you sure you want to delete the course' => 'Are you sure you want to delete the course',
+        'This action cannot be undone.' => 'This action cannot be undone.',
+        'unknown_course' => 'Unknown course',
+        'notifications' => [
+            'course_saved' => 'Course has been saved successfully.',
+            'course_deleted' => 'Course has been deleted successfully.',
+        ],
+        'validation' => [
+            'name_required' => 'The course name is required.',
+            'name_string' => 'The course name must be a string.',
+            'name_max' => 'The course name may not be greater than 255 characters.',
+            'name_unique' => 'A course with this name already exists.',
+        ],
+    ],
 ];

@@ -76,8 +76,8 @@ return [
     'Consultation location description' => 'np. C-19, A2.12',
     'Add consultation' => 'Dodaj konsultację',
     'My semester consultation' => 'Moje konsultacje sesyjne',
-    'My semester consultation description' => 'Na tej stronie możesz przeglądać i zarządzać swoimi konsultacjami podczas sesji egzaminacyjnej.',
-    'New semester consultation description' => 'W poniższym formularzu możesz dodać nową konsultację, która terminem nie nachodzi na dowolną inną konsultację. Dla przypadków edycji zalecamy usunięcię niepoprawnego wpisu i dodanie nowego.',
+    'My semester consultation description' => 'W poniższym kalendarzu po kliknięciu na wybrany "bloczek" można zobaczyć jej szczegóły lub usunąć termin.',
+    'New semester consultation description' => 'W poniższym formularzu można dodać nową konsultację, która terminem nie nachodzi na dowolną inną konsultację. Dla przypadków edycji zalecamy usunięcię niepoprawnego wpisu i dodanie nowego.',
 
     // Konsultacje sesyjne
     'New session consultation' => 'Nowa konsultacja w sesji',

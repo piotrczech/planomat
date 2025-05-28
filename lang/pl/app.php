@@ -90,4 +90,5 @@ return [
     // Planomat
     'Planomat' => 'PlanoMAT',
     'Important Actions' => 'Ważne akcje',
+    'Planomat Administration Panel' => 'Panel administracyjny PlanoMAT',
 ];

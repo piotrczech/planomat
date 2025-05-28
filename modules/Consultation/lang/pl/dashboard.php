@@ -29,5 +29,5 @@ return [
 
     // Klucze dla admin-dean.blade.php (jeśli specyficzne dla tej karty w kontekście admina)
     'Consultations Description' => 'Zarządzanie i podgląd zgłoszonych konsultacji przez pracowników.',
-    'Go to Consultations' => 'Zarządzaj Konsultacjami',
+    'Go to Consultations' => 'Zarządzaj konsultacjami',
 ];

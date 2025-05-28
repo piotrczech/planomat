@@ -79,14 +79,7 @@
     </div>
 
     <!-- Widok kalendarza sesji egzaminacyjnej -->
-    <div class="dark:bg-zinc-900 rounded-lg" 
-         x-data="{ 
-            showConsultationDetails: false, 
-            showNoConsultationMessage: false,
-            selectedDay: null,
-            noConsultationDate: null,
-            consultationsForDay: []
-         }">
+    <div class="dark:bg-zinc-900 rounded-lg">
         <!-- Calendar header with month navigation -->
         <div class="flex justify-between items-center mb-4 bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg">
             <div class="flex items-center">
@@ -148,7 +141,7 @@
                                     showConsultationDetails = true; 
                                     showNoConsultationMessage = false;
                                     selectedDay = '{{ $day['date'] }}';
-                                    consultationsForDay = {{ json_encode($consultationsForDay) }};
+                                    consultationsForDay = @js($consultationsForDay);
                                 "
                             @elseif(!$isDisabled)
                                 @click="

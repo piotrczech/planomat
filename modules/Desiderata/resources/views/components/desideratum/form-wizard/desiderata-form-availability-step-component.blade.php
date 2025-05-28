@@ -2,7 +2,7 @@
     <div class="mb-6">
         <flux:heading size="xl" class="mb-6">{{ __('desiderata::desiderata.Time availability') }}</flux:heading>
         <flux:text class="mb-6">
-            <p>{{ __('desiderata::desiderata.Mark up to 5 time slots when you are NOT available') }}</p>
+            <p>{{ __('desiderata::desiderata.Availability schedule description') }}</p>
         </flux:text>
         <hr>
     </div>

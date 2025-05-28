@@ -8,7 +8,7 @@
             <p>{{ __('dashboard.Consultations Description') }}</p>
         </flux:text>
         
-        <a href="{{ route('consultations.scientific-worker.my-semester-consultation') }}" wire:navigate class="mt-6">
+        <a href="#" wire:navigate class="mt-6">
             <flux:button variant="primary" class="w-full font-medium py-2.5">
                 {{ __('dashboard.Go to Consultations') }}
             </flux:button>
