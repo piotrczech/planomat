@@ -10,44 +10,76 @@
     x-init="
         let proficientCoursesSelect, wantedCoursesSelect, unwantedCoursesSelect;
 
+        const initialProficientIds = proficientCourseIds.map(String);
+        const initialWantedIds = wantedCourseIds.map(String);
+        const initialUnwantedIds = unwantedCourseIds.map(String);
+
+        const initialWantedOptions = allCourseOptions.filter(option =>
+            initialProficientIds.includes(String(option.value)) &&
+            !initialUnwantedIds.includes(String(option.value))
+        );
+
+        const initialUnwantedOptions = allCourseOptions.filter(option =>
+            initialProficientIds.includes(String(option.value)) &&
+            !initialWantedIds.includes(String(option.value))
+        );
+
         function refreshWantedUnwantedOptionsAndSelection() {
             if (!proficientCoursesSelect || !wantedCoursesSelect || !unwantedCoursesSelect) return;
 
-            const selectedProficientIds = proficientCoursesSelect.items;
-            const selectedWantedIds = wantedCoursesSelect.items;
-            const selectedUnwantedIds = unwantedCoursesSelect.items;
+            const currentProficientIds = proficientCoursesSelect.items.map(String);
+            let alpineWantedIds = wantedCourseIds.map(String); 
+            let alpineUnwantedIds = unwantedCourseIds.map(String);
 
-            const wantedOptions = allCourseOptions.filter(option => 
-                selectedProficientIds.includes(String(option.value)) && 
-                !selectedUnwantedIds.includes(String(option.value))
+            const wantedOptions = allCourseOptions.filter(option =>
+                currentProficientIds.includes(String(option.value)) &&
+                !alpineUnwantedIds.includes(String(option.value))
             );
-            const unwantedOptions = allCourseOptions.filter(option => 
-                selectedProficientIds.includes(String(option.value)) && 
-                !selectedWantedIds.includes(String(option.value))
-            );
-
             wantedCoursesSelect.clearOptions();
             wantedCoursesSelect.addOption(wantedOptions);
-            const validWantedIds = selectedWantedIds.filter(id => wantedOptions.some(opt => String(opt.value) === id));
-            if (validWantedIds.length !== selectedWantedIds.length || JSON.stringify(validWantedIds.sort()) !== JSON.stringify(selectedWantedIds.sort())) {
-                wantedCoursesSelect.setValue(validWantedIds, false); 
-            } else {
-                wantedCoursesSelect.setValue(validWantedIds, true);
+            
+            const currentWantedInTomSelect = wantedCoursesSelect.items.map(String);
+            const validWantedToKeep = currentWantedInTomSelect.filter(id => wantedOptions.some(opt => String(opt.value) === id));
+            wantedCoursesSelect.setValue(validWantedToKeep, true);
+
+            if (JSON.stringify(alpineWantedIds.sort()) !== JSON.stringify(validWantedToKeep.sort())) {
+                $wire.wantedCourseIds = validWantedToKeep;
+                wantedCourseIds = [...validWantedToKeep];
             }
 
+            const unwantedOptions = allCourseOptions.filter(option =>
+                currentProficientIds.includes(String(option.value)) &&
+                !validWantedToKeep.includes(String(option.value)) 
+            );
             unwantedCoursesSelect.clearOptions();
             unwantedCoursesSelect.addOption(unwantedOptions);
-            const validUnwantedIds = selectedUnwantedIds.filter(id => unwantedOptions.some(opt => String(opt.value) === id));
-            if (validUnwantedIds.length !== selectedUnwantedIds.length || JSON.stringify(validUnwantedIds.sort()) !== JSON.stringify(selectedUnwantedIds.sort())) {
-                unwantedCoursesSelect.setValue(validUnwantedIds, false);
-            } else {
-                unwantedCoursesSelect.setValue(validUnwantedIds, true);
+
+            const currentUnwantedInTomSelect = unwantedCoursesSelect.items.map(String);
+            const validUnwantedToKeep = currentUnwantedInTomSelect.filter(id => unwantedOptions.some(opt => String(opt.value) === id));
+            unwantedCoursesSelect.setValue(validUnwantedToKeep, true);
+            
+            if (JSON.stringify(alpineUnwantedIds.sort()) !== JSON.stringify(validUnwantedToKeep.sort())) {
+                $wire.unwantedCourseIds = validUnwantedToKeep;
+                unwantedCourseIds = [...validUnwantedToKeep];
             }
+
+            unwantedCount = unwantedCourseIds.length;
+            showUnwantedCourseBadge = unwantedCourseIds.length >= 2;
         }
+
+        proficientCoursesSelect = new TomSelect($refs.canTeachCoursesSelect, {
+            plugins: ['remove_button'],
+            options: allCourseOptions,
+            items: proficientCourseIds,
+            onChange: function(values) {
+                $wire.proficientCourseIds = values;
+                refreshWantedUnwantedOptionsAndSelection();
+            }
+        });
 
         wantedCoursesSelect = new TomSelect($refs.wantToTeachSelect, {
             plugins: ['remove_button'],
-            options: [], 
+            options: initialWantedOptions,
             items: wantedCourseIds,
             onChange: function(values) {
                 $wire.wantedCourseIds = values;
@@ -58,28 +90,21 @@
         unwantedCoursesSelect = new TomSelect($refs.dontWantToTeachSelect, {
             plugins: ['remove_button'],
             maxItems: 2,
-            options: [], 
+            options: initialUnwantedOptions,
             items: unwantedCourseIds,
             onChange: function(values) {
                 $wire.unwantedCourseIds = values;
-                refreshWantedUnwantedOptionsAndSelection();
-                showUnwantedCourseBadge = values.length >= 2;
                 unwantedCount = values.length;
-            }
-        });
-        
-        proficientCoursesSelect = new TomSelect($refs.canTeachCoursesSelect, {
-            plugins: ['remove_button'],
-            options: allCourseOptions,
-            items: proficientCourseIds,
-            onInitialize: function() {
-                refreshWantedUnwantedOptionsAndSelection();
-            },
-            onChange: function(values) {
-                $wire.proficientCourseIds = values;
+                showUnwantedCourseBadge = values.length >= 2;
                 refreshWantedUnwantedOptionsAndSelection();
             }
         });
+
+        if (proficientCoursesSelect && wantedCoursesSelect && unwantedCoursesSelect) {
+            refreshWantedUnwantedOptionsAndSelection();
+        } else {
+            console.error('One or more TomSelect instances failed to initialize before final refresh call.');
+        }
     "
 >
     <flux:heading

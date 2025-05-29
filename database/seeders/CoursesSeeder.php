@@ -21,11 +21,9 @@ class CoursesSeeder extends Seeder
         ];
 
         foreach ($courseNames as $courseName) {
-            Course::updateOrCreate(
-                [
-                    'name' => $courseName,
-                ],
-            );
+            Course::create([
+                'name' => $courseName,
+            ]);
         }
     }
 }

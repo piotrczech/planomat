@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             TimeSlotSeeder::class,
+            CoursesSeeder::class,
         ]);
 
         User::factory()->scientificWorker()->create([
