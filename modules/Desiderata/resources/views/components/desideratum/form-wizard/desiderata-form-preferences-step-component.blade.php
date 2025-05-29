@@ -1,38 +1,84 @@
 <div class="p-4 md:p-6"
-    x-data="{
+    x-data='{
+        allCourseOptions: {{ json_encode($allCourseOptions) }},
         proficientCourseIds: @json($proficientCourseIds),
         wantedCourseIds: @json($wantedCourseIds),
         unwantedCourseIds: @json($unwantedCourseIds),
-        showUnwantedCourseBadge: false
-    }"
+        unwantedCount: {{ count($unwantedCourseIds) }},
+        showUnwantedCourseBadge: {{ count($unwantedCourseIds) >= 2 ? 'true' : 'false' }}
+    }'
     x-init="
-        const proficientCoursesSelect = new TomSelect('#can-teach-courses', {
+        let proficientCoursesSelect, wantedCoursesSelect, unwantedCoursesSelect;
+
+        function refreshWantedUnwantedOptionsAndSelection() {
+            if (!proficientCoursesSelect || !wantedCoursesSelect || !unwantedCoursesSelect) return;
+
+            const selectedProficientIds = proficientCoursesSelect.items;
+            const selectedWantedIds = wantedCoursesSelect.items;
+            const selectedUnwantedIds = unwantedCoursesSelect.items;
+
+            const wantedOptions = allCourseOptions.filter(option => 
+                selectedProficientIds.includes(String(option.value)) && 
+                !selectedUnwantedIds.includes(String(option.value))
+            );
+            const unwantedOptions = allCourseOptions.filter(option => 
+                selectedProficientIds.includes(String(option.value)) && 
+                !selectedWantedIds.includes(String(option.value))
+            );
+
+            wantedCoursesSelect.clearOptions();
+            wantedCoursesSelect.addOption(wantedOptions);
+            const validWantedIds = selectedWantedIds.filter(id => wantedOptions.some(opt => String(opt.value) === id));
+            if (validWantedIds.length !== selectedWantedIds.length || JSON.stringify(validWantedIds.sort()) !== JSON.stringify(selectedWantedIds.sort())) {
+                wantedCoursesSelect.setValue(validWantedIds, false); 
+            } else {
+                wantedCoursesSelect.setValue(validWantedIds, true);
+            }
+
+            unwantedCoursesSelect.clearOptions();
+            unwantedCoursesSelect.addOption(unwantedOptions);
+            const validUnwantedIds = selectedUnwantedIds.filter(id => unwantedOptions.some(opt => String(opt.value) === id));
+            if (validUnwantedIds.length !== selectedUnwantedIds.length || JSON.stringify(validUnwantedIds.sort()) !== JSON.stringify(selectedUnwantedIds.sort())) {
+                unwantedCoursesSelect.setValue(validUnwantedIds, false);
+            } else {
+                unwantedCoursesSelect.setValue(validUnwantedIds, true);
+            }
+        }
+
+        wantedCoursesSelect = new TomSelect($refs.wantToTeachSelect, {
             plugins: ['remove_button'],
-            items: proficientCourseIds
+            options: [], 
+            items: wantedCourseIds,
+            onChange: function(values) {
+                $wire.wantedCourseIds = values;
+                refreshWantedUnwantedOptionsAndSelection();
+            }
         });
-        
-        const wantedCoursesSelect = new TomSelect('#want-to-teach', {
-            plugins: ['remove_button'],
-            items: wantedCourseIds
-        });
-        
-        const unwantedCoursesSelect = new TomSelect('#dont-want-to-teach', {
+
+        unwantedCoursesSelect = new TomSelect($refs.dontWantToTeachSelect, {
             plugins: ['remove_button'],
             maxItems: 2,
-            items: unwantedCourseIds
+            options: [], 
+            items: unwantedCourseIds,
+            onChange: function(values) {
+                $wire.unwantedCourseIds = values;
+                refreshWantedUnwantedOptionsAndSelection();
+                showUnwantedCourseBadge = values.length >= 2;
+                unwantedCount = values.length;
+            }
         });
         
-        proficientCoursesSelect.on('change', function(values) {
-            $wire.proficientCourseIds = values;
-        });
-        
-        wantedCoursesSelect.on('change', function(values) {
-            $wire.wantedCourseIds = values;
-        });
-        
-        unwantedCoursesSelect.on('change', function(values) {
-            $wire.unwantedCourseIds = values;
-            showUnwantedCourseBadge = values.length >= 2;
+        proficientCoursesSelect = new TomSelect($refs.canTeachCoursesSelect, {
+            plugins: ['remove_button'],
+            options: allCourseOptions,
+            items: proficientCourseIds,
+            onInitialize: function() {
+                refreshWantedUnwantedOptionsAndSelection();
+            },
+            onChange: function(values) {
+                $wire.proficientCourseIds = values;
+                refreshWantedUnwantedOptionsAndSelection();
+            }
         });
     "
 >
@@ -131,18 +177,14 @@
             </flux:label>
 
             <div wire:ignore>
-                <select 
-                    id="can-teach-courses" 
+                <select
+                    x-ref="canTeachCoursesSelect"
+                    id="can-teach-courses"
                     class="w-full"
                     aria-labelledby="course-preferences-legend"
                     multiple
                 >
-                    <option value="1">
-                        {{ __('desiderata::desiderata.Course 1') }}
-                    </option>
-                    <option value="2">
-                        {{ __('desiderata::desiderata.Course 2') }}
-                    </option>
+                    {{-- Opcje będą ładowane przez TomSelect --}}
                 </select>
             </div>
 
@@ -165,18 +207,14 @@
                 </flux:label>
                 
                 <div wire:ignore>
-                    <select 
-                        id="want-to-teach" 
+                    <select
+                        x-ref="wantToTeachSelect"
+                        id="want-to-teach"
                         class="w-full"
                         aria-labelledby="course-preferences-legend"
                         multiple
                     >
-                        <option value="1">
-                            {{ __('desiderata::desiderata.Course 1') }}
-                        </option>
-                        <option value="2">
-                            {{ __('desiderata::desiderata.Course 2') }}
-                        </option>
+                        {{-- Opcje będą ładowane przez TomSelect --}}
                     </select>
                 </div>
                 
@@ -188,24 +226,19 @@
             </div>
             <div>
                 <flux:label for="dont-want-to-teach" class="block mb-2 font-medium">
-                    {{ __('desiderata::desiderata.I do not want to teach') }} 
-                    <span aria-live="polite" class="text-sm">({{ count($unwantedCourseIds) }}/2)</span>
+                    {{ __('desiderata::desiderata.I do not want to teach') }}&nbsp;<span aria-live="polite" class="text-sm">(<span x-text="unwantedCount"></span>/2)</span>
                     <flux:icon name="face-frown" class="w-4 h-4 ml-1 inline-flex align-text-bottom" aria-hidden="true" />
                 </flux:label>
 
                 <div wire:ignore>
-                    <select 
-                        id="dont-want-to-teach" 
+                    <select
+                        x-ref="dontWantToTeachSelect"
+                        id="dont-want-to-teach"
                         class="w-full"
                         aria-labelledby="course-preferences-legend"
                         multiple
                     >
-                        <option value="1">
-                            {{ __('desiderata::desiderata.Course 1') }}
-                        </option>
-                        <option value="2">
-                            {{ __('desiderata::desiderata.Course 2') }}
-                        </option>
+                        {{-- Opcje będą ładowane przez TomSelect --}}
                     </select>
                 </div>
 

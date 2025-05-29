@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
+use App\Application\Course\UseCases\GetAllCoursesUseCase;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Dto\DesiderataFormPreferencesDto;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
@@ -31,20 +33,27 @@ class DesiderataFormPreferencesStepComponent extends StepComponent
 
     public int $maxConsecutiveHours = 4;
 
-    public function mount(DesideratumRepositoryInterface $repository): void
+    public Collection $allCourses;
+
+    public array $allCourseOptions = [];
+
+    public function mount(GetAllCoursesUseCase $getAllCoursesUseCase, DesideratumRepositoryInterface $desideratumRepository): void
     {
         $currentUserId = Auth::id();
         $semesterId = 1;
 
-        $existingDesideratum = $repository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
+        $this->allCourses = $getAllCoursesUseCase->execute();
+        $this->allCourseOptions = $this->allCourses->map(fn ($course) => ['value' => $course->id, 'text' => $course->name])->toArray();
+
+        $existingDesideratum = $desideratumRepository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
 
         if ($existingDesideratum) {
             $this->wantStationary = $existingDesideratum->wantStationary;
             $this->wantNonStationary = $existingDesideratum->wantNonStationary;
             $this->agreeToOvertime = $existingDesideratum->agreeToOvertime;
-            $this->proficientCourseIds = $existingDesideratum->proficientCourseIds;
-            $this->wantedCourseIds = $existingDesideratum->wantedCourseIds;
-            $this->unwantedCourseIds = $existingDesideratum->unwantedCourseIds;
+            // $this->proficientCourseIds = $existingDesideratum->proficientCourseIds;
+            // $this->wantedCourseIds = $existingDesideratum->wantedCourseIds;
+            // $this->unwantedCourseIds = $existingDesideratum->unwantedCourseIds;
             $this->masterThesesCount = $existingDesideratum->masterThesesCount;
             $this->bachelorThesesCount = $existingDesideratum->bachelorThesesCount;
             $this->maxHoursPerDay = $existingDesideratum->maxHoursPerDay;

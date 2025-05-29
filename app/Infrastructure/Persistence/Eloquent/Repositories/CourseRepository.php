@@ -9,6 +9,7 @@ use App\Domain\Dto\UpdateCourseDto;
 use App\Domain\Course\Interfaces\CourseRepositoryInterface;
 use App\Models\Course;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final class CourseRepository implements CourseRepositoryInterface
 {
@@ -65,5 +66,10 @@ final class CourseRepository implements CourseRepositoryInterface
     public function getCourseByName(string $name): ?Course
     {
         return Course::where('name', $name)->first();
+    }
+
+    public function getAllCourses(): Collection
+    {
+        return Course::orderBy('name')->get();
     }
 }

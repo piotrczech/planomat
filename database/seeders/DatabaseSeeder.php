@@ -17,10 +17,21 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->scientificWorker()->create([
-            'name' => 'Naukowiec Testowy',
-            'email' => 'prowadzacy@pwr.edu.pl',
+            'name' => 'Jan Kowalski',
+            'email' => 'jan.kowalski@pwr.edu.pl',
             'password' => 'password',
         ]);
+        User::factory()->scientificWorker()->create([
+            'name' => 'Piotr Nowak',
+            'email' => 'piotr.nowak@pwr.edu.pl',
+            'password' => 'password',
+        ]);
+        User::factory()->scientificWorker()->create([
+            'name' => 'Martyna Nowak',
+            'email' => 'martyna.nowak@pwr.edu.pl',
+            'password' => 'password',
+        ]);
+
         User::factory()->deanOfficeWorker()->create([
             'name' => 'Pracownik Dziekanatu Testowy',
             'email' => 'dziekanat@pwr.edu.pl',

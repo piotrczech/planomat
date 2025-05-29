@@ -8,6 +8,7 @@ use App\Domain\Dto\StoreCourseDto;
 use App\Domain\Dto\UpdateCourseDto;
 use App\Models\Course;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface CourseRepositoryInterface
 {
@@ -22,4 +23,6 @@ interface CourseRepositoryInterface
     public function delete(int $id): bool;
 
     public function getCourseByName(string $name): ?Course;
+
+    public function getAllCourses(): Collection;
 }
