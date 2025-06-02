@@ -83,7 +83,7 @@
         // Nasłuchiwanie eventów
         $wire.on('consultationSaved', (data) => {
             showSuccessAlert = true;
-            successMessage = '{{ __('consultation::consultation.Successfully created') }}' + ' ' + data.count + ' {{ __('consultation::consultation.consultation sessions') }}';
+            successMessage = '{{ __('consultation::consultation.Successfully created') }}';
             window.scrollTo(0, 0);
             setTimeout(() => { showSuccessAlert = false; }, 5000);
         });

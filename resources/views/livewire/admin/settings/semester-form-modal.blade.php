@@ -50,7 +50,7 @@
                                     <flux:input
                                         x-data="{ picker: null }"
                                         x-ref="semester_start_date_picker"
-                                        x-init="picker = flatpickr($refs.semester_start_date_picker, { dateFormat: 'Y-m-d', altInput: true, altFormat: 'd.m.Y', onChange: (selectedDates, dateStr) => { $wire.set('semester_start_date', dateStr); } }); $watch('$wire.semester_start_date', value => picker.setDate(value, false));"
+                                        x-init="picker = flatpickr($refs.semester_start_date_picker, { dateFormat: 'Y-m-d', locale: 'pl', altInput: true, altFormat: 'd.m.Y', onChange: (selectedDates, dateStr) => { $wire.set('semester_start_date', dateStr); } }); $watch('$wire.semester_start_date', value => picker.setDate(value, false));"
                                         id="semester_start_date"
                                         type="text"
                                         wire:model.defer="semester_start_date"
@@ -68,7 +68,7 @@
                                     <flux:input
                                         x-data="{ picker: null }"
                                         x-ref="session_start_date_picker"
-                                        x-init="picker = flatpickr($refs.session_start_date_picker, { dateFormat: 'Y-m-d', altInput: true, altFormat: 'd.m.Y', onChange: (selectedDates, dateStr) => { $wire.set('session_start_date', dateStr); } }); $watch('$wire.session_start_date', value => picker.setDate(value, false));"
+                                        x-init="picker = flatpickr($refs.session_start_date_picker, { dateFormat: 'Y-m-d', locale: 'pl', altInput: true, altFormat: 'd.m.Y', onChange: (selectedDates, dateStr) => { $wire.set('session_start_date', dateStr); } }); $watch('$wire.session_start_date', value => picker.setDate(value, false));"
                                         id="session_start_date"
                                         type="text"
                                         wire:model.defer="session_start_date"
@@ -86,7 +86,7 @@
                                     <flux:input
                                         x-data="{ picker: null }"
                                         x-ref="end_date_picker"
-                                        x-init="picker = flatpickr($refs.end_date_picker, { dateFormat: 'Y-m-d', altInput: true, altFormat: 'd.m.Y', onChange: (selectedDates, dateStr) => { $wire.set('end_date', dateStr); } }); $watch('$wire.end_date', value => picker.setDate(value, false));"
+                                        x-init="picker = flatpickr($refs.end_date_picker, { dateFormat: 'Y-m-d', locale: 'pl', altInput: true, altFormat: 'd.m.Y', onChange: (selectedDates, dateStr) => { $wire.set('end_date', dateStr); } }); $watch('$wire.end_date', value => picker.setDate(value, false));"
                                         id="end_date"
                                         type="text"
                                         wire:model.defer="end_date"

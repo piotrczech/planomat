@@ -83,4 +83,9 @@ final class SemesterRepository implements SemesterRepositoryInterface
             ->where('season', $season)
             ->first();
     }
+
+    public function findCurrentSemester(): ?Semester
+    {
+        return Semester::getCurrentSemester();
+    }
 }

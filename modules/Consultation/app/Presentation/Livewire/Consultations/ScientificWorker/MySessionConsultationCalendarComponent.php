@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
+use App\Application\Semester\UseCases\GetCurrentSemesterDatesUseCase;
 use Carbon\Carbon;
 use Livewire\Component;
-use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 use Exception;
 use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetSessionConsultationsUseCase;
@@ -15,30 +15,15 @@ use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSessionCons
 
 class MySessionConsultationCalendarComponent extends Component
 {
-    public array $consultationEvents;
+    public array $consultationEvents = [];
 
     public Carbon $currentMonth;
 
     public array $calendarDays = [];
 
-    public array $timeSlots = [];
+    public ?Carbon $sessionStart = null;
 
-    public string $activeTab = 'upcoming';
-
-    public bool $showAddConsultationModal = false;
-
-    public ?string $selectedDate = null;
-
-    public ?string $selectedStartTime = null;
-
-    public ?string $selectedEndTime = null;
-
-    public string $location = '';
-
-    // Daty sesji egzaminacyjnej
-    public Carbon $sessionStart;
-
-    public Carbon $sessionEnd;
+    public ?Carbon $sessionEnd = null;
 
     public array $availableMonths = [];
 
@@ -46,90 +31,92 @@ class MySessionConsultationCalendarComponent extends Component
 
     public ?string $errorMessage = null;
 
+    public bool $calendarEnabled = false;
+
     public function mount(): void
     {
-        // Ustawiamy daty sesji - w rzeczywistej aplikacji, te daty powinny być pobierane z bazy danych
-        $this->sessionStart = Carbon::create(2025, 1, 14);
-        $this->sessionEnd = Carbon::create(2025, 2, 16);
+        $semesterDatesUseCase = App::make(GetCurrentSemesterDatesUseCase::class);
+        $dates = $semesterDatesUseCase->execute();
 
-        // Generujemy listę dostępnych miesięcy
-        $this->generateAvailableMonths();
+        if ($dates && isset($dates['session_start_date'], $dates['end_date'])) {
+            $this->sessionStart = Carbon::parse($dates['session_start_date']);
+            $this->sessionEnd = Carbon::parse($dates['end_date']);
+            $this->calendarEnabled = true;
+        } else {
+            $this->errorMessage = __('consultation::consultation.No current semester dates found. Calendar functionality may be limited.');
+            $this->sessionStart = Carbon::now()->startOfMonth();
+            $this->sessionEnd = Carbon::now()->endOfMonth();
+            $this->calendarEnabled = false;
+        }
 
-        // Ustawiamy aktualny miesiąc na pierwszy miesiąc sesji
-        $this->currentMonth = $this->sessionStart->copy()->startOfMonth();
+        if ($this->calendarEnabled) {
+            $this->generateAvailableMonths();
+            $this->currentMonth = $this->sessionStart->copy()->startOfMonth();
+        } else {
+            $this->currentMonth = Carbon::now()->startOfMonth();
+        }
 
         $this->generateCalendarDays();
-        $this->generateTimeSlots();
         $this->loadConsultations();
     }
 
     public function generateAvailableMonths(): void
     {
         $this->availableMonths = [];
+
+        if (!$this->sessionStart || !$this->sessionEnd) {
+            return;
+        }
+
         $startMonth = $this->sessionStart->copy()->startOfMonth();
         $endMonth = $this->sessionEnd->copy()->startOfMonth();
 
-        $currentMonth = $startMonth->copy();
+        $currentMonthIterator = $startMonth->copy();
 
-        while ($currentMonth->lte($endMonth)) {
+        while ($currentMonthIterator->lte($endMonth)) {
             $this->availableMonths[] = [
-                'year' => $currentMonth->year,
-                'month' => $currentMonth->month,
-                'name' => $currentMonth->translatedFormat('F Y'),
-                'carbon' => $currentMonth->copy(),
+                'year' => $currentMonthIterator->year,
+                'month' => $currentMonthIterator->month,
+                'name' => $currentMonthIterator->translatedFormat('F Y'),
+                'carbon' => $currentMonthIterator->copy(),
             ];
-
-            $currentMonth->addMonth();
+            $currentMonthIterator->addMonth();
         }
     }
 
     public function generateCalendarDays(): void
     {
         $this->calendarDays = [];
+
+        if (!$this->sessionStart || !$this->sessionEnd) {
+            return;
+        }
+
         $startOfMonth = $this->currentMonth->copy()->startOfMonth();
         $endOfMonth = $this->currentMonth->copy()->endOfMonth();
 
-        // Określ pierwszy dzień do wyświetlenia (może być z poprzedniego miesiąca)
         $startDay = $startOfMonth->copy()->startOfWeek(Carbon::MONDAY);
-
-        // Określ ostatni dzień do wyświetlenia (może być z następnego miesiąca)
         $endDay = $endOfMonth->copy()->endOfWeek(Carbon::SUNDAY);
 
-        $currentDay = $startDay->copy();
+        $currentDayIterator = $startDay->copy();
 
-        while ($currentDay->lte($endDay)) {
-            $dateString = $currentDay->toDateString();
-            $isCurrentMonth = $currentDay->month === $this->currentMonth->month;
-            $isToday = $currentDay->isToday();
-            $hasConsultation = false; // Będzie aktualizowane po załadowaniu konsultacji
-
-            // Sprawdź, czy dzień jest w zakresie sesji
-            $isInSessionRange = $currentDay->between($this->sessionStart, $this->sessionEnd);
+        while ($currentDayIterator->lte($endDay)) {
+            $dateString = $currentDayIterator->toDateString();
+            $isCurrentMonth = $currentDayIterator->month === $this->currentMonth->month;
+            $isToday = $currentDayIterator->isToday();
+            $isInSessionRange = $this->calendarEnabled && $this->sessionStart && $this->sessionEnd && $currentDayIterator->between($this->sessionStart, $this->sessionEnd);
 
             $this->calendarDays[] = [
                 'date' => $dateString,
-                'day' => $currentDay->day,
-                'dayOfWeek' => $currentDay->dayOfWeek,
+                'day' => $currentDayIterator->day,
+                'dayOfWeek' => $currentDayIterator->dayOfWeek,
                 'isCurrentMonth' => $isCurrentMonth,
                 'isToday' => $isToday,
                 'isInSessionRange' => $isInSessionRange,
-                'hasConsultation' => $hasConsultation,
             ];
 
-            $currentDay->addDay();
+            $currentDayIterator->addDay();
         }
-    }
-
-    public function generateTimeSlots(): void
-    {
-        $this->timeSlots = [
-            'morning' => [
-                '9:00', '9:30', '10:00', '10:30', '11:00', '11:30',
-            ],
-            'afternoon' => [
-                '12:00', '12:30', '13:00', '13:30',
-            ],
-        ];
     }
 
     #[On('consultationSaved')]
@@ -137,37 +124,46 @@ class MySessionConsultationCalendarComponent extends Component
     {
         $this->consultationEvents = App::make(GetSessionConsultationsUseCase::class)->execute();
 
+        if (empty($this->calendarDays) && ($this->sessionStart && $this->sessionEnd)) {
+            $this->generateCalendarDays();
+        }
+
         foreach ($this->calendarDays as &$day) {
             $day['hasConsultation'] = collect($this->consultationEvents)->contains('consultation_date', $day['date']);
         }
-        $this->dispatch('$refresh');
+        unset($day);
     }
 
     public function changeMonth(int $offset): void
     {
-        $newMonth = $this->currentMonth->copy()->addMonths($offset);
+        if (!$this->calendarEnabled || empty($this->availableMonths)) {
+            $this->errorMessage = __('consultation::consultation.Calendar is not properly configured to change months.');
 
-        // Sprawdź, czy nowy miesiąc jest w zakresie sesji
-        $isValidMonth = false;
+            return;
+        }
 
-        foreach ($this->availableMonths as $month) {
-            if ($month['year'] === $newMonth->year && $month['month'] === $newMonth->month) {
-                $isValidMonth = true;
+        $currentCarbon = null;
 
-                break;
+        foreach ($this->availableMonths as $index => $monthData) {
+            if ($monthData['carbon']->year === $this->currentMonth->year && $monthData['carbon']->month === $this->currentMonth->month) {
+                $currentCarbon = $monthData['carbon'];
+                $newIndex = $index + $offset;
+
+                if (isset($this->availableMonths[$newIndex])) {
+                    $this->currentMonth = $this->availableMonths[$newIndex]['carbon']->copy();
+                    $this->generateCalendarDays();
+                    $this->loadConsultations();
+                }
+
+                return;
             }
         }
 
-        if ($isValidMonth) {
-            $this->currentMonth = $newMonth;
+        if (!$currentCarbon && !empty($this->availableMonths)) {
+            $this->currentMonth = $this->availableMonths[0]['carbon']->copy();
             $this->generateCalendarDays();
             $this->loadConsultations();
         }
-    }
-
-    public function setActiveTab(string $tab): void
-    {
-        $this->activeTab = $tab;
     }
 
     public function removeConsultation(int $eventId): void
@@ -177,109 +173,36 @@ class MySessionConsultationCalendarComponent extends Component
             $result = $useCase->execute($eventId);
 
             if ($result) {
-                $this->loadConsultations();
                 $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
                 $this->dispatch('consultationDeleted');
+                $this->loadConsultations();
             } else {
                 $this->errorMessage = __('consultation::consultation.Failed to delete consultation');
             }
         } catch (Exception $e) {
-            $this->errorMessage = __('consultation::consultation.Failed to delete consultation');
+            $this->errorMessage = __('consultation::consultation.Failed to delete consultation') . ': ' . $e->getMessage();
         }
-
-        $this->generateCalendarDays();
-        $this->loadConsultations();
-    }
-
-    public function selectDate(string $date): void
-    {
-        $this->selectedDate = $date;
-    }
-
-    public function selectTimeSlot(string $time, string $type = 'start'): void
-    {
-        if ($type === 'start') {
-            $this->selectedStartTime = $time;
-
-            // Automatycznie ustaw czas końcowy na 30 minut później, jeśli nie jest jeszcze wybrany
-            if (!$this->selectedEndTime) {
-                $carbonTime = Carbon::createFromFormat('H:i', $time);
-                $this->selectedEndTime = $carbonTime->addMinutes(30)->format('H:i');
-            }
-        } else {
-            $this->selectedEndTime = $time;
-        }
-    }
-
-    public function openAddConsultationModal(): void
-    {
-        $this->showAddConsultationModal = true;
-        $this->selectedDate = null;
-        $this->selectedStartTime = null;
-        $this->selectedEndTime = null;
-        $this->location = '';
-    }
-
-    public function closeAddConsultationModal(): void
-    {
-        $this->showAddConsultationModal = false;
-    }
-
-    public function saveConsultation(): void
-    {
-        // Walidacja
-        if (!$this->selectedDate || !$this->selectedStartTime || !$this->selectedEndTime) {
-            // W rzeczywistej aplikacji wyświetlilibyśmy komunikat o błędzie
-            return;
-        }
-
-        // Sprawdź, czy data jest w zakresie sesji
-        $consultationDate = Carbon::parse($this->selectedDate);
-
-        if (!$consultationDate->between($this->sessionStart, $this->sessionEnd)) {
-            // Data poza zakresem sesji
-            return;
-        }
-
-        // W rzeczywistej aplikacji zapisalibyśmy konsultację w bazie danych
-        // ConsultationSession::create([
-        //     'scientific_worker_id' => auth()->id(),
-        //     'semester_id' => 1, // Aktualny semestr
-        //     'consultation_date' => $this->selectedDate,
-        //     'start_time' => $this->selectedStartTime,
-        //     'end_time' => $this->selectedEndTime,
-        //     'location' => $this->location,
-        // ]);
-
-        // Na potrzeby przykładu dodajemy do kolekcji
-        $newId = max(array_column($this->consultationEvents, 'id')) + 1;
-        $this->consultationEvents[] = [
-            'id' => $newId,
-            'consultation_date' => $this->selectedDate,
-            'start_time' => $this->selectedStartTime,
-            'end_time' => $this->selectedEndTime,
-            'location' => $this->location,
-            'status' => 'upcoming',
-        ];
-
-        // Zamknij modal i odśwież kalendarz
-        $this->closeAddConsultationModal();
-        $this->generateCalendarDays();
-        $this->loadConsultations();
     }
 
     public function isFirstMonth(): bool
     {
-        return $this->currentMonth->year === $this->availableMonths[0]['year'] &&
-               $this->currentMonth->month === $this->availableMonths[0]['month'];
+        if (!$this->calendarEnabled || empty($this->availableMonths) || !$this->currentMonth) {
+            return true;
+        }
+
+        return $this->currentMonth->year === $this->availableMonths[0]['carbon']->year &&
+               $this->currentMonth->month === $this->availableMonths[0]['carbon']->month;
     }
 
     public function isLastMonth(): bool
     {
-        $lastMonth = end($this->availableMonths);
+        if (!$this->calendarEnabled || empty($this->availableMonths) || !$this->currentMonth) {
+            return true;
+        }
+        $lastMonthData = end($this->availableMonths);
 
-        return $this->currentMonth->year === $lastMonth['year'] &&
-               $this->currentMonth->month === $lastMonth['month'];
+        return $this->currentMonth->year === $lastMonthData['carbon']->year &&
+               $this->currentMonth->month === $lastMonthData['carbon']->month;
     }
 
     public function render()

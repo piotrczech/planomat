@@ -107,6 +107,9 @@
                     x-ref="input"
                     x-init="flatpickr($refs.input, {
                         dateFormat: 'Y-m-d',
+                        locale: 'pl',
+                        minDate: '{{ $startSessionDate }}',
+                        maxDate: '{{ $endSessionDate }}',
                         onChange: function(selectedDates, dateStr, instance) {
                             $wire.consultationDate = dateStr;
                         }
@@ -146,6 +149,7 @@
                             time_24hr: true,
                             minTime: '7:30',
                             maxTime: '19:30',
+                            locale: 'pl',
                             onChange: function(selectedDates, dateStr, instance) {
                                 $wire.consultationStartTime = dateStr;
                             }
@@ -185,6 +189,7 @@
                             time_24hr: true,
                             minTime: '8:30',
                             maxTime: '20:30',
+                            locale: 'pl',
                             onChange: function(selectedDates, dateStr, instance) {
                                 $wire.consultationEndTime = dateStr;
                             }

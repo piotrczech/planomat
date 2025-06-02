@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
+use App\Application\Semester\UseCases\GetCurrentSemesterDatesUseCase;
 use Livewire\Component;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Exception;
@@ -24,6 +25,10 @@ class NewSessionConsultationComponent extends Component
 
     public ?string $errorMessage = null;
 
+    public string $startSessionDate = '';
+
+    public string $endSessionDate = '';
+
     protected function rules()
     {
         return CreateNewSessionConsultationDto::rules();
@@ -34,9 +39,25 @@ class NewSessionConsultationComponent extends Component
         return CreateNewSessionConsultationDto::messages();
     }
 
+    public function fetchSessionDates(): void
+    {
+        $useCase = App::make(GetCurrentSemesterDatesUseCase::class);
+        $dates = $useCase->execute();
+
+        if ($dates) {
+            $this->startSessionDate = $dates['session_start_date'];
+            $this->endSessionDate = $dates['end_date'];
+        } else {
+            $this->startSessionDate = '';
+            $this->endSessionDate = '';
+            $this->errorMessage = __('consultation::consultation.No current semester found.');
+        }
+    }
+
     public function mount(): void
     {
         $this->resetForm();
+        $this->fetchSessionDates();
     }
 
     public function render()

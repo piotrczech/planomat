@@ -22,6 +22,8 @@ final class CreateNewSemesterConsultationUseCase
         $currentSemesterId = 1;
         // $currentSemester = Semester::getCurrentSemester();
 
+        // todo: validation that consultation not overlaps with other consultations
+
         if (in_array($dto->consultationWeekday, [
             WeekdayEnum::MONDAY->value,
             WeekdayEnum::TUESDAY->value,

@@ -10,6 +10,7 @@ use Modules\Consultation\Application\UseCases\ScientificWorker\GetSemesterConsul
 use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSemesterConsultationUseCase;
 use Exception;
 use Livewire\Attributes\On;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetConsultationSummaryTimeUseCase;
 
 class MySemesterConsultationCalendarComponent extends Component
 {
@@ -23,14 +24,19 @@ class MySemesterConsultationCalendarComponent extends Component
 
     public function mount(): void
     {
-        $this->loadConsultations(App::make(GetSemesterConsultationsUseCase::class));
+        $this->loadInitialData(
+            App::make(GetSemesterConsultationsUseCase::class),
+            App::make(GetConsultationSummaryTimeUseCase::class),
+        );
     }
 
     #[On('consultationSaved')]
-    public function loadConsultations(
+    public function loadInitialData(
         GetSemesterConsultationsUseCase $getSemesterConsultationsUseCase,
+        GetConsultationSummaryTimeUseCase $getConsultationSummaryTime,
     ): void {
         $this->consultationEvents = $getSemesterConsultationsUseCase->execute();
+        $this->consultationSummaryTime = $getConsultationSummaryTime->execute();
     }
 
     public function removeConsultation(int $eventId): void
