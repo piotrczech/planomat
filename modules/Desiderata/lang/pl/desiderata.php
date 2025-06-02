@@ -120,4 +120,5 @@ return [
     'The maximum consecutive hours cannot exceed 8' => 'Maksymalna liczba godzin z rzędu nie może przekraczać 8',
     'Unavailable time slots must be an array' => 'Niedostępne terminy muszą być tablicą',
     'Additional notes cannot exceed 1000 characters' => 'Dodatkowe uwagi nie mogą przekraczać 1000 znaków',
+    'All courses are either wanted or unwanted' => 'Rozdysponowano wszystkie kursy',
 ];

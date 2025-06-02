@@ -178,7 +178,10 @@
                 {{ __('desiderata::desiderata.Courses I can teach') }}
             </flux:label>
 
-            <div class="flex gap-2 mt-2 transition-all duration-300 ease-in-out" x-transition>
+            <div
+                class="flex gap-2 mt-2 transition-all duration-300 ease-in-out bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700/80 shadow-xs rounded-lg p-2 min-h-12"
+                x-transition
+            >
                 @foreach ($allCourseOptions as $courseOption)
                     <div
                         class="py-1 px-2 bg-white dark:bg-neutral-800/50 rounded-lg text-sm"
