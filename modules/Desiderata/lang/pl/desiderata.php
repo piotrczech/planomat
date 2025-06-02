@@ -34,8 +34,8 @@ return [
     'Additional notes' => 'Dodatkowe uwagi',
 
     // Forma prowadzenia zajęć
-    'Stationary studies' => 'Studia stacjonarne',
-    'Non-stationary studies' => 'Studia niestacjonarne',
+    'Stationary studies' => 'Chcę prowadzić zajęcia stacjonarne',
+    'Non-stationary studies' => 'Chcę prowadzić zajęcia niestacjonarne',
 
     // Nadgodziny
     'I agree to work overtime' => 'Wyrażam zgodę na nadgodziny',
