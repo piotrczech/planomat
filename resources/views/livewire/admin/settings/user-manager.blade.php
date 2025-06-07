@@ -1,0 +1,138 @@
+<div>
+    {{-- Controls: Search, Add Button --}}
+    <div class="mb-6 flex justify-between items-center">
+        {{-- Search Input --}}
+        <div class="w-full md:w-1/3">
+            <flux:input
+                wire:model.live.debounce.300ms="userSearch"
+                placeholder="{{ __('admin_settings.users.Search users by name or email') }}"
+                id="userSearch"
+                icon="magnifying-glass"
+            />
+        </div>
+
+        {{-- Add Button --}}
+        <flux:button wire:click="openCreateUserModal" variant="primary" icon="plus">
+            {{ __('admin_settings.users.Add User') }}
+        </flux:button>
+    </div>
+
+    {{-- Users Table --}}
+    <div class="bg-white dark:bg-neutral-800/70 shadow-lg sm:rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
+                <thead class="bg-neutral-50 dark:bg-neutral-700/50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                            {{ __('admin_settings.users.table.Name') }}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                            {{ __('admin_settings.users.table.Email') }}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                            {{ __('admin_settings.users.table.Actions') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
+                    @forelse ($users as $user)
+                        <tr wire:key="user-{{ $user->id }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                                {{ $user->name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
+                                {{ $user->email }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                @if (auth()->check() && (auth()->user()->hasRole(\App\Enums\RoleEnum::ADMINISTRATOR) || auth()->user()->hasRole(\App\Enums\RoleEnum::DEAN_OFFICE_WORKER)) && !$user->hasRole(\App\Enums\RoleEnum::ADMINISTRATOR) && $user->id !== auth()->id())
+                                    <flux:button
+                                        wire:click="impersonateUser({{ $user->id }})"
+                                        size="sm"
+                                        variant="subtle"
+                                        icon="identification"
+                                    >
+                                        {{ __('admin_settings.users.Impersonate User') }}
+                                    </flux:button>
+                                @endif
+                                <flux:button
+                                    wire:click="openEditUserModal({{ $user->id }})"
+                                    size="sm"
+                                    variant="subtle"
+                                    icon="pencil-square"
+                                >
+                                    {{ __('admin_settings.course_manager.Edit') }}
+                                </flux:button>
+                                @if ($user->id !== auth()->id()) {{-- Prevent self-deletion --}}
+                                    <flux:button
+                                        wire:click="openDeleteConfirmationModal({{ $user->id }})"
+                                        variant="danger"
+                                        size="sm"
+                                        icon="trash"
+                                    >
+                                        {{ __('admin_settings.course_manager.Delete') }}
+                                    </flux:button>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="px-6 py-12 text-center"> {{-- Zmieniono colspan z 4 na 3 --}}
+                                <div class="flex flex-col items-center">
+                                    <flux:icon name="users" class="w-12 h-12 mx-auto text-neutral-400 dark:text-neutral-500 mb-4" />
+                                    <flux:text class="text-sm text-neutral-500 dark:text-neutral-400">
+                                        {{ __('admin_settings.users.No users found') }}
+                                    </flux:text>
+                                    {{-- Komunikat o zmianie filtra/wyszukiwania może być teraz mniej relewantny, ale zostawiam --}}
+                                    @if(empty($userSearch))
+                                    <flux:text size="xs" class="text-neutral-400 dark:text-neutral-600 mt-1">
+                                        {{ __('admin_settings.users.Try changing filter or search term') }}
+                                    </flux:text>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Pagination --}}
+        @if ($users->hasPages())
+            <div class="p-4 border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+                {{ $users->links() }}
+            </div>
+        @endif
+    </div>
+
+    {{-- Modals --}}
+    @if ($showCreateUserModal)
+        <livewire:admin.settings.user-form-modal
+            :user-id="0" 
+            :is-visible="true" {{-- Zawsze true, bo renderowany warunkowo --}}
+            :is-editing="false"
+            key="user-form-modal-create-{{ Str::random(5) }}" {{-- Dynamiczny klucz przy każdym pokazaniu --}}
+        />
+    @elseif ($showEditUserModal && $editingUserId)
+        <livewire:admin.settings.user-form-modal
+            :user-id="$editingUserId"
+            :is-visible="true" {{-- Zawsze true, bo renderowany warunkowo --}}
+            :is-editing="true"
+            key="user-form-modal-edit-{{ $editingUserId }}-{{ Str::random(5) }}" {{-- Dynamiczny klucz przy każdym pokazaniu --}}
+        />
+    @endif
+
+    <livewire:admin.settings.delete-user-confirmation-modal
+        :userId="$deletingUserId"
+        :is-visible="$showDeleteConfirmationModal"
+        key="delete-user-modal-{{ $deletingUserId }}"
+    />
+
+    {{-- Script for page refresh on impersonation. Consider a more robust solution if needed. --}}
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('refreshPageForImpersonation', (event) => {
+                window.location.reload();
+            });
+        });
+    </script>
+</div> 

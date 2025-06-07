@@ -23,4 +23,9 @@ class SettingsController extends Controller
     {
         return view('admin.settings.general.manage-semesters');
     }
+
+    public function manageUsers(): View
+    {
+        return view('admin.settings.general.manage-users');
+    }
 }

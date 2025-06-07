@@ -14,6 +14,17 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('app.Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('app.Dashboard') }}</flux:navlist.item>
+
+                    <flux:navlist.item 
+                        icon="users"
+                        :href="route('admin.settings.general.users')" 
+                        :current="request()->routeIs('admin.settings.general.users')" 
+                        wire:navigate
+                        class="text-sm"
+                    >
+                        {{ __('admin_settings.users.Users') }}
+                    </flux:navlist.item>
+
                     
                     {{-- Application Settings --}}
                     <flux:navlist.item 

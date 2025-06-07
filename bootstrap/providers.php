@@ -6,5 +6,6 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\VoltServiceProvider::class,
     Modules\Consultation\Infrastructure\Providers\ConsultationServiceProvider::class,
-    Modules\Desiderata\Providers\DesiderataServiceProvider::class,
+    Modules\Desiderata\Infrastructure\Providers\DesiderataServiceProvider::class,
+    Lab404\Impersonate\ImpersonateServiceProvider::class,
 ];

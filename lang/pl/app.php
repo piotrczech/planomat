@@ -91,4 +91,8 @@ return [
     'Planomat' => 'PlanoMAT',
     'Important Actions' => 'Ważne akcje',
     'Planomat Administration Panel' => 'Panel administracyjny PlanoMAT',
+
+    // Nowe tłumaczenia dla paska impersonifikacji
+    'impersonating_message' => 'Jesteś tymczasowo zalogowany jako <strong>:name</strong>.',
+    'leave_impersonation' => 'Opuść tryb tymczasowy',
 ];

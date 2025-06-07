@@ -5,7 +5,8 @@ declare(strict_types=1);
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+
+Route::impersonate();
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,12 +29,13 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::middleware(['auth', 'verified'])
         ->prefix('admin/settings')
         ->name('admin.settings.')
-        ->controller(AdminSettingsController::class)
+        ->controller(\App\Http\Controllers\Admin\SettingsController::class)
         ->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::prefix('general')->name('general.')->group(function (): void {
                 Route::get('courses', 'manageCourses')->name('courses');
                 Route::get('semesters', 'manageSemesters')->name('semesters');
+                Route::get('users', 'manageUsers')->name('users');
             });
         });
 });

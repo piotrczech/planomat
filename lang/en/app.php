@@ -86,4 +86,8 @@ return [
     'Are you sure you want to delete your account?' => 'Are you sure you want to delete your account?',
     'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
     'Cancel' => 'Cancel',
+
+    // New translations for impersonation bar
+    'impersonating_message' => 'You are currently impersonating <strong>:name</strong>.',
+    'leave_impersonation' => 'Leave impersonation',
 ];
