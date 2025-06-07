@@ -7,17 +7,17 @@ namespace Database\Seeders;
 use App\Models\Course;
 use Illuminate\Database\Seeder;
 
-class CoursesSeeder extends Seeder
+class CourseSeeder extends Seeder
 {
     public function run(): void
     {
         $courseNames = [
-            'name' => 'Analiza matematyczna 1',
-            'name' => 'Analiza matematyczna 2',
-            'name' => 'Algebra',
-            'name' => 'Równania różniczkowe',
-            'name' => 'Rachunek prawdopodobieństwa',
-            'name' => 'Statystyka',
+            'Analiza matematyczna 1',
+            'Analiza matematyczna 2',
+            'Algebra',
+            'Równania różniczkowe',
+            'Rachunek prawdopodobieństwa',
+            'Statystyka',
         ];
 
         foreach ($courseNames as $courseName) {

@@ -42,21 +42,22 @@ return [
     'Go to Desiderata' => 'Przejdź do dezyderatów',
     'Go to Consultations' => 'Przejdź do konsultacji',
     'Desiderata Description' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
-    'Consultations Description' => 'Moduł konsultacji udostępnia dwa różne widoki: interaktywny kalendarz konsultacji w semestrze oraz formularz do zgłaszania konsultacji w sesji. Moduł automatycznie przesyła zaktualizowane dane do dziekanatu.',
+    'Consultations Description for Scientific Worker' => 'Moduł konsultacji udostępnia dwa różne widoki: interaktywny kalendarz konsultacji w semestrze oraz formularz do zgłaszania konsultacji w sesji. Moduł automatycznie przesyła zaktualizowane dane do dziekanatu.',
+    'Consultations Description for Dean Office' => 'Moduł służy do zarządzania i podglądu zgłoszonych konsultacji przez pracowników.',
 
     // Klucze dla admin-dean.blade.php
-    'Quick Actions' => 'Szybkie Akcje',
-    'Download All Desiderata PDF' => 'Pobierz Dezyderaty (PDF)',
+    'Quick Actions' => 'Szybkie akcje',
+    'Download All Desiderata PDF' => 'Pobierz wszystkie dezyderaty (PDF)',
     'Download All Desiderata PDF Description' => 'Pobierz raport PDF ze wszystkimi dezyderatami.',
-    'Download All Consultations PDF' => 'Pobierz Konsultacje (PDF)',
+    'Download All Consultations PDF' => 'Pobierz wszystkie konsultacje (PDF)',
     'Download All Consultations PDF Description' => 'Pobierz raport PDF ze wszystkimi konsultacjami.',
-    'Go to Settings' => 'Ustawienia Systemu',
+    'Go to Settings' => 'Przejdź do ustawień',
     'Go to Settings Description' => 'Przejdź do panelu ustawień aplikacji.',
-    'Recent User Activities' => 'Ostatnie Aktywności Użytkowników',
+    'Modules' => 'Moduły',
+    'Recent User Activities' => 'Ostatnie aktywności użytkowników',
+    'Activities last 2 weeks scrollable' => 'Aktywności z ostatnich 2 tygodni (lista przewijalna)',
+    'Unknown User' => 'Użytkownik nieznany',
+    'No recent activities' => 'Brak ostatnich aktywności w ciągu ostatnich 14 dni.',
     'Recent activities placeholder' => 'Brak ostatnich aktywności do wyświetlenia lub moduł w budowie.',
     'View all activities' => 'Zobacz wszystkie aktywności',
-
-    // Nowe klucze po ostatnich zmianach
-    'Modules' => 'Moduły',
-    'Activities last 2 weeks scrollable' => 'Wyświetlane są aktywności z ostatnich 2 tygodni (przewijalne).',
 ];

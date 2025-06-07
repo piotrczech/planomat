@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\ActivityLog\Interfaces\ActivityLogRepositoryInterface;
 use App\Domain\Course\Interfaces\CourseRepositoryInterface;
+use App\Infrastructure\Persistence\Eloquent\Repositories\ActivityLogRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\CourseRepository;
 use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
 use App\Infrastructure\Persistence\Eloquent\Repositories\SemesterRepository;
@@ -32,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             UserRepositoryInterface::class,
             UserRepository::class,
+        );
+
+        $this->app->bind(
+            ActivityLogRepositoryInterface::class,
+            ActivityLogRepository::class,
         );
     }
 

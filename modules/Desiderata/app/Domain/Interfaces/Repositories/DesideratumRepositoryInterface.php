@@ -6,6 +6,7 @@ namespace Modules\Desiderata\Domain\Interfaces\Repositories;
 
 use Illuminate\Support\Collection;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
+use Modules\Desiderata\Infrastructure\Models\Desideratum;
 
 interface DesideratumRepositoryInterface
 {
@@ -14,7 +15,7 @@ interface DesideratumRepositoryInterface
         int $semesterId,
     ): ?UpdateOrCreateDesideratumDto;
 
-    public function updateOrCreate(UpdateOrCreateDesideratumDto $dto): int;
+    public function updateOrCreate(UpdateOrCreateDesideratumDto $dto): Desideratum;
 
     public function getLastUpdateDateByScientificWorker(int $workerId): ?string;
 

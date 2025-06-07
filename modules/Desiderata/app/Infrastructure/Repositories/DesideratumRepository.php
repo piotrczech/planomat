@@ -85,7 +85,7 @@ class DesideratumRepository implements DesideratumRepositoryInterface
         ]);
     }
 
-    public function updateOrCreate(UpdateOrCreateDesideratumDto $dto): int
+    public function updateOrCreate(UpdateOrCreateDesideratumDto $dto): Desideratum
     {
         return DB::transaction(function () use ($dto) {
             // Utwórz lub zaktualizuj główny rekord Desideratum
@@ -115,7 +115,7 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             // Synchronizuj niedostępne sloty czasowe
             $this->syncUnavailableTimeSlots($desideratum, $dto);
 
-            return $desideratum->id;
+            return $desideratum;
         });
     }
 

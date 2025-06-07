@@ -186,4 +186,18 @@ return [
             'id_exists' => 'Użytkownik o podanym ID nie istnieje.',
         ],
     ],
+    'activity_log' => [
+        'Activity Log' => 'Log Aktywności',
+        'Activity Log Description' => 'Poniżej znajduje się log aktywności użytkowników systemu.',
+        'Search activity logs' => 'Szukaj logów aktywności...',
+        'No activity logs found' => 'Nie znaleziono żadnych logów aktywności.',
+        'Actions' => 'Akcje',
+        'User' => 'Użytkownik',
+        'Module' => 'Moduł',
+        'Action' => 'Akcja',
+        'Date' => 'Data',
+        'User ID' => 'ID Użytkownika',
+        'Module' => 'Moduł',
+        'Action' => 'Akcja',
+    ],
 ];
