@@ -19,6 +19,7 @@
             wantedCourseIds = wantedCourseIds.filter(id =>
                 possibleWantedCourseOptions.some(option => option.value == id)
             );
+            $wire.wantedCourseIds = wantedCourseIds;
             
             possibleUnwantedCourseOptions = allCourseOptions.filter(option =>
                 !wantedCourseIds.includes(option.value)
@@ -27,6 +28,7 @@
             unwantedCourseIds = unwantedCourseIds.filter(id =>
                 possibleUnwantedCourseOptions.some(option => option.value == id)
             );
+            $wire.unwantedCourseIds = unwantedCourseIds;
 
             if (wantedCoursesSelect) {
                 wantedCoursesSelect.clearOptions();
