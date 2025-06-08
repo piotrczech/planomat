@@ -64,7 +64,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="title">Raport Pracowników, Którzy Nie Złożyli Dezyderaty</div>
+        <div class="title">Lista osób, które nie złożyły dezyderatów</div>
     </div>
     
     <div class="footer">

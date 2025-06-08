@@ -67,7 +67,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="title">Raport Pracowników, Którzy Nie Uzupełnili Konsultacji</div>
+        <div class="title">Lista osób, które nie uzupełniły konsultacji</div>
         <div class="subtitle">
             Typ: {{ $consultationType === \Modules\Consultation\Enums\ConsultationType::Semester ? 'Konsultacje semestralne' : 'Konsultacje sesyjne' }}
         </div>
