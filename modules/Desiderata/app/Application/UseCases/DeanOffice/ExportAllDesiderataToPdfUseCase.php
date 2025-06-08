@@ -5,27 +5,31 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Application\UseCases\DeanOffice;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
+use Symfony\Component\HttpFoundation\Response;
+use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
 
 final class ExportAllDesiderataToPdfUseCase
 {
     public function __construct(
         private readonly DesideratumRepositoryInterface $desideratumRepository,
+        private readonly SemesterRepositoryInterface $semesterRepository,
     ) {
     }
 
-    public function execute(): Response
+    public function execute(int $semesterId): Response
     {
-        $allDesiderata = $this->desideratumRepository->getAllDesiderataForPdfExport();
+        $scientificWorkers = $this->desideratumRepository->getAllDesiderataForPdfExport($semesterId);
+        $semester = $this->semesterRepository->findOrFail($semesterId);
         $reportDate = Carbon::now()->translatedFormat('d F Y H:i');
 
         $pdf = Pdf::loadView('desiderata::pdf.all_desiderata_export', [
-            'allDesiderata' => $allDesiderata,
+            'scientificWorkers' => $scientificWorkers,
             'reportDate' => $reportDate,
-        ])->setPaper('a4');
+            'semester' => $semester,
+        ])->setPaper('a4', 'landscape');
 
-        return $pdf->download('planomat_dezyderaty_-' . Carbon::now()->format('Y-m-d_H-i') . '.pdf');
+        return $pdf->download('planomat_dezyderaty_semestr_' . $semester->name . '_' . Carbon::now()->format('Y-m-d') . '.pdf');
     }
 }

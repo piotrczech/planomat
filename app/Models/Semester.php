@@ -28,6 +28,16 @@ class Semester extends Model
         'season' => SemesterSeasonEnum::class,
     ];
 
+    public function getNameAttribute(): string
+    {
+        return $this->season->label();
+    }
+
+    public function getAcademicYearAttribute(): string
+    {
+        return $this->start_year . '/' . ($this->start_year + 1);
+    }
+
     public static function getCurrentSemester()
     {
         $now = Carbon::now();

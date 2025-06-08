@@ -72,23 +72,56 @@
         li {
             margin-bottom: 3px;
         }
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+        .cover-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .cover-subtitle {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .cover-date {
+            font-size: 12px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
+    <div class="cover-page">
+        <div class="cover-title">Raport Dezyderat Pracowników Naukowych</div>
+        <div class="cover-subtitle">dla semestru: <strong>{{ $semester->name }} ({{ $semester->academic_year }})</strong></div>
+        <div class="cover-date">Data wygenerowania raportu: {{ $reportDate }}</div>
+    </div>
+    <div class="page-break"></div>
+
     <div class="report-generated-date">Wygenerowano: {{ $reportDate }}</div>
 
-    @if($allDesiderata->isEmpty())
-        <p style="text-align:center; font-style:italic; margin-top: 50px;">Brak dezyderatów do wyświetlenia.</p>
+    @if($scientificWorkers->isEmpty())
+        <div class="no-data-info">
+            Brak pracowników naukowych do wyświetlenia w raporcie dla tego semestru.
+        </div>
     @else
-        @foreach($allDesiderata as $desideratum)
-            {{-- Page 1: Desideratum Preferences --}}
+        @foreach($scientificWorkers as $worker)
+            @php
+                $desideratum = $worker->desiderata->first();
+                if (!$desideratum) {
+                    $desideratum = new \Modules\Desiderata\Infrastructure\Models\Desideratum();
+                    $desideratum->setRelation('scientificWorker', $worker);
+                }
+            @endphp
             @include('desiderata::pdf.partials.desiderata_preferences_page', ['desideratum' => $desideratum])
             <div class="page-break"></div>
-
-            {{-- Page 2: Desideratum Availability --}}
             @include('desiderata::pdf.partials.desiderata_availability_page', ['desideratum' => $desideratum])
 
-            {{-- Add page-break after each employee, unless it's the last one --}}
             @if(!$loop->last)
                 <div class="page-break"></div>
             @endif

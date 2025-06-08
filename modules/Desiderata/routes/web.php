@@ -16,7 +16,10 @@ Route::middleware(['auth', 'verified'])->prefix('desiderata')->group(function ()
 
     // Dean office worker
     Route::group(['prefix' => 'dean-office'], function (): void {
-        Route::get('export/all/pdf', [DesiderataExportController::class, 'downloadAllPdf'])
+        Route::get('export/all/pdf/{semester}', [DesiderataExportController::class, 'downloadAllPdf'])
             ->name('desiderata.dean-office.export.all-desiderata.pdf');
+
+        Route::get('export/unfilled/pdf/{semester}', [DesiderataExportController::class, 'downloadUnfilledPdf'])
+            ->name('desiderata.dean-office.export.unfilled-desiderata.pdf');
     });
 });

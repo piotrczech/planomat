@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Infrastructure\Repositories;
 
+use App\Enums\RoleEnum;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
+use Modules\Consultation\Enums\ConsultationType;
 use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
 use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 use App\Enums\WeekdayEnum;
 use App\Enums\WeekTypeEnum;
+use App\Models\User;
 
 final class ConsultationRepository implements ConsultationRepositoryInterface
 {
@@ -146,11 +150,12 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
     public function createSessionConsultation(
         int $scientificWorkerId,
+        int $semesterId,
         CreateNewSessionConsultationDto $dto,
     ): int {
         $consultation = ConsultationSession::create([
             'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => 1,
+            'semester_id' => $semesterId,
             'consultation_date' => $dto->consultationDate,
             'start_time' => $dto->consultationStartTime,
             'end_time' => $dto->consultationEndTime,
@@ -230,40 +235,48 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return sprintf('%d h %d min', floor($totalDuration / 60), $totalDuration % 60);
     }
 
-    public function fetchAllForPdfExport(): array
+    public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection
     {
-        $result = [];
+        $consultationRelation = match ($type) {
+            ConsultationType::Semester => 'semesterConsultations',
+            ConsultationType::Session => 'sessionConsultations',
+        };
 
-        $semesterConsultations = ConsultationSemester::with('scientificWorker')
-            ->orderBy('scientific_worker_id')
-            ->orderBy('day')
-            ->orderBy('start_time')
+        return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->with([
+                $consultationRelation => function ($query) use ($semesterId): void {
+                    $query->where('semester_id', $semesterId)
+                        ->orderBy('start_time');
+                },
+            ])
+            ->orderBy('name')
             ->get();
+    }
 
-        foreach ($semesterConsultations as $consultation) {
-            $workerId = $consultation->scientific_worker_id;
+    public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection
+    {
+        return $this->getAllScientificWorkersWithConsultations($semesterId, $type);
+    }
 
-            if (!isset($result[$workerId])) {
-                $result[$workerId] = [
-                    'name' => $consultation->scientificWorker->name,
-                    'consultations' => [],
-                ];
-            }
-            $result[$workerId]['consultations'][] = [
-                'term_or_day' => WeekdayEnum::from($consultation->day->value)->label(),
-                'hours' => Carbon::parse($consultation->start_time)->format('H:i') . ' - ' . Carbon::parse($consultation->end_time)->format('H:i'),
-                'location' => $consultation->location,
-                'week_type' => WeekTypeEnum::from($consultation->week_type->value)->label(),
-            ];
-        }
+    public function fetchAllForPdfExport(): Collection
+    {
+        // Pusta implementacja, aby spełnić wymagania interfejsu.
+        // Ta metoda nie jest już używana w logice aplikacji.
+        return new Collection;
+    }
 
-        foreach ($result as $workerId => &$data) {
-            usort($data['consultations'], function ($a, $b) {
-                return strcmp($a['term_or_day'], $b['term_or_day']) ?: strcmp($a['hours'], $b['hours']);
-            });
-        }
-        unset($data);
+    public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type): Collection
+    {
+        $consultationRelation = match ($type) {
+            ConsultationType::Semester => 'semesterConsultations',
+            ConsultationType::Session => 'sessionConsultations',
+        };
 
-        return $result;
+        return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->whereDoesntHave($consultationRelation, function ($query) use ($semesterId): void {
+                $query->where('semester_id', $semesterId);
+            })
+            ->orderBy('name')
+            ->get();
     }
 }

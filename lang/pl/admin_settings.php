@@ -14,6 +14,7 @@ return [
     'Back to Settings' => 'Powrót do Ustawień',
     'Manage Courses Page Description' => 'Przeglądaj, dodawaj, edytuj i usuwaj kursy w systemie.',
     'Manage Semesters Page Description' => 'Zarządzaj semestrami, ich datami rozpoczęcia, zakończenia oraz sesjami.',
+    'Select a semester' => 'Wybierz semestr...',
 
     'course_manager.Course List' => 'Lista Kursów',
     'course_manager.Course List Description' => 'Poniżej znajduje się lista wszystkich kursów zdefiniowanych w systemie.',
@@ -199,5 +200,21 @@ return [
         'User ID' => 'ID Użytkownika',
         'Module' => 'Moduł',
         'Action' => 'Akcja',
+    ],
+    'consultations' => [
+        'Export Consultations' => 'Eksportuj Konsultacje',
+        'Choose consultation type to export' => 'Wybierz rodzaj konsultacji do wyeksportowania',
+        'Semester Consultations' => 'Konsultacje semestralne',
+        'Session Consultations' => 'Konsultacje w sesji',
+        'Unfilled Semester Consultations' => 'Nieuzupełnione (semestr)',
+        'Unfilled Session Consultations' => 'Nieuzupełnione (sesja)',
+    ],
+    'Cancel' => 'Anuluj',
+
+    'desiderata' => [
+        'Export Desiderata' => 'Eksportuj Dezyderaty',
+        'Choose desiderata report type' => 'Wybierz rodzaj raportu dezyderat do wyeksportowania',
+        'Export All' => 'Eksportuj wszystkie',
+        'Export Unfilled' => 'Lista nieuzupełnionych',
     ],
 ];

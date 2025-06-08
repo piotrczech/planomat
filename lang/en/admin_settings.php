@@ -14,6 +14,7 @@ return [
     'Back to Settings' => 'Back to Settings',
     'Manage Courses Page Description' => 'Browse, add, edit, and delete courses in the system.',
     'Manage Semesters Page Description' => 'Manage semesters, their start and end dates, and sessions.',
+    'Select a semester' => 'Select a semester...',
 
     'course_manager.Course List' => 'Course List',
     'course_manager.Course List Description' => 'Below is a list of all courses defined in the system.',
@@ -128,4 +129,11 @@ return [
             'id_exists' => 'User with the given ID does not exist.',
         ],
     ],
+    'consultations' => [
+        'Export Consultations' => 'Export Consultations',
+        'Choose consultation type to export' => 'Choose the type of consultations you want to export.',
+        'Semester Consultations' => 'Semester Consultations',
+        'Session Consultations' => 'Session Consultations',
+    ],
+    'Cancel' => 'Cancel',
 ];

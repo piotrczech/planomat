@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 
-final class ExportAllConsultationsToPdfUseCase
+final class ExportUnfilledConsultationsToPdfUseCase
 {
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
@@ -27,18 +27,18 @@ final class ExportAllConsultationsToPdfUseCase
             throw ValidationException::withMessages(['type' => 'Invalid consultation type provided.']);
         }
 
-        $scientificWorkers = $this->consultationRepository->getAllScientificWorkersWithConsultations($semesterId, $consultationType);
+        $unfilledWorkers = $this->consultationRepository->getScientificWorkersWithoutConsultations($semesterId, $consultationType);
 
         $dataForPdf = [
-            'scientificWorkers' => $scientificWorkers,
+            'unfilledWorkers' => $unfilledWorkers,
             'reportDate' => Carbon::now()->translatedFormat('d F Y H:i'),
             'consultationType' => $consultationType,
         ];
 
-        $filename = 'raport_konsultacji_' . $type . '_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+        $filename = 'raport_nieuzupelnione_' . $type . '_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
 
         return $this->pdfGenerator->generateFromView(
-            view: 'consultation::pdf.all_consultations',
+            view: 'consultation::pdf.unfilled_consultations',
             data: $dataForPdf,
             filename: $filename,
             orientation: 'portrait',

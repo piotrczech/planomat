@@ -6,6 +6,8 @@ namespace Modules\Consultation\Domain\Interfaces\Repositories;
 
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
+use Illuminate\Database\Eloquent\Collection;
+use Modules\Consultation\Enums\ConsultationType;
 
 interface ConsultationRepositoryInterface
 {
@@ -27,6 +29,7 @@ interface ConsultationRepositoryInterface
 
     public function createSessionConsultation(
         int $scientificWorkerId,
+        int $semesterId,
         CreateNewSessionConsultationDto $dto,
     ): int;
 
@@ -47,5 +50,11 @@ interface ConsultationRepositoryInterface
      *               containing worker's name and their list of consultations.
      *               Each consultation should have 'type', 'term_or_day', 'hours', 'location', 'week_type' (if applicable).
      */
-    public function fetchAllForPdfExport(): array;
+    public function fetchAllForPdfExport(): Collection;
+
+    public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection;
+
+    public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection;
+
+    public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type): Collection;
 }

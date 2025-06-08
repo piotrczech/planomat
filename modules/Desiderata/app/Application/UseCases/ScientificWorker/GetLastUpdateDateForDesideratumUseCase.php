@@ -22,7 +22,7 @@ final class GetLastUpdateDateForDesideratumUseCase
             return null;
         }
 
-        return $this->desideratumRepository->getLastUpdateDateByScientificWorker(
+        return $this->desideratumRepository->getLastUpdateDate(
             $scientificWorkerId,
         );
     }

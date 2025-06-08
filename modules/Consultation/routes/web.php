@@ -20,7 +20,9 @@ Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function
 
     // Dean office worker
     Route::group(['prefix' => 'dean-office'], function (): void {
-        Route::get('export/all-consultations-pdf', [ConsultationExportController::class, 'downloadAllPdf'])
+        Route::get('export/all/pdf/{semester}/{type}', [ConsultationExportController::class, 'downloadAllPdf'])
             ->name('consultations.dean-office.export.all-consultations.pdf');
+        Route::get('export/unfilled/pdf/{semester}/{type}', [ConsultationExportController::class, 'downloadUnfilledPdf'])
+            ->name('consultations.dean-office.export.unfilled-consultations.pdf');
     });
 });

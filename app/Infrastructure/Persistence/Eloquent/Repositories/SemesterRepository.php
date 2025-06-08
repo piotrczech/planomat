@@ -9,6 +9,7 @@ use App\Domain\Semester\Dto\UpdateSemesterDto;
 use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
 use App\Models\Semester;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 final class SemesterRepository implements SemesterRepositoryInterface
 {
@@ -19,7 +20,12 @@ final class SemesterRepository implements SemesterRepositoryInterface
         return Semester::find($id);
     }
 
-    public function getAll(?string $searchTerm = null, int $perPage = self::DEFAULT_PER_PAGE): LengthAwarePaginator
+    public function findOrFail(int $id): Semester
+    {
+        return Semester::findOrFail($id);
+    }
+
+    public function getAll(?string $searchTerm = null, int $perPage = self::DEFAULT_PER_PAGE, string $sort = 'start_year', string $direction = 'desc'): LengthAwarePaginator
     {
         return Semester::query()
             ->when($searchTerm, function ($query, $searchTerm): void {
@@ -31,9 +37,13 @@ final class SemesterRepository implements SemesterRepositoryInterface
                         ->orWhere('end_date', 'like', "%{$searchTerm}%");
                 });
             })
-            ->orderBy('start_year', 'desc')
-            ->orderBy('season', 'asc') // Zakładając, że 'WINTER' (lub jego odpowiednik) jest alfabetycznie pierwszy niż 'SUMMER'
+            ->orderBy($sort, $direction)
             ->paginate($perPage);
+    }
+
+    public function getAllForSelect(): Collection
+    {
+        return Semester::orderBy('start_year', 'desc')->get();
     }
 
     public function create(StoreSemesterDto $data): Semester

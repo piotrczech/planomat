@@ -2,68 +2,90 @@
 <html lang="pl">
 <head>
     <meta charset="utf-8">
-    <title>Konsultacje Pracowników</title>
+    <title>Raport Konsultacji</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 9px;
+            font-size: 10px;
             margin: 0;
         }
         @page {
-            margin: 20mm 15mm;
+            margin: 25mm 15mm;
         }
-        .page-header-title {
+        .header {
             position: fixed;
-            top: -15mm;
-            left: 0mm;
-            right: 0mm;
+            top: -20mm;
+            left: 0;
+            right: 0;
             text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-            border-bottom: 1px solid #000;
-            padding-bottom: 5px;
-            background-color: #FFFFFF;
         }
-        .report-date {
-            text-align: right;
+        .header .title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .header .subtitle {
+            font-size: 12px;
+        }
+        .footer {
+            position: fixed;
+            bottom: -20mm;
+            left: 0;
+            right: 0;
+            height: 15mm;
+            border-top: 1px solid #555;
             font-size: 8px;
-            margin-top: 5px;
-            margin-bottom: 10px;
             color: #555;
         }
+        .footer .page-number:before {
+            content: "Strona " counter(page);
+        }
+        .footer .left { float: left; }
+        .footer .right { float: right; }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25mm;
+            margin-top: 5mm;
         }
         th, td {
-            border: 1px solid #000;
-            padding: 4px 6px;
+            border: 1px solid #333;
+            padding: 5px 7px;
             text-align: left;
             vertical-align: top;
         }
         th {
             background-color: #E0E0E0;
             font-weight: bold;
-            font-size: 10px;
         }
-        td {
-            font-size: 9px;
+        tr { page-break-inside: avoid; }
+        .no-data {
+            text-align: center;
+            font-style: italic;
+            color: #777;
         }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        thead.main-table-header {
-            display: table-header-group;
+        .worker-name {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="report-date">Wygenerowano: {{ $reportDate }}</div>
+    <div class="header">
+        <div class="title">Raport Konsultacji Pracowników Naukowych</div>
+        <div class="subtitle">
+            Typ: {{ $consultationType === \Modules\Consultation\Enums\ConsultationType::Semester ? 'Konsultacje semestralne' : 'Konsultacje sesyjne' }}
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="left">Wygenerowano: {{ $reportDate }}</div>
+        <div class="right"><span class="page-number"></span></div>
+    </div>
 
-    @if(empty($groupedConsultations))
-        <p style="text-align:center; font-style:italic; margin-top: 20px;">Brak zgłoszonych konsultacji do wyświetlenia.</p>
+    @if($scientificWorkers->isEmpty())
+        <p class="no-data">Brak pracowników naukowych w systemie.</p>
     @else
         <table>
-            <thead class="main-table-header">
+            <thead>
                 <tr>
                     <th style="width:30%;">Prowadzący</th>
                     <th style="width:50%;">Termin</th>
@@ -71,49 +93,56 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($groupedConsultations as $employeeId => $employeeData)
+                @foreach($scientificWorkers as $worker)
                     @php
-                        $employeeName = $employeeData['name'] ?? 'Nieznany Prowadzący';
-                        $consultations = $employeeData['consultations'] ?? [];
-                        $consultationCount = count($consultations);
+                        $consultations = $consultationType === \Modules\Consultation\Enums\ConsultationType::Semester
+                            ? $worker->semesterConsultations
+                            : $worker->sessionConsultations;
+                        $consultationCount = $consultations->count();
+                        $rowspan = $consultationCount > 0 ? $consultationCount : 1;
                     @endphp
-                    @if($consultationCount > 0)
-                        @foreach($consultations as $index => $consultation)
-                            <tr>
-                                @if($index === 0)
-                                    <td rowspan="{{ $consultationCount }}">{{ $employeeName }}</td>
+                    <tr>
+                        <td rowspan="{{ $rowspan }}" class="worker-name">
+                            {{ $worker->name }}
+                        </td>
+
+                        @if($consultationCount > 0)
+                            @php $first = $consultations->first(); @endphp
+                            <td>
+                                @if($consultationType === \Modules\Consultation\Enums\ConsultationType::Semester)
+                                    {{ $first->day->label() }}
+                                    @if($first->week_type !== \App\Enums\WeekTypeEnum::ALL)
+                                        ({{ $first->week_type->label() }})
+                                    @endif
+                                    , {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
+                                @else
+                                    {{ $first->consultation_date->format('d.m.Y') }}, 
+                                    {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
                                 @endif
+                            </td>
+                            <td>{{ $first->location }}</td>
+                        @else
+                            <td colspan="2" class="no-data">Brak zgłoszonych terminów</td>
+                        @endif
+                    </tr>
+                    @if($consultationCount > 1)
+                        @foreach($consultations->slice(1) as $consultation)
+                            <tr>
                                 <td>
-                                    @php
-                                        $terminParts = [];
-                                        if (!empty($consultation['term_or_day'])) {
-                                            if (preg_match('/\((TN|TP)\)/', $consultation['term_or_day'])) {
-                                                $terminParts[] = $consultation['term_or_day'];
-                                            } else {
-                                                $terminParts[] = $consultation['term_or_day'];
-                                                if (!empty($consultation['week_type']) && $consultation['week_type'] !== 'Każdy') {
-                                                    if (stripos($consultation['week_type'], 'parzyste') !== false) {
-                                                        $terminParts[] = '(TP)';
-                                                    } elseif (stripos($consultation['week_type'], 'nieparzyste') !== false) {
-                                                        $terminParts[] = '(TN)';
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (!empty($consultation['hours'])) {
-                                            $terminParts[] = $consultation['hours'];
-                                        }
-                                        echo implode(', ', $terminParts);
-                                    @endphp
+                                     @if($consultationType === \Modules\Consultation\Enums\ConsultationType::Semester)
+                                        {{ $consultation->day->label() }}
+                                        @if($consultation->week_type !== \App\Enums\WeekTypeEnum::ALL)
+                                            ({{ $consultation->week_type->label() }})
+                                        @endif
+                                        , {{ $consultation->start_time->format('H:i') }} - {{ $consultation->end_time->format('H:i') }}
+                                    @else
+                                        {{ $consultation->consultation_date->format('d.m.Y') }},
+                                        {{ $consultation->start_time->format('H:i') }} - {{ $consultation->end_time->format('H:i') }}
+                                    @endif
                                 </td>
-                                <td>{{ $consultation['location'] }}</td>
+                                <td>{{ $consultation->location }}</td>
                             </tr>
                         @endforeach
-                    @else
-                        <tr>
-                            <td>{{ $employeeName }}</td>
-                            <td colspan="2" style="text-align:center; font-style:italic;">Brak zgłoszonych konsultacji dla tego pracownika.</td>
-                        </tr>
                     @endif
                 @endforeach
             </tbody>

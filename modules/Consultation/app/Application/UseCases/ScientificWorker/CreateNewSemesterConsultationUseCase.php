@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
 use App\Application\ActivityLog\UseCases\StoreActivityLogUseCase;
-use App\Domain\Dto\StoreActivityLogDto;
+use App\Application\Semester\UseCases\GetCurrentSemesterUseCase;
+use App\Domain\ActivityLog\Dto\StoreActivityLogDto;
 use App\Enums\ActivityLogActionEnum;
 use App\Enums\ActivityLogModuleEnum;
 use App\Enums\WeekdayEnum;
@@ -18,14 +19,18 @@ final class CreateNewSemesterConsultationUseCase
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
         private readonly StoreActivityLogUseCase $storeActivityLogUseCase,
+        private readonly GetCurrentSemesterUseCase $getCurrentSemesterUseCase,
     ) {
     }
 
-    public function execute(CreateNewSemesterConsultationDto $dto): int
+    public function execute(CreateNewSemesterConsultationDto $dto): bool
     {
         $scientificWorkerId = Auth::id();
-        $currentSemesterId = 1;
-        // $currentSemester = Semester::getCurrentSemester();
+        $currentSemester = $this->getCurrentSemesterUseCase->execute();
+
+        if (!$currentSemester) {
+            return false;
+        }
 
         // todo: validation that consultation not overlaps with other consultations
         $isWeekday = in_array($dto->consultationWeekday, [
@@ -39,13 +44,13 @@ final class CreateNewSemesterConsultationUseCase
         if ($isWeekday) {
             $result = $this->consultationRepository->createWeekdayConsultation(
                 $scientificWorkerId,
-                $currentSemesterId,
+                $currentSemester->id,
                 $dto,
             );
         } else {
             $result = $this->consultationRepository->createWeekendConsultations(
                 $scientificWorkerId,
-                $currentSemesterId,
+                $currentSemester->id,
                 $dto,
             );
         }
