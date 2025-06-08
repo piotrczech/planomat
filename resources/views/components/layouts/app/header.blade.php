@@ -63,15 +63,6 @@
                         :label="__('app.Repository')"
                     />
                 </flux:tooltip>
-                <flux:tooltip :content="__('app.Documentation')" position="bottom">
-                    <flux:navbar.item
-                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
-                        icon="book-open-text"
-                        href="https://github.com/piotrczech/planomat"
-                        target="_blank"
-                        :label="__('app.Documentation')"
-                    />
-                </flux:tooltip>
             </flux:navbar>
 
             <!-- Desktop User Menu -->
@@ -141,10 +132,6 @@
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('app.Repository') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
-                {{ __('app.Documentation') }}
                 </flux:navlist.item>
             </flux:navlist>
         </flux:sidebar>
