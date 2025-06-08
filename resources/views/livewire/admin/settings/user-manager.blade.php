@@ -96,10 +96,29 @@
             </table>
         </div>
 
-        {{-- Pagination --}}
+        {{-- Pagination & Per Page Selector --}}
         @if ($users->hasPages())
-            <div class="p-4 border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
-                {{ $users->links() }}
+            <div class="p-4 flex items-center justify-between border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+                {{-- Per Page Selector --}}
+                <div class="flex items-center">
+                    <label for="perPage" class="text-sm font-medium text-neutral-600 dark:text-neutral-300 mr-2">{{ __('admin_settings.users.table.Per Page') }}:</label>
+                    <select wire:model.live="perPage" id="perPage" class="w-20 block text-sm p-2 border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-200 focus:border-primary-500 dark:focus:border-primary-400 focus:ring-primary-500 dark:focus:ring-primary-400 rounded-md shadow-sm">
+                        @foreach($perPageOptions as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Pagination Buttons --}}
+                <div class="flex items-center space-x-2">
+                    <flux:button wire:click="previousPage" :disabled="$users->onFirstPage()" icon="arrow-left">
+                        {{ __('pagination.previous') }}
+                    </flux:button>
+
+                    <flux:button wire:click="nextPage" :disabled="!$users->hasMorePages()" icon:trailing="arrow-right">
+                        {{ __('pagination.next') }}
+                    </flux:button>
+                </div>
             </div>
         @endif
     </div>

@@ -19,6 +19,10 @@ class UserManager extends Component
 {
     use WithPagination;
 
+    public int $perPage = 25;
+
+    public array $perPageOptions = [10, 25, 50];
+
     public bool $showCreateUserModal = false;
 
     public bool $showEditUserModal = false;
@@ -37,6 +41,11 @@ class UserManager extends Component
     }
 
     public function updatedUserSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage(): void
     {
         $this->resetPage();
     }
@@ -155,7 +164,7 @@ class UserManager extends Component
 
     public function render(ListUsersUseCase $listUsersUseCase): View
     {
-        $users = $listUsersUseCase->execute($this->userSearch, 15, RoleEnum::SCIENTIFIC_WORKER);
+        $users = $listUsersUseCase->execute($this->userSearch, $this->perPage, RoleEnum::SCIENTIFIC_WORKER);
 
         // dump('UserManager RENDER: showCreateUserModal=' . ($this->showCreateUserModal ? 'true' : 'false') . ', showEditUserModal=' . ($this->showEditUserModal ? 'true' : 'false') . ', editingUserId=' . ($this->editingUserId ?? 'null'));
 

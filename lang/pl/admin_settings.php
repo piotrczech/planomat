@@ -129,6 +129,7 @@ return [
             'Email' => 'Email',
             'Role' => 'Rola',
             'Actions' => 'Akcje',
+            'Per Page' => 'Na stronę',
         ],
         'modal' => [
             'Edit User' => 'Edytuj Użytkownika',
