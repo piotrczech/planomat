@@ -1,4 +1,6 @@
 @php
+    use App\Enums\CoursePreferenceTypeEnum;
+
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
     $worker = $desideratum->scientificWorker;
 @endphp
@@ -39,17 +41,17 @@
     <table>
         @php
             $coursePreferences = $desideratum->coursePreferences ?? collect();
-            $wantedCourses = $coursePreferences->where('preference_level', 'wanted');
-            $couldCourses = $coursePreferences->where('preference_level', 'could');
-            $unwantedCourses = $coursePreferences->where('preference_level', 'unwanted');
+            $wantedCourses = $coursePreferences->where('type', CoursePreferenceTypeEnum::WANTED);
+            $couldCourses = $coursePreferences->where('type', CoursePreferenceTypeEnum::COULD);
+            $unwantedCourses = $coursePreferences->where('type', CoursePreferenceTypeEnum::UNWANTED);
         @endphp
         <tr>
             <td style="width: 40%;">Kursy, które <strong>mogę</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if($couldCourses->isNotEmpty())
-                    <ul>
+                    <ul style="margin: 0; padding: 0; list-style-type: none;">
                         @foreach($couldCourses as $pref)
-                            <li>{{ $pref->course?->name ?? 'Błąd' }}</li>
+                            <li style="margin-bottom: 0.5em;">{{ $pref->course?->name ?? 'Błąd' }}</li>
                         @endforeach
                     </ul>
                 @else
@@ -61,9 +63,9 @@
             <td>Kursy, które <strong>chciałbym</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if($wantedCourses->isNotEmpty())
-                    <ul>
+                    <ul style="margin: 0; padding: 0; list-style-type: none;">
                         @foreach($wantedCourses as $pref)
-                            <li>{{ $pref->course?->name ?? 'Błąd' }}</li>
+                            <li style="margin-bottom: 0.5em;">{{ $pref->course?->name ?? 'Błąd' }}</li>
                         @endforeach
                     </ul>
                 @else
@@ -75,9 +77,9 @@
             <td>Kursy, których <strong>nie chciałbym</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if($unwantedCourses->isNotEmpty())
-                    <ul>
+                    <ul style="margin: 0; padding: 0; list-style-type: none;">
                          @foreach($unwantedCourses as $pref)
-                            <li>{{ $pref->course?->name ?? 'Błąd' }}</li>
+                            <li style="margin-bottom: 0.5em;">{{ $pref->course?->name ?? 'Błąd' }}</li>
                         @endforeach
                     </ul>
                 @else

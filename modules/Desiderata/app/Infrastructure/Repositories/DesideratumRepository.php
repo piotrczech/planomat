@@ -13,6 +13,7 @@ use Modules\Desiderata\Infrastructure\Models\DesideratumUnavailableTimeSlot;
 use Modules\Desiderata\Infrastructure\Models\DesideratumCoursePreference;
 use App\Models\User;
 use App\Enums\RoleEnum;
+use App\Models\Course;
 
 class DesideratumRepository implements DesideratumRepositoryInterface
 {
@@ -20,12 +21,11 @@ class DesideratumRepository implements DesideratumRepositoryInterface
         int $workerId,
         int $semesterId,
     ): ?UpdateOrCreateDesideratumDto {
-        // Pobieramy desideratum z wszystkimi powiązanymi danymi
         $desideratum = Desideratum::where('scientific_worker_id', $workerId)
             ->where('semester_id', $semesterId)
             ->with([
-                'coursePreferences', // Wszystkie preferencje kursów
-                'unavailableTimeSlots', // Niedostępne sloty czasowe
+                'coursePreferences',
+                'unavailableTimeSlots',
             ])
             ->first();
 
@@ -33,16 +33,9 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             return null;
         }
 
-        // Przygotowujemy dane do DTO zgodnie ze strukturą oczekiwaną przez komponenty Livewire
-
-        // Przygotowujemy preferencje kursów pogrupowane według typów
         $coursePreferencesByType = $desideratum->coursePreferences->groupBy('type');
 
         $wantedCourseIds = $coursePreferencesByType->get(CoursePreferenceTypeEnum::WANTED->value, collect())
-            ->pluck('course_id')
-            ->toArray();
-
-        $proficientCourseIds = $coursePreferencesByType->get(CoursePreferenceTypeEnum::COULD->value, collect())
             ->pluck('course_id')
             ->toArray();
 
@@ -50,7 +43,10 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             ->pluck('course_id')
             ->toArray();
 
-        // Grupujemy niedostępne sloty czasowe według dni tygodnia
+        $proficientCourseIds = Course::whereNotIn('id', array_merge($wantedCourseIds, $unwantedCourseIds))
+            ->pluck('id')
+            ->toArray();
+
         $unavailableTimeSlots = [];
 
         foreach ($desideratum->unavailableTimeSlots as $slot) {
@@ -62,9 +58,7 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             $unavailableTimeSlots[$dayValue][] = $slot->time_slot_id;
         }
 
-        // Tworzymy i zwracamy obiekt DTO z wszystkimi danymi
         return UpdateOrCreateDesideratumDto::from([
-            // Dane z głównej tabeli desideratum
             'wantStationary' => $desideratum->want_stationary,
             'wantNonStationary' => $desideratum->want_non_stationary,
             'agreeToOvertime' => $desideratum->agree_to_overtime,
@@ -74,12 +68,10 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             'maxConsecutiveHours' => $desideratum->max_consecutive_hours,
             'additionalNotes' => $desideratum->additional_notes,
 
-            // Pogrupowane preferencje kursów
             'wantedCourseIds' => $wantedCourseIds,
             'proficientCourseIds' => $proficientCourseIds,
             'unwantedCourseIds' => $unwantedCourseIds,
 
-            // Niedostępne sloty czasowe
             'unavailableTimeSlots' => $unavailableTimeSlots,
         ]);
     }
@@ -148,7 +140,6 @@ class DesideratumRepository implements DesideratumRepositoryInterface
         }
 
         foreach ($dto->proficientCourseIds as $courseId) {
-            // Unikaj nadpisywania, jeśli kurs jest już w 'wanted' lub 'unwanted'
             if (!isset($courseIdToType[$courseId])) {
                 $courseIdToType[$courseId] = CoursePreferenceTypeEnum::COULD->value;
             }

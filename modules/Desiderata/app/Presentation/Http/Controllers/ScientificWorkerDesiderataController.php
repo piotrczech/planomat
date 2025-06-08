@@ -20,7 +20,6 @@ class ScientificWorkerDesiderataController extends Controller
         $currentSemester = $getCurrentSemesterUseCase->execute();
 
         if (!$currentSemester) {
-            // Można tu zwrócić widok z błędem lub powiadomieniem
             abort(404, 'No active semester found.');
         }
 

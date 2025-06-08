@@ -30,7 +30,6 @@ class UpdateOrCreateDesideratumUseCase
         $currentSemester = $this->getCurrentSemesterUseCase->execute();
 
         if (!$user || !$currentSemester) {
-            // Rzucenie wyjątku jest lepsze w tym przypadku, bo to sytuacja, która nie powinna mieć miejsca
             throw new Exception('Cannot create or update desideratum without a user or an active semester.');
         }
 

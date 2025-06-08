@@ -37,7 +37,7 @@
     @endif
 
     <div class="section-title">Harmonogram niedostępności</div>
-    <p style="font-size: 9px; color: #555; margin-bottom: 10px;">Poniższa tabela przedstawia zadeklarowane przez pracownika bloki czasowe, w których <strong>NIE JEST</strong> on dostępny. Puste pola oznaczają dostępność.</p>
+    <p style="font-size: 9px; color: #555; margin-bottom: 10px;">Poniższa tabela przedstawia zadeklarowane przez pracownika bloki czasowe, w których&nbsp; <strong>NIE JEST</strong> on dostępny. Puste pola oznaczają dostępność.</p>
 
     <table style="font-size: 9px;">
         <thead>
