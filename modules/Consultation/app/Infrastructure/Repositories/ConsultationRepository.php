@@ -165,9 +165,10 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return $consultation->exists ? $consultation->id : 0;
     }
 
-    public function getSessionConsultations(int $scientificWorkerId): array
+    public function getSessionConsultations(int $scientificWorkerId, int $semesterId): array
     {
         $consultations = ConsultationSession::where('scientific_worker_id', $scientificWorkerId)
+            ->where('semester_id', $semesterId)
             ->orderBy('consultation_date')
             ->orderBy('start_time')
             ->get();

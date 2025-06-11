@@ -33,7 +33,7 @@ interface ConsultationRepositoryInterface
         CreateNewSessionConsultationDto $dto,
     ): int;
 
-    public function getSessionConsultations(int $scientificWorkerId): array;
+    public function getSessionConsultations(int $scientificWorkerId, int $semesterId): array;
 
     public function deleteSessionConsultation(int $consultationId, int $scientificWorkerId): bool;
 
