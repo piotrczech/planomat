@@ -9,9 +9,9 @@
             <livewire:admin.dashboard.admin-dashboard-actions />
 
             {{-- Module Management Cards --}}
-            <div>
+            <div class="bg-neutral-50 dark:bg-neutral-800/60 p-5 sm:p-6 rounded-xl">
                 <flux:heading level="2" size="lg" class="mb-4 font-semibold text-neutral-700 dark:text-neutral-300">
-                    {{ __('dashboard.Modules') }}
+                    {{ __('dashboard.Available Modules') }}
                 </flux:heading>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <livewire:desiderata::dashboard.desiderata-card />

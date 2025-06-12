@@ -12,7 +12,7 @@ return [
     'Please manage your consultation schedule for students' => 'Zarządzaj swoim harmonogramem konsultacji dla studentów',
     'Last updated' => 'Ostatnia aktualizacja',
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
-    'Total consultation time in your schedule' => 'Łączny czas konsultacji w Twoim kalendarzu',
+    'Total consultation time in your schedule' => 'Łączny czas konsultacji w Twoim kalendarzu (pon-pt)',
     'My Semester Consultation Description' => [
         'Dark' => 'Łatwo zarządzaj swoim harmonogramem konsultacji semestralnych. Dodawaj, edytuj lub usuwaj terminy konsultacji, aby Twoja dostępność dla studentów była zawsze aktualna. Upewnij się, że Twój harmonogram jest dokładny i dostępny.',
         'Light' => 'Łatwo zarządzaj swoim harmonogramem konsultacji semestralnych. Dodawaj, edytuj lub usuwaj terminy konsultacji, aby Twoja dostępność dla studentów była zawsze aktualna. Upewnij się, że Twój harmonogram jest dokładny i dostępny.',
@@ -90,7 +90,7 @@ return [
     'Add consultation sessions' => 'Dodaj konsultację',
 
     // Consultation session calendar component
-    'Total consultation time in your schedule' => 'Łączny czas konsultacji w harmonogramie',
+    'Total consultation time in your schedule' => 'Łączny czas konsultacji w harmonogramie (pon-pt)',
     'Exam session period' => 'Okres sesji egzaminacyjnej',
     'Date' => 'Data',
     'Date must be between session dates' => 'Data musi być w okresie sesji',
@@ -141,7 +141,9 @@ return [
     'The consultation start time must be between 7:30 and 19:30' => 'Czas rozpoczęcia konsultacji musi być pomiędzy 7:30 a 19:30',
     'The consultation end time must be between 8:30 and 20:30' => 'Czas zakończenia konsultacji musi być pomiędzy 8:30 a 20:30',
     'The consultation must be at least 60 minutes long' => 'Konsultacja musi trwać co najmniej 60 minut',
-    'The consultation cannot be longer than 180 minutes' => 'Konsultacja nie może trwać dłużej niż 180 minut',
+    'The consultation cannot be longer than 180 minutes' => 'Konsultacja nie może być dłuższa niż 180 minut',
+    'A consultation with a conflicting time already exists.' => 'Konsultacja o kolidującym terminie już istnieje.',
+    'overlapping_consultations_cta' => '{1} :count nałożona konsultacja. Kliknij.|[2,4] :count nałożone konsultacje. Kliknij.|[5,*] :count nałożonych konsultacji. Kliknij.',
 
     // Tłumaczenia dla komunikatów z metody messages() w DTO
     'Weekday is required' => 'Wybór dnia tygodnia jest wymagany',

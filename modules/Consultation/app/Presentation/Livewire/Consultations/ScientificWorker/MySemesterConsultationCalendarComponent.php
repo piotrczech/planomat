@@ -35,8 +35,16 @@ class MySemesterConsultationCalendarComponent extends Component
         GetSemesterConsultationsUseCase $getSemesterConsultationsUseCase,
         GetConsultationSummaryTimeUseCase $getConsultationSummaryTime,
     ): void {
-        $this->consultationEvents = $getSemesterConsultationsUseCase->execute();
+        $events = $getSemesterConsultationsUseCase->execute();
         $this->consultationSummaryTime = $getConsultationSummaryTime->execute();
+
+        $groupedEvents = [];
+
+        foreach ($events as $event) {
+            $groupedEvents[$event['weekday']][] = $event;
+        }
+
+        $this->consultationEvents = $groupedEvents;
     }
 
     public function removeConsultation(int $eventId): void
@@ -46,13 +54,18 @@ class MySemesterConsultationCalendarComponent extends Component
             $result = $useCase->execute($eventId);
 
             if ($result) {
-                $this->consultationEvents = array_filter(
-                    $this->consultationEvents,
-                    fn ($event) => $event['id'] !== $eventId,
-                );
+                foreach ($this->consultationEvents as $day => $events) {
+                    $this->consultationEvents[$day] = array_filter(
+                        $events,
+                        fn ($event) => $event['id'] !== $eventId,
+                    );
+                }
 
                 $this->successMessage = __('consultation::consultation.Consultation successfully deleted');
-                $this->loadConsultations(App::make(GetSemesterConsultationsUseCase::class));
+                $this->loadInitialData(
+                    App::make(GetSemesterConsultationsUseCase::class),
+                    App::make(GetConsultationSummaryTimeUseCase::class),
+                );
                 $this->dispatch('consultationDeleted');
             } else {
                 $this->errorMessage = __('consultation::consultation.Failed to delete consultation');

@@ -218,6 +218,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string
     {
         $consultations = ConsultationSemester::where('scientific_worker_id', $scientificWorkerId)
+            ->whereNotIn('day', [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])
             ->get();
 
         $totalDuration = 0;

@@ -282,11 +282,6 @@
                     aria-labelledby="thesis-supervision-legend"
                     wire:model="masterThesesCount"
                 />
-                @error('masterThesesCount') 
-                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
-                        {{ $message }}
-                    </flux:text>
-                @enderror
 
                 <flux:input 
                     type="number" 
@@ -297,11 +292,6 @@
                     aria-labelledby="thesis-supervision-legend"
                     wire:model="bachelorThesesCount"
                 />
-                @error('bachelorThesesCount') 
-                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
-                        {{ $message }}
-                    </flux:text>
-                @enderror
             </div>
         </div>
         
@@ -320,11 +310,6 @@
                     aria-labelledby="working-hours-legend"
                     wire:model="maxHoursPerDay"
                 />
-                @error('maxHoursPerDay') 
-                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
-                        {{ $message }}
-                    </flux:text>
-                @enderror
 
                 <flux:input 
                     type="number" 
@@ -335,11 +320,6 @@
                     aria-labelledby="working-hours-legend"
                     wire:model="maxConsecutiveHours"
                 />
-                @error('maxConsecutiveHours') 
-                    <flux:text class="text-red-500 dark:text-red-400 text-sm">
-                        {{ $message }}
-                    </flux:text>
-                @enderror
             </div>
         </div>
     </div>

@@ -21,6 +21,7 @@ class ConsultationSemester extends Model
         'semester_id',
         'day',
         'week_type',
+        'weekend_consultation_dates',
         'start_time',
         'end_time',
         'location',

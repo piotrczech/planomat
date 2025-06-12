@@ -15,6 +15,9 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
+use Illuminate\Support\Facades\Auth;
+use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
+use App\Models\Semester;
 
 final class CreateNewSemesterConsultationDto extends Data
 {
@@ -39,7 +42,7 @@ final class CreateNewSemesterConsultationDto extends Data
         ])]
         #[StringType]
         #[Regex('/^(\d{1,2}\.\d{1,2})(,\s*\d{1,2}\.\d{1,2})*$/')]
-        public string $weeklyConsultationDates,
+        public ?string $weeklyConsultationDates,
         #[Required]
         #[StringType]
         #[Regex('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/')]
@@ -59,6 +62,57 @@ final class CreateNewSemesterConsultationDto extends Data
     public static function rules(): array
     {
         return [
+            'consultationWeekday' => [
+                function ($attribute, $value, $fail): void {
+                    $startTime = request()->input('consultationStartTime');
+                    $endTime = request()->input('consultationEndTime');
+
+                    if (!$startTime || !$endTime) {
+                        // Nie można przeprowadzić walidacji, jeśli brakuje czasów,
+                        // inne reguły (required) powinny to obsłużyć.
+                        return;
+                    }
+
+                    $userId = Auth::id();
+                    $semesterId = Semester::current()->id;
+
+                    $query = ConsultationSemester::where('scientific_worker_id', $userId)
+                        ->where('semester_id', $semesterId)
+                        ->where(function ($q) use ($startTime, $endTime): void {
+                            $q->where('start_time', '<', $endTime)
+                                ->where('end_time', '>', $startTime);
+                        });
+
+                    // Sprawdzanie konfliktu dla dni roboczych
+                    if (in_array($value, [WeekdayEnum::MONDAY->value, WeekdayEnum::TUESDAY->value, WeekdayEnum::WEDNESDAY->value, WeekdayEnum::THURSDAY->value, WeekdayEnum::FRIDAY->value])) {
+                        $query->where('day', $value)
+                            ->where(function ($q): void {
+                                $q->where('week_type', WeekTypeEnum::ALL->value)
+                                    ->orWhere('week_type', request()->input('dailyConsultationWeekType'));
+                            });
+                    }
+
+                    // Sprawdzanie konfliktu dla weekendów
+                    if (in_array($value, [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])) {
+                        $weeklyDates = request()->input('weeklyConsultationDates');
+
+                        if (!empty($weeklyDates)) {
+                            $dates = explode(',', $weeklyDates);
+                            $trimmedDates = array_map('trim', $dates);
+
+                            $query->where(function ($q) use ($trimmedDates): void {
+                                foreach ($trimmedDates as $date) {
+                                    $q->orWhere('weekend_consultation_dates', 'LIKE', "%{$date}%");
+                                }
+                            });
+                        }
+                    }
+
+                    if ($query->exists()) {
+                        $fail(__('consultation::consultation.A consultation with a conflicting time already exists.'));
+                    }
+                },
+            ],
             'consultationStartTime' => [
                 'required',
                 'string',
@@ -91,10 +145,10 @@ final class CreateNewSemesterConsultationDto extends Data
                 },
                 function ($attribute, $value, $fail): void {
                     // Sprawdzanie czy konsultacja nie jest krótsza niż 60 minut
-                    $formData = request()->all();
+                    $startTimeValue = request()->input('consultationStartTime');
 
-                    if (isset($formData['consultationStartTime'])) {
-                        $startTime = Carbon::createFromFormat('H:i', $formData['consultationStartTime']);
+                    if ($startTimeValue) {
+                        $startTime = Carbon::createFromFormat('H:i', $startTimeValue);
                         $endTime = Carbon::createFromFormat('H:i', $value);
                         $durationInMinutes = $endTime->diffInMinutes($startTime);
 

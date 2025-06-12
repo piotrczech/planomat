@@ -30,7 +30,7 @@
                     <flux:navlist.item 
                         icon="cog-8-tooth" 
                         :href="route('admin.settings.index')" 
-                        :current="request()->routeIs('admin.settings.index') || request()->routeIs('admin.settings.general.*')" 
+                        :current="(request()->routeIs('admin.settings.index') || request()->routeIs('admin.settings.general.*')) && !request()->routeIs('admin.settings.general.users')" 
                         wire:navigate
                     >
                         {{ __('admin_settings.Application Settings') }}
@@ -64,8 +64,8 @@
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('app.Repository') }}
+                <flux:navlist.item icon="folder-git-2" href="https://github.com/piotrczech/planomat" target="_blank">
+                    Zobacz kod na GitHub
                 </flux:navlist.item>
             </flux:navlist>
 

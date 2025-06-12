@@ -36,7 +36,7 @@
                 <a href="{{ route('home') }}" class="z-20 flex flex-col items-center gap-2 font-medium lg:hidden"
                     wire:navigate>
                     <span class="flex h-9 w-9 items-center justify-center rounded-md">
-                        <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
+                        planoMAT
                     </span>
 
                     <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>

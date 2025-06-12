@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -9,7 +10,7 @@ use Livewire\Volt\Volt;
 Route::impersonate();
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 })->name('home');
 
 Route::get('dashboard', DashboardController::class)
@@ -29,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::middleware(['auth', 'verified'])
         ->prefix('admin/settings')
         ->name('admin.settings.')
-        ->controller(\App\Http\Controllers\Admin\SettingsController::class)
+        ->controller(SettingsController::class)
         ->group(function (): void {
             Route::get('/', 'index')->name('index');
             Route::prefix('general')->name('general.')->group(function (): void {

@@ -31,6 +31,7 @@ return new class extends Migration
 
             $table->enum('day', WeekdayEnum::values());
             $table->enum('week_type', WeekTypeEnum::values())->default(WeekTypeEnum::ALL);
+            $table->string('weekend_consultation_dates')->nullable();
 
             $table->time('start_time');
             $table->time('end_time');

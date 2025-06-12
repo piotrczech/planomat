@@ -101,51 +101,53 @@
     <!-- Widok mobilny - lista konsultacji -->
     <div class="block md:hidden mb-6">
         <div class="space-y-3">
-            @foreach ($consultationEvents as $event)
-                <div class="bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-700/50 rounded-lg p-3 shadow-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
-                    <div class="flex justify-between items-start">
-                        <div class="w-full" @click="selectedConsultation = {{ json_encode($event) }}; showConsultationDetails = true;" style="cursor: pointer;">
-                            <div class="font-semibold text-indigo-800 dark:text-indigo-200 mb-1 flex items-center justify-between">
-                                <span>{{ \App\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
-                                @if (!empty($event['location']))
-                                    <span class="text-sm font-normal text-zinc-600 dark:text-zinc-300 truncate ml-2 max-w-[60%]" title="{{ $event['location'] }}">
-                                        {{ $event['location'] }}
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="flex items-center mb-1">
-                                <flux:icon name="clock" class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" />
-                                <span class="font-medium text-zinc-800 dark:text-zinc-100">{{ $event['startTime'] }} - {{ $event['endTime'] }}</span>
-                            </div>
-
-                            @if (isset($event['weekType']) && $event['weekType'] !== 'every')
-                                <div class="flex items-center text-xs text-indigo-600 dark:text-indigo-400 mb-1">
-                                    <flux:icon name="calendar-days" class="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400 mr-1.5" />
-                                    <span>{{ $event['weekType'] === 'even' ? __('consultation::consultation.Even weeks') : __('consultation::consultation.Odd weeks') }}</span>
-                                </div>
-                            @endif
-
-                            <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400">
-                                <flux:icon name="pencil-square" class="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400 mr-1.5" />
-                                <span>{{ __('consultation::consultation.Created') }}: 
-                                    @if(isset($event['created_at']))
-                                        {{ \Carbon\Carbon::parse($event['created_at'])->translatedFormat('d M Y, H:i') }}
-                                    @else
-                                        {{ __('consultation::consultation.N/A') }}
+            @foreach ($consultationEvents as $weekday => $events)
+                @foreach ($events as $event)
+                    <div class="bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-700/50 rounded-lg p-3 shadow-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div class="w-full" @click="selectedConsultation = {{ json_encode($events) }}; showConsultationDetails = true;" style="cursor: pointer;">
+                                <div class="font-semibold text-indigo-800 dark:text-indigo-200 mb-1 flex items-center justify-between">
+                                    <span>{{ \App\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
+                                    @if (!empty($event['location']))
+                                        <span class="text-sm font-normal text-zinc-600 dark:text-zinc-300 truncate ml-2 max-w-[60%]" title="{{ $event['location'] }}">
+                                            {{ $event['location'] }}
+                                        </span>
                                     @endif
-                                </span>
+                                </div>
+                                <div class="flex items-center mb-1">
+                                    <flux:icon name="clock" class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" />
+                                    <span class="font-medium text-zinc-800 dark:text-zinc-100">{{ $event['startTime'] }} - {{ $event['endTime'] }}</span>
+                                </div>
+
+                                @if (isset($event['weekType']) && $event['weekType'] !== 'every')
+                                    <div class="flex items-center text-xs text-indigo-600 dark:text-indigo-400 mb-1">
+                                        <flux:icon name="calendar-days" class="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400 mr-1.5" />
+                                        <span>{{ $event['weekType'] === 'even' ? __('consultation::consultation.Even weeks') : __('consultation::consultation.Odd weeks') }}</span>
+                                    </div>
+                                @endif
+
+                                <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+                                    <flux:icon name="pencil-square" class="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400 mr-1.5" />
+                                    <span>{{ __('consultation::consultation.Created') }}: 
+                                        @if(isset($event['created_at']))
+                                            {{ \Carbon\Carbon::parse($event['created_at'])->translatedFormat('d M Y, H:i') }}
+                                        @else
+                                            {{ __('consultation::consultation.N/A') }}
+                                        @endif
+                                    </span>
+                                </div>
                             </div>
+                            <flux:button
+                                @click="consultationToDeleteId = {{ $event['id'] }}; showConfirmDeleteModal = true;"
+                                variant="ghost"
+                                size="xs" 
+                                icon="trash"
+                                class="text-zinc-600 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 ml-2 flex-shrink-0"
+                                sr-text="{{ __('consultation::consultation.Remove') }}"
+                            />
                         </div>
-                        <flux:button
-                            @click="consultationToDeleteId = {{ $event['id'] }}; showConfirmDeleteModal = true;"
-                            variant="ghost"
-                            size="xs" 
-                            icon="trash"
-                            class="text-zinc-600 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 ml-2 flex-shrink-0"
-                            sr-text="{{ __('consultation::consultation.Remove') }}"
-                        />
                     </div>
-                </div>
+                @endforeach
             @endforeach
         </div>
     </div>
@@ -214,27 +216,32 @@
                             @endfor
                             
                             <!-- Consultation blocks -->
-                            @foreach ($consultationEvents as $event)
+                            @foreach ($consultationEvents as $weekday => $events)
                                 @php
-                                    $startRow = (int)$timeToRowIndex($event['startTime']);
-                                    $endRow = (int)$timeToRowIndex($event['endTime']);
-                                    $rowSpan = $endRow - $startRow;
+                                    // Znajdź najwcześniejszy i najpóźniejszy czas dla danego dnia
+                                    $minStartTime = min(array_column($events, 'startTime'));
+                                    $maxEndTime = max(array_column($events, 'endTime'));
                                     
-                                    // If the block is too small, set the minimum height
-                                    if ($rowSpan < 1) $rowSpan = 1;
+                                    $containerStartRow = (int)$timeToRowIndex($minStartTime);
+                                    $containerEndRow = (int)$timeToRowIndex($maxEndTime);
+                                    $containerRowSpan = $containerEndRow - $containerStartRow;
                                     
-                                    // Column for the weekday (+2 because the first column is the hours, and the index starts at 0)
-                                    $column = $event['weekday'] + 2;
+                                    if ($containerRowSpan < 1) $containerRowSpan = 1;
+                                    
+                                    $column = $weekday + 2;
                                 @endphp
                                 
                                 <div
-                                    class="bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-700/60 rounded-md m-1 p-1 flex flex-col justify-between overflow-hidden relative group hover:bg-indigo-200 dark:hover:bg-indigo-800/80 transition-colors cursor-pointer" 
-                                    style="grid-row: {{ $startRow }} / span {{ $rowSpan }}; grid-column: {{ $column }};"
-                                    @click="selectedConsultation = {{ json_encode($event) }}; showConsultationDetails = true;"
+                                    class="bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-700/60 rounded-md m-1 p-1 flex justify-center items-center text-center overflow-hidden group hover:bg-indigo-200 dark:hover:bg-indigo-800/80 transition-colors cursor-pointer"
+                                    style="grid-row: {{ $containerStartRow }} / span {{ $containerRowSpan }}; grid-column: {{ $column }};"
+                                    @click="selectedConsultation = {{ json_encode($events) }}; showConsultationDetails = true;"
                                 >
-                                    
-                                    <div class="text-sm font-medium text-indigo-900 dark:text-white whitespace-nowrap mb-0.5 flex items-center">
-                                        {{ $event['startTime'] }} - {{ $event['endTime'] }}
+                                    <div class="text-xs font-medium text-indigo-900 dark:text-white">
+                                        @if (count($events) > 1)
+                                            {{ trans_choice('consultation::consultation.overlapping_consultations_cta', count($events), ['count' => count($events)]) }}
+                                        @else
+                                            {{ $events[0]['startTime'] }} - {{ $events[0]['endTime'] }}
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -282,47 +289,57 @@
                 </div>
                 
                 <div class="space-y-3" x-show="selectedConsultation">
-                    <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 dark:bg-zinc-850">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <div class="flex items-center">
-                                    <flux:icon 
-                                        name="clock" 
-                                        class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
-                                    />
-                                    <span class="font-medium text-zinc-800 dark:text-zinc-100">
-                                        <span x-text="selectedConsultation?.startTime"></span> - <span x-text="selectedConsultation?.endTime"></span>
-                                    </span>
+                    <template x-for="consultation in selectedConsultation" :key="consultation.id">
+                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 dark:bg-zinc-850">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="flex items-center">
+                                        <flux:icon 
+                                            name="clock" 
+                                            class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                        />
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-100">
+                                            <span x-text="consultation.startTime"></span> - <span x-text="consultation.endTime"></span>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="flex items-center mt-1" x-show="consultation.location">
+                                        <flux:icon 
+                                            name="map-pin" 
+                                            class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                        />
+                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.location"></span>
+                                    </div>
+                                    
+                                    <div class="flex items-center mt-1" x-show="consultation.weekType && consultation.weekType !== 'every'">
+                                        <flux:icon 
+                                            name="calendar-days" 
+                                            class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                        />
+                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" 
+                                              x-text="consultation.weekType === 'even' ? '{{ __('consultation::consultation.Even weeks') }}' : '{{ __('consultation::consultation.Odd weeks') }}'">
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center mt-1" x-show="consultation.weekend_consultation_dates">
+                                        <flux:icon 
+                                            name="calendar-days" 
+                                            class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
+                                        />
+                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.weekend_consultation_dates"></span>
+                                    </div>
                                 </div>
                                 
-                                <div class="flex items-center mt-1" x-show="selectedConsultation?.location">
-                                    <flux:icon 
-                                        name="map-pin" 
-                                        class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
-                                    />
-                                    <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="selectedConsultation?.location"></span>
-                                </div>
-                                
-                                <div class="flex items-center mt-1" x-show="selectedConsultation?.weekType && selectedConsultation?.weekType !== 'every'">
-                                    <flux:icon 
-                                        name="calendar-days" 
-                                        class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
-                                    />
-                                    <span class="text-sm text-zinc-600 dark:text-zinc-300" 
-                                          x-text="selectedConsultation?.weekType === 'even' ? '{{ __('consultation::consultation.Even weeks') }}' : '{{ __('consultation::consultation.Odd weeks') }}'">
-                                    </span>
-                                </div>
+                                <flux:button
+                                    @click="consultationToDeleteId = consultation.id; showConsultationDetails = false; showConfirmDeleteModal = true"
+                                    variant="ghost"
+                                    size="xs"
+                                    icon="trash"
+                                    sr-text="{{ __('consultation::consultation.Remove') }}"
+                                />
                             </div>
-                            
-                            <flux:button
-                                @click="consultationToDeleteId = selectedConsultation?.id; showConsultationDetails = false; showConfirmDeleteModal = true"
-                                variant="ghost"
-                                size="xs"
-                                icon="trash"
-                                sr-text="{{ __('consultation::consultation.Remove') }}"
-                            />
                         </div>
-                    </div>
+                    </template>
                 </div>
             </div>
         </div>

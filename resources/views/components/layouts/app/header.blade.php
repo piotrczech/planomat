@@ -130,8 +130,8 @@
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('app.Repository') }}
+                <flux:navlist.item icon="folder-git-2" href="https://github.com/piotrczech/planomat" target="_blank">
+                    Zobacz kod na GitHub
                 </flux:navlist.item>
             </flux:navlist>
         </flux:sidebar>

@@ -23,13 +23,13 @@ final class CreateNewSemesterConsultationUseCase
     ) {
     }
 
-    public function execute(CreateNewSemesterConsultationDto $dto): bool
+    public function execute(CreateNewSemesterConsultationDto $dto): int|bool
     {
         $scientificWorkerId = Auth::id();
         $currentSemester = $this->getCurrentSemesterUseCase->execute();
 
         if (!$currentSemester) {
-            return false;
+            return 0;
         }
 
         // todo: validation that consultation not overlaps with other consultations

@@ -88,12 +88,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <div class="relative">
             <flux:input wire:model="password" :label="__('app.Password')" type="password" required
                 autocomplete="current-password" :placeholder="__('app.Password')" />
-
-            @if (Route::has('password.request'))
-                <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-                    {{ __('app.Forgot your password?') }}
-                </flux:link>
-            @endif
         </div>
 
         <!-- Remember Me -->
