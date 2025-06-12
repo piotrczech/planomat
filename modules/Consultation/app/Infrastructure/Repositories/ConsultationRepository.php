@@ -131,6 +131,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
                 'endTime' => $consultation->end_time->format('H:i'),
                 'location' => $consultation->location,
                 'weekType' => $weekTypeString,
+                'weekendConsultationDates' => $consultation->weekend_consultation_dates,
             ];
         })->toArray();
     }

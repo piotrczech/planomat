@@ -105,7 +105,12 @@
                 @foreach ($events as $event)
                     <div class="bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-700/50 rounded-lg p-3 shadow-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
                         <div class="flex justify-between items-start">
-                            <div class="w-full" @click="selectedConsultation = {{ json_encode($events) }}; showConsultationDetails = true;" style="cursor: pointer;">
+                            <div
+                                class="w-full"
+                                data-consulatation-list="{{ json_encode($events) }}"
+                                @click="showConsultationDetails = true; selectedConsultation = JSON.parse($event.currentTarget.dataset.consulatationList);"
+                                style="cursor: pointer;"
+                            >
                                 <div class="font-semibold text-indigo-800 dark:text-indigo-200 mb-1 flex items-center justify-between">
                                     <span>{{ \App\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
                                     @if (!empty($event['location']))
@@ -215,35 +220,61 @@
                                 @endfor
                             @endfor
                             
-                            <!-- Consultation blocks -->
                             @foreach ($consultationEvents as $weekday => $events)
                                 @php
-                                    // Znajdź najwcześniejszy i najpóźniejszy czas dla danego dnia
-                                    $minStartTime = min(array_column($events, 'startTime'));
-                                    $maxEndTime = max(array_column($events, 'endTime'));
+                                    usort($events, fn($a, $b) => strcmp($a['startTime'], $b['startTime']));
                                     
-                                    $containerStartRow = (int)$timeToRowIndex($minStartTime);
-                                    $containerEndRow = (int)$timeToRowIndex($maxEndTime);
-                                    $containerRowSpan = $containerEndRow - $containerStartRow;
-                                    
-                                    if ($containerRowSpan < 1) $containerRowSpan = 1;
-                                    
+                                    $groups = [];
+
+                                    foreach ($events as $event) {
+                                        $added = false;
+
+                                        foreach ($groups as $groupIndex => $group) {
+                                            foreach ($group as $existingEvent) {
+                                                if (
+                                                    $event['startTime'] < $existingEvent['endTime'] &&
+                                                    $event['endTime'] > $existingEvent['startTime']
+                                                ) {
+                                                    $groups[$groupIndex][] = $event; // przypisz do grupy
+                                                    $added = true;
+                                                    break 2; // wyjdź z obu pętli
+                                                }
+                                            }
+                                        }
+
+                                        if (! $added) {
+                                            $groups[] = [$event]; // utwórz nową grupę
+                                        }
+                                    }
+
                                     $column = $weekday + 2;
                                 @endphp
-                                
-                                <div
-                                    class="bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-700/60 rounded-md m-1 p-1 flex justify-center items-center text-center overflow-hidden group hover:bg-indigo-200 dark:hover:bg-indigo-800/80 transition-colors cursor-pointer"
-                                    style="grid-row: {{ $containerStartRow }} / span {{ $containerRowSpan }}; grid-column: {{ $column }};"
-                                    @click="selectedConsultation = {{ json_encode($events) }}; showConsultationDetails = true;"
-                                >
-                                    <div class="text-xs font-medium text-indigo-900 dark:text-white">
-                                        @if (count($events) > 1)
-                                            {{ trans_choice('consultation::consultation.overlapping_consultations_cta', count($events), ['count' => count($events)]) }}
-                                        @else
-                                            {{ $events[0]['startTime'] }} - {{ $events[0]['endTime'] }}
-                                        @endif
+
+                                @foreach ($groups as $group)
+                                    @php
+                                        $minStartTime = min(array_column($group, 'startTime'));
+                                        $maxEndTime = max(array_column($group, 'endTime'));
+
+                                        $containerStartRow = (int)$timeToRowIndex($minStartTime);
+                                        $containerEndRow = (int)$timeToRowIndex($maxEndTime);
+                                        $containerRowSpan = max(1, $containerEndRow - $containerStartRow);
+                                    @endphp
+
+                                    <div
+                                        class="bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-700/60 rounded-md m-1 p-1 flex justify-center items-center text-center overflow-hidden group hover:bg-indigo-200 dark:hover:bg-indigo-800/80 transition-colors cursor-pointer"
+                                        style="grid-row: {{ $containerStartRow }} / span {{ $containerRowSpan }}; grid-column: {{ $column }};"
+                                        data-consulatation-list="{{ json_encode($group) }}"
+                                        @click="showConsultationDetails = true; selectedConsultation = JSON.parse($event.currentTarget.dataset.consulatationList);"
+                                    >
+                                        <div class="text-xs font-medium text-indigo-900 dark:text-white">
+                                            @if (count($group) > 1)
+                                                {{ trans_choice('consultation::consultation.overlapping_consultations_cta', count($group), ['count' => count($group)]) }}
+                                            @else
+                                                {{ $group[0]['startTime'] }} - {{ $group[0]['endTime'] }}
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             @endforeach
                         </div>
                     </div>

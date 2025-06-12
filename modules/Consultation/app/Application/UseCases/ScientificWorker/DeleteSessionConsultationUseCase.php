@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
 use App\Application\ActivityLog\UseCases\StoreActivityLogUseCase;
-use App\Domain\Dto\StoreActivityLogDto;
+use App\Domain\ActivityLog\Dto\StoreActivityLogDto;
 use App\Enums\ActivityLogActionEnum;
 use App\Enums\ActivityLogModuleEnum;
 use Illuminate\Support\Facades\Auth;

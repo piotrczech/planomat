@@ -30,7 +30,7 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->enum('day', WeekdayEnum::values());
-            $table->enum('week_type', WeekTypeEnum::values())->default(WeekTypeEnum::ALL);
+            $table->enum('week_type', WeekTypeEnum::values())->nullable();
             $table->string('weekend_consultation_dates')->nullable();
 
             $table->time('start_time');

@@ -59,22 +59,20 @@ final class CreateNewSemesterConsultationDto extends Data
     ) {
     }
 
-    public static function rules(): array
+    public static function rules($context): array
     {
         return [
             'consultationWeekday' => [
-                function ($attribute, $value, $fail): void {
-                    $startTime = request()->input('consultationStartTime');
-                    $endTime = request()->input('consultationEndTime');
+                function ($attribute, $value, $fail) use ($context): void {
+                    $startTime = $context->fullPayload['consultationStartTime'];
+                    $endTime = $context->fullPayload['consultationEndTime'];
 
                     if (!$startTime || !$endTime) {
-                        // Nie można przeprowadzić walidacji, jeśli brakuje czasów,
-                        // inne reguły (required) powinny to obsłużyć.
                         return;
                     }
 
                     $userId = Auth::id();
-                    $semesterId = Semester::current()->id;
+                    $semesterId = Semester::getCurrentSemester()->id;
 
                     $query = ConsultationSemester::where('scientific_worker_id', $userId)
                         ->where('semester_id', $semesterId)
@@ -83,7 +81,6 @@ final class CreateNewSemesterConsultationDto extends Data
                                 ->where('end_time', '>', $startTime);
                         });
 
-                    // Sprawdzanie konfliktu dla dni roboczych
                     if (in_array($value, [WeekdayEnum::MONDAY->value, WeekdayEnum::TUESDAY->value, WeekdayEnum::WEDNESDAY->value, WeekdayEnum::THURSDAY->value, WeekdayEnum::FRIDAY->value])) {
                         $query->where('day', $value)
                             ->where(function ($q): void {
@@ -94,7 +91,7 @@ final class CreateNewSemesterConsultationDto extends Data
 
                     // Sprawdzanie konfliktu dla weekendów
                     if (in_array($value, [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])) {
-                        $weeklyDates = request()->input('weeklyConsultationDates');
+                        $weeklyDates = $context->fullPayload['weeklyConsultationDates'];
 
                         if (!empty($weeklyDates)) {
                             $dates = explode(',', $weeklyDates);

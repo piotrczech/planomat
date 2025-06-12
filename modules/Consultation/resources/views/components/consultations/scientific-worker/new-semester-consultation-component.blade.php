@@ -83,6 +83,11 @@
         // Nasłuchiwanie eventów
         $wire.on('consultationSaved', (data) => {
             showSuccessAlert = true;
+
+            // reset day to monday
+            weekdaySelect.setValue('monday');
+            updateSelectedWeekday('monday');
+
             successMessage = '{{ __('consultation::consultation.Successfully created') }}';
             window.scrollTo(0, 0);
             setTimeout(() => { showSuccessAlert = false; }, 5000);

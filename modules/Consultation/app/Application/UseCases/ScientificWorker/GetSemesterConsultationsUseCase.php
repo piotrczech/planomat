@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
+use App\Models\Semester;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 
@@ -20,7 +21,7 @@ final class GetSemesterConsultationsUseCase
 
         return $this->consultationRepository->getSemesterConsultations(
             $scientificWorkerId,
-            1,
+            Semester::getCurrentSemester()->id,
         );
     }
 }
