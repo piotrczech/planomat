@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +22,7 @@ class Semester extends Model
         'semester_start_date',
         'session_start_date',
         'end_date',
+        'is_active',
     ];
 
     protected $casts = [
@@ -30,6 +30,7 @@ class Semester extends Model
         'session_start_date' => 'date',
         'end_date' => 'date',
         'season' => SemesterSeasonEnum::class,
+        'is_active' => 'boolean',
     ];
 
     public function getNameAttribute(): string
@@ -44,11 +45,13 @@ class Semester extends Model
 
     public static function getCurrentSemester()
     {
-        $now = Carbon::now();
+        $activeSemester = self::where('is_active', true)->first();
 
-        return self::where('semester_start_date', '<=', $now)
-            ->where('end_date', '>=', $now)
-            ->first();
+        if ($activeSemester) {
+            return $activeSemester;
+        }
+
+        return null;
     }
 
     public function consultationSemesters(): HasMany

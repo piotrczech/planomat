@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Presentation\Livewire\Admin\Dashboard;
 
 use App\Application\UseCases\Semester\GetAllSemestersUseCase;
+use App\Application\UseCases\Semester\SetActiveSemesterUseCase;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
 use Livewire\Component;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -15,10 +17,29 @@ class AdminDashboardActions extends Component
 
     public ?int $selectedSemesterId = null;
 
-    public function mount(GetAllSemestersUseCase $getAllSemestersUseCase): void
-    {
+    public function mount(
+        GetAllSemestersUseCase $getAllSemestersUseCase,
+        SemesterRepositoryInterface $semesterRepository,
+    ): void {
         $this->semesters = $getAllSemestersUseCase->execute();
-        $this->selectedSemesterId = $this->semesters->first()?->id;
+
+        if ($this->semesters->isEmpty()) {
+            $this->selectedSemesterId = null;
+
+            return;
+        }
+
+        $activeSemester = $semesterRepository->getActiveSemester();
+
+        if ($activeSemester && $this->semesters->contains('id', $activeSemester->id)) {
+            $this->selectedSemesterId = $activeSemester->id;
+        } else {
+            $firstSemester = $this->semesters->first();
+            $this->selectedSemesterId = $firstSemester->id;
+
+            $setActiveSemesterUseCase = app(SetActiveSemesterUseCase::class);
+            $setActiveSemesterUseCase->execute($firstSemester->id);
+        }
     }
 
     #[Computed]
@@ -36,6 +57,21 @@ class AdminDashboardActions extends Component
                 'dates' => $semester->semester_start_date->format('d.m.Y') . ' - ' . $semester->end_date->format('d.m.Y'),
             ];
         })->toJson();
+    }
+
+    public function updatedSelectedSemesterId($value): void
+    {
+        if (!$value) {
+            return;
+        }
+
+        // Sprawdź czy semestr o tym ID istnieje w kolekcji
+        if (!$this->semesters->contains('id', (int) $value)) {
+            return;
+        }
+
+        $setActiveSemesterUseCase = app(SetActiveSemesterUseCase::class);
+        $setActiveSemesterUseCase->execute((int) $value);
     }
 
     public function openDesiderataExportModal(): void

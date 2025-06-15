@@ -15,6 +15,7 @@ return [
     'Manage Courses Page Description' => 'Przeglądaj, dodawaj, edytuj i usuwaj kursy w systemie.',
     'Manage Semesters Page Description' => 'Zarządzaj semestrami, ich datami rozpoczęcia, zakończenia oraz sesjami.',
     'Select a semester' => 'Wybierz semestr...',
+    'Loading semesters...' => 'Ładowanie semestrów...',
 
     'course_manager.Course List' => 'Lista kursów',
     'course_manager.Course List Description' => 'Poniżej znajduje się lista wszystkich kursów zdefiniowanych w systemie.',

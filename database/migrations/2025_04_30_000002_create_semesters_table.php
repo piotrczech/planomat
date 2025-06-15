@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('semesters', function (Blueprint $table): void {
             $table->tinyIncrements('id');
+            $table->boolean('is_active')->default(false);
             $table->year('start_year')->index();
             $table->enum('season', SemesterSeasonEnum::values());
             $table->date('semester_start_date');
