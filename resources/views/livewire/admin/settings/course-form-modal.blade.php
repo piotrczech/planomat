@@ -26,7 +26,7 @@
                                 required
                             />
                             @error('name')
-                            <flux:text size="sm" color="danger" class="mt-1">{{ $message }}</flux:text>
+                            <flux:text size="sm" color="red" class="mt-1">{{ $message }}</flux:text>
                             @enderror
                         </div>
                     </div>

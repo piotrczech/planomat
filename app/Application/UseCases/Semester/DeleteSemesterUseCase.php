@@ -25,6 +25,13 @@ final readonly class DeleteSemesterUseCase
                 return false;
             }
 
+            $semester->load(['desiderata.coursePreferences', 'desiderata.unavailableTimeSlots']);
+
+            foreach ($semester->desiderata as $desideratum) {
+                $desideratum->coursePreferences()->delete();
+                $desideratum->unavailableTimeSlots()->delete();
+            }
+
             $semester->consultationSemesters()->delete();
             $semester->consultationSessions()->delete();
             $semester->desiderata()->delete();

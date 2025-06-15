@@ -88,7 +88,7 @@ return [
 
         'notifications' => [
             'semester_saved' => 'Semestr został pomyślnie zapisany.',
-            'semester_deleted' => 'Semestr został pomyślnie usunięty (wraz z powiązanymi konsultacjami i dezyderatami).',
+            'semester_deleted' => 'Semestr został pomyślnie usunięty (wraz z powiązanymi konsultacjami, dezyderatami i ich preferencjami).',
             'semester_delete_failed' => 'Nie udało się usunąć semestru.',
         ],
 

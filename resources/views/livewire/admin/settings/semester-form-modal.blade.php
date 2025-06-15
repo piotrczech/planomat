@@ -27,7 +27,7 @@
                                     placeholder="{{ now()->year }}"
                                     required
                                 />
-                                @error('start_year') <flux:text size="sm" color="danger" class="mt-1">{{ $message }}</flux:text> @enderror
+                                @error('start_year') <flux:text size="sm" color="red" class="mt-1">{{ $message }}</flux:text> @enderror
                             </div>
 
                             <div>
@@ -41,7 +41,7 @@
                                         <option value="{{ $seasonEnum->value }}">{{ $seasonEnum->label() }}</option>
                                     @endforeach
                                 </flux:select>
-                                @error('season') <flux:text size="sm" color="danger" class="mt-1">{{ $message }}</flux:text> @enderror
+                                @error('season') <flux:text size="sm" color="red" class="mt-1">{{ $message }}</flux:text> @enderror
                             </div>
 
                             <div>
@@ -59,7 +59,7 @@
                                         required
                                     />
                                 </div>
-                                @error('semester_start_date') <flux:text size="sm" color="danger" class="mt-1">{{ $message }}</flux:text> @enderror
+                                @error('semester_start_date') <flux:text size="sm" color="red" class="mt-1">{{ $message }}</flux:text> @enderror
                             </div>
 
                             <div>
@@ -77,7 +77,7 @@
                                         required
                                     />
                                 </div>
-                                @error('session_start_date') <flux:text size="sm" color="danger" class="mt-1">{{ $message }}</flux:text> @enderror
+                                @error('session_start_date') <flux:text size="sm" color="red" class="mt-1">{{ $message }}</flux:text> @enderror
                             </div>
 
                             <div>
@@ -95,7 +95,7 @@
                                         required
                                     />
                                 </div>
-                                @error('end_date') <flux:text size="sm" color="danger" class="mt-1">{{ $message }}</flux:text> @enderror
+                                @error('end_date') <flux:text size="sm" color="red" class="mt-1">{{ $message }}</flux:text> @enderror
                             </div>
 
                         </div>
