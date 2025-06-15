@@ -49,7 +49,14 @@ class SemesterManager extends Component
         $deleteSemesterUseCase = $app->make(DeleteSemesterUseCase::class);
 
         if ($this->deletingSemesterId && $this->deletingSemesterId === $semesterId) {
-            $deleteSemesterUseCase->execute($this->deletingSemesterId);
+            $result = $deleteSemesterUseCase->execute($this->deletingSemesterId);
+
+            if ($result) {
+                session()->flash('success', __('admin_settings.semester_manager.notifications.semester_deleted'));
+            } else {
+                session()->flash('error', __('admin_settings.semester_manager.notifications.semester_delete_failed'));
+            }
+
             $this->deletingSemesterId = null;
             $this->showDeleteConfirmationModal = false;
             $this->resetPage();

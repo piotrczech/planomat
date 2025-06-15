@@ -22,6 +22,7 @@ return [
     'course_manager.Course table placeholder' => 'Brak zdefiniowanych kursów. Kliknij "Dodaj kurs", aby rozpocząć.',
 
     'semester_manager.Semester List' => 'Lista semestrów',
+    'semester_manager.This action cannot be undone.' => 'Tej operacji nie można cofnąć.',
     'semester_manager.Semester List Description' => 'Poniżej znajduje się lista wszystkich semestrów zdefiniowanych w systemie.',
     'semester_manager.Add Semester' => 'Dodaj semestr',
     'semester_manager.Semester table placeholder' => 'Brak zdefiniowanych semestrów. Kliknij "Dodaj semestr", aby rozpocząć.',
@@ -86,7 +87,8 @@ return [
 
         'notifications' => [
             'semester_saved' => 'Semestr został pomyślnie zapisany.',
-            'semester_deleted' => 'Semestr został pomyślnie usunięty.',
+            'semester_deleted' => 'Semestr został pomyślnie usunięty (wraz z powiązanymi konsultacjami i dezyderatami).',
+            'semester_delete_failed' => 'Nie udało się usunąć semestru.',
         ],
 
         'validation' => [
