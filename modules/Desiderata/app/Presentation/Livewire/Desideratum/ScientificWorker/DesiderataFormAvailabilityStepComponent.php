@@ -28,32 +28,33 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
 
     public function mount(DesideratumRepositoryInterface $repository): void
     {
+        $wizardState = $this->state()->forStepClass(self::class);
+
         $this->initTimeSlots();
 
-        $currentUserId = Auth::id();
-        $semesterId = Semester::getCurrentSemester()->id;
+        if (!empty($wizardState) && isset($wizardState['selectedSlotsCount']) && $wizardState['selectedSlotsCount'] > 0) {
+            $wizardSlots = $wizardState['unavailableTimeSlots'] ?? [];
+            $hasValidWizardSlots = false;
 
-        $existingDesideratum = $repository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
+            foreach ($wizardSlots as $day => $slots) {
+                foreach ($slots as $slot) {
+                    if (isset($slot['selected']) && $slot['selected']) {
+                        $hasValidWizardSlots = true;
 
-        if ($existingDesideratum) {
-            $this->additionalNotes = $existingDesideratum->additionalNotes;
-
-            if (!empty($existingDesideratum->unavailableTimeSlots)) {
-                $this->selectedSlotsCount = 0;
-
-                foreach ($existingDesideratum->unavailableTimeSlots as $day => $slotIds) {
-                    if (!isset($this->unavailableTimeSlots[$day]) || !is_array($slotIds)) {
-                        continue;
-                    }
-
-                    foreach ($slotIds as $slotId) {
-                        if (isset($this->unavailableTimeSlots[$day][$slotId])) {
-                            $this->unavailableTimeSlots[$day][$slotId]['selected'] = true;
-                            $this->selectedSlotsCount++;
-                        }
+                        break 2;
                     }
                 }
             }
+
+            if ($hasValidWizardSlots) {
+                $this->unavailableTimeSlots = $wizardSlots;
+                $this->selectedSlotsCount = $wizardState['selectedSlotsCount'];
+                $this->additionalNotes = $wizardState['additionalNotes'] ?? '';
+            } else {
+                $this->loadExistingDataFromDatabase($repository);
+            }
+        } else {
+            $this->loadExistingDataFromDatabase($repository);
         }
     }
 
@@ -84,6 +85,35 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
                     'id' => $slot['id'],
                     'range' => $slot['range'],
                 ];
+            }
+        }
+    }
+
+    private function loadExistingDataFromDatabase(DesideratumRepositoryInterface $repository): void
+    {
+        $currentUserId = Auth::id();
+        $semesterId = Semester::getCurrentSemester()->id;
+
+        $existingDesideratum = $repository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
+
+        if ($existingDesideratum) {
+            $this->additionalNotes = $existingDesideratum->additionalNotes ?? '';
+
+            if (!empty($existingDesideratum->unavailableTimeSlots)) {
+                $this->selectedSlotsCount = 0;
+
+                foreach ($existingDesideratum->unavailableTimeSlots as $day => $slotIds) {
+                    if (!isset($this->unavailableTimeSlots[$day]) || !is_array($slotIds)) {
+                        continue;
+                    }
+
+                    foreach ($slotIds as $slotId) {
+                        if (isset($this->unavailableTimeSlots[$day][$slotId])) {
+                            $this->unavailableTimeSlots[$day][$slotId]['selected'] = true;
+                            $this->selectedSlotsCount++;
+                        }
+                    }
+                }
             }
         }
     }
