@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Infrastructure\Authorization;
 
-use App\Enums\RoleEnum;
-use App\Models\User;
+use App\Domain\Enums\RoleEnum;
+use App\Infrastructure\Models\User;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

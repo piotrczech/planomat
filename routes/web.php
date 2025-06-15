@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\DashboardController;
+use App\Presentation\Http\Controllers\Admin\SettingsController;
+use App\Presentation\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
-use App\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekdayEnum;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
 use Modules\Desiderata\Domain\Dto\DesiderataFormAvailabilityDto;

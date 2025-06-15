@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Infrastructure\Models;
 
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
-use App\Models\Semester;
-use App\Models\User;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
+use App\Infrastructure\Models\Semester;
+use App\Infrastructure\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

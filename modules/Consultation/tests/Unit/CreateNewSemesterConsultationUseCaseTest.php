@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Tests\Unit;
 
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
 use Modules\Consultation\Application\UseCases\ScientificWorker\CreateNewSemesterConsultationUseCase;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;

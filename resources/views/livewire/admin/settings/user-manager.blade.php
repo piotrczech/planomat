@@ -44,7 +44,7 @@
                                 {{ $user->email }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                @if (auth()->check() && (auth()->user()->hasRole(\App\Enums\RoleEnum::ADMINISTRATOR) || auth()->user()->hasRole(\App\Enums\RoleEnum::DEAN_OFFICE_WORKER)) && !$user->hasRole(\App\Enums\RoleEnum::ADMINISTRATOR) && $user->id !== auth()->id())
+                                @if (auth()->check() && (auth()->user()->hasRole(\App\Domain\Enums\RoleEnum::ADMINISTRATOR) || auth()->user()->hasRole(\App\Domain\Enums\RoleEnum::DEAN_OFFICE_WORKER)) && !$user->hasRole(\App\Domain\Enums\RoleEnum::ADMINISTRATOR) && $user->id !== auth()->id())
                                     <flux:button
                                         wire:click="impersonateUser({{ $user->id }})"
                                         size="sm"

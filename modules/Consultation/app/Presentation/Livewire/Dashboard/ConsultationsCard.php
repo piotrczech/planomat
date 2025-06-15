@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Dashboard;
 
-use App\Enums\RoleEnum;
+use App\Domain\Enums\RoleEnum;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 

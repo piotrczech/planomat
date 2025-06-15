@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Http\Controllers;
 
-use App\Application\Semester\UseCases\GetCurrentSemesterUseCase;
-use App\Http\Controllers\Controller;
+use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Presentation\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Modules\Desiderata\Application\UseCases\ScientificWorker\GetLastUpdateDateForDesideratumUseCase;

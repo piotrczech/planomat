@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\TimeSlot;
+use App\Infrastructure\Models\TimeSlot;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TimeSlot>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Infrastructure\Models\TimeSlot>
  */
 class TimeSlotFactory extends Factory
 {

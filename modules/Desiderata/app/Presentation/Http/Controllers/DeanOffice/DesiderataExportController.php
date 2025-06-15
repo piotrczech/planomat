@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Http\Controllers\DeanOffice;
 
-use App\Http\Controllers\Controller;
+use App\Presentation\Http\Controllers\Controller;
 use Modules\Desiderata\Application\UseCases\DeanOffice\ExportAllDesiderataToPdfUseCase;
 use Modules\Desiderata\Application\UseCases\DeanOffice\ExportUnfilledDesiderataToPdfUseCase;
 use Symfony\Component\HttpFoundation\Response;

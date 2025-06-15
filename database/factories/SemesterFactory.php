@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\SemesterSeasonEnum;
+use App\Domain\Enums\SemesterSeasonEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Semester>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Infrastructure\Models\Semester>
  */
 class SemesterFactory extends Factory
 {

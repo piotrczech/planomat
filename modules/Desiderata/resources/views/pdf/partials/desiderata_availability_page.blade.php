@@ -1,6 +1,6 @@
 @php
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
-    /** @var \App\Models\User $worker */
+    /** @var \App\Infrastructure\Models\User $worker */
     $worker = $desideratum->scientificWorker;
 
     $unavailableSlotsMap = [];
@@ -22,7 +22,7 @@
             (object)['id' => 7, 'range' => '18:55 - 20:35'],
         ]);
     }
-    $weekdays = \App\Enums\WeekdayEnum::cases();
+    $weekdays = \App\Domain\Enums\WeekdayEnum::cases();
 @endphp
 
 <div class="page-content">

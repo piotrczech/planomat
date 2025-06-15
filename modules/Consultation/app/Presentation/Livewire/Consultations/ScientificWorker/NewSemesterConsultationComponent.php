@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
 use Livewire\Component;
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\ValidationException;
 use Modules\Consultation\Application\UseCases\ScientificWorker\CreateNewSemesterConsultationUseCase;

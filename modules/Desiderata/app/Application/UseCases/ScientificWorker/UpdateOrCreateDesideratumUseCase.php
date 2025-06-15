@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Application\UseCases\ScientificWorker;
 
-use App\Application\ActivityLog\UseCases\StoreActivityLogUseCase;
-use App\Application\Semester\UseCases\GetCurrentSemesterUseCase;
-use App\Domain\ActivityLog\Dto\StoreActivityLogDto;
-use App\Enums\ActivityLogActionEnum;
-use App\Enums\ActivityLogModuleEnum;
+use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
+use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Domain\Dto\StoreActivityLogDto;
+use App\Domain\Enums\ActivityLogActionEnum;
+use App\Domain\Enums\ActivityLogModuleEnum;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
@@ -19,7 +19,7 @@ class UpdateOrCreateDesideratumUseCase
 {
     public function __construct(
         private readonly DesideratumRepositoryInterface $desideratumRepository,
-        private readonly StoreActivityLogUseCase $storeActivityLogUseCase,
+        private readonly CreateActivityLogUseCase $createActivityLogUseCase,
         private readonly GetCurrentSemesterUseCase $getCurrentSemesterUseCase,
     ) {
     }
@@ -41,7 +41,7 @@ class UpdateOrCreateDesideratumUseCase
 
         $action = $desideratum->wasRecentlyCreated ? ActivityLogActionEnum::CREATE : ActivityLogActionEnum::UPDATE;
 
-        $this->storeActivityLogUseCase->execute(
+        $this->createActivityLogUseCase->execute(
             new StoreActivityLogDto(
                 userId: (string) $user->id,
                 module: ActivityLogModuleEnum::DESIDERATA->value,

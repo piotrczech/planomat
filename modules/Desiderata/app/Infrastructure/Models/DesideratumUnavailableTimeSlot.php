@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Infrastructure\Models;
 
-use App\Enums\WeekdayEnum;
-use App\Models\TimeSlot;
+use App\Domain\Enums\WeekdayEnum;
+use App\Infrastructure\Models\TimeSlot;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

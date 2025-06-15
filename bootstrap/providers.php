@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\VoltServiceProvider::class,
+    App\Infrastructure\Providers\AppServiceProvider::class,
+    App\Infrastructure\Providers\VoltServiceProvider::class,
     Modules\Consultation\Infrastructure\Providers\ConsultationServiceProvider::class,
     Modules\Desiderata\Infrastructure\Providers\DesiderataServiceProvider::class,
     Lab404\Impersonate\ImpersonateServiceProvider::class,

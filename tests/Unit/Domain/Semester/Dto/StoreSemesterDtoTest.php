@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Domain\Semester\Dto;
+namespace Tests\Unit\Domain\Dto;
 
-use App\Domain\Semester\Dto\StoreSemesterDto;
-use App\Enums\SemesterSeasonEnum;
-use App\Models\Semester;
+use App\Domain\Dto\StoreSemesterDto;
+use App\Domain\Enums\SemesterSeasonEnum;
+use App\Infrastructure\Models\Semester;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;

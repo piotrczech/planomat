@@ -19,10 +19,10 @@
                                 {{ $activity->created_at->diffForHumans() }}
                             </span>
                             @php
-                                $moduleEnum = App\Enums\ActivityLogModuleEnum::from($activity->module);
+                                $moduleEnum = App\Domain\Enums\ActivityLogModuleEnum::from($activity->module);
                                 $color = match ($moduleEnum) {
-                                    App\Enums\ActivityLogModuleEnum::CONSULTATION => 'blue',
-                                    App\Enums\ActivityLogModuleEnum::DESIDERATA => 'green',
+                                    App\Domain\Enums\ActivityLogModuleEnum::CONSULTATION => 'blue',
+                                    App\Domain\Enums\ActivityLogModuleEnum::DESIDERATA => 'green',
                                     default => 'gray',
                                 };
                             @endphp

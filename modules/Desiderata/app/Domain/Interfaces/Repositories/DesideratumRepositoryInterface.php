@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Domain\Interfaces\Repositories;
 
-use App\Models\User;
+use App\Infrastructure\Models\User;
 use Illuminate\Support\Collection;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;

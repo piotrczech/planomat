@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Livewire\Admin\Settings;
 
-use App\Application\Semester\UseCases\CreateSemesterUseCase;
-use App\Application\Semester\UseCases\GetSemesterUseCase;
-use App\Application\Semester\UseCases\UpdateSemesterUseCase;
-use App\Domain\Semester\Dto\StoreSemesterDto;
-use App\Domain\Semester\Dto\UpdateSemesterDto;
-use App\Enums\SemesterSeasonEnum;
-use App\Livewire\Admin\Settings\SemesterFormModal; // Poprawiona ścieżka importu
-use App\Models\Semester;
+use App\Application\UseCases\Semester\CreateSemesterUseCase;
+use App\Application\UseCases\Semester\GetSemesterUseCase;
+use App\Application\UseCases\Semester\UpdateSemesterUseCase;
+use App\Domain\Dto\StoreSemesterDto;
+use App\Domain\Dto\UpdateSemesterDto;
+use App\Domain\Enums\SemesterSeasonEnum;
+use App\Presentation\Livewire\Admin\Settings\SemesterFormModal; // Poprawiona ścieżka importu
+use App\Infrastructure\Models\Semester;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
-use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
 
 class SemesterFormModalTest extends TestCase
 {

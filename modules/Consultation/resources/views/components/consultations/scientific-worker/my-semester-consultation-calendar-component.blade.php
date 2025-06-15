@@ -112,7 +112,7 @@
                                 style="cursor: pointer;"
                             >
                                 <div class="font-semibold text-indigo-800 dark:text-indigo-200 mb-1 flex items-center justify-between">
-                                    <span>{{ \App\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
+                                    <span>{{ \App\Domain\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
                                     @if (!empty($event['location']))
                                         <span class="text-sm font-normal text-zinc-600 dark:text-zinc-300 truncate ml-2 max-w-[60%]" title="{{ $event['location'] }}">
                                             {{ $event['location'] }}
@@ -165,7 +165,7 @@
                     
                     <!-- Nagłówki dni tygodnia -->
                     <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium"></div>
-                    @foreach (\App\Enums\WeekdayEnum::cases() as $index => $day)
+                    @foreach (\App\Domain\Enums\WeekdayEnum::cases() as $index => $day)
                         <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium {{ in_array($index, [5, 6]) ? 'text-red-600 dark:text-red-400 font-bold' : 'text-zinc-700 dark:text-zinc-300' }}">
                             {{ $day->shortLabel() }}
                         </div>

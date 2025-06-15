@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Application\Semester\UseCases;
+namespace Tests\Unit\Application\UseCases\Semester;
 
-use App\Application\Semester\UseCases\DeleteSemesterUseCase;
-use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
+use App\Application\UseCases\Semester\DeleteSemesterUseCase;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
 use Tests\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;

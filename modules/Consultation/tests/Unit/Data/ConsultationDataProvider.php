@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Tests\Unit\Data;
 
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
 
 class ConsultationDataProvider
 {

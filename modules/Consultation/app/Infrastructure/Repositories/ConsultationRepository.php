@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Infrastructure\Repositories;
 
-use App\Enums\RoleEnum;
+use App\Domain\Enums\RoleEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
-use Modules\Consultation\Enums\ConsultationType;
+use Modules\Consultation\Domain\Enums\ConsultationType;
 use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
 use Modules\Consultation\Infrastructure\Models\ConsultationSession;
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
-use App\Models\User;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
+use App\Infrastructure\Models\User;
 
 final class ConsultationRepository implements ConsultationRepositoryInterface
 {

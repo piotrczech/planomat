@@ -47,9 +47,9 @@ document.addEventListener('livewire:initialized', () => {
         render: {
             option: function(data, escape) {
                 return `
-                    <div class="flex flex-col py-1">
-                        <span class="font-semibold text-neutral-800 dark:text-neutral-100">${escape(data.name)}</span>
-                        <span class="text-xs text-neutral-500 dark:text-neutral-400">${escape(data.dates)}</span>
+                    <div class="flex flex-col py-2 px-3 rounded-md mx-1 cursor-pointer transition-all duration-200">
+                        <span class="font-semibold">${escape(data.name)}</span>
+                        <span class="text-xs opacity-70">${escape(data.dates)}</span>
                     </div>
                 `;
             },

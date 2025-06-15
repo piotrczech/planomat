@@ -6,7 +6,7 @@ namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
-use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
 
 final class GetSessionConsultationsUseCase
 {

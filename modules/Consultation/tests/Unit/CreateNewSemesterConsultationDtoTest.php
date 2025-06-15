@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Tests\Unit;
 
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
 use Illuminate\Validation\ValidationException;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Tests\TestCase;

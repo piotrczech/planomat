@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Gate;
 use Modules\Desiderata\Infrastructure\Authorization\DesideratumPolicy;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use Modules\Desiderata\Infrastructure\Repositories\DesideratumRepository;
-use App\Application\ActivityLog\UseCases\StoreActivityLogUseCase;
-use App\Application\Semester\UseCases\GetCurrentSemesterUseCase;
+use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
+use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
 
 class DesiderataServiceProvider extends ServiceProvider
 {
@@ -64,7 +64,7 @@ class DesiderataServiceProvider extends ServiceProvider
         $this->app->bind(UpdateOrCreateDesideratumUseCase::class, function ($app) {
             return new UpdateOrCreateDesideratumUseCase(
                 $app->make(DesideratumRepositoryInterface::class),
-                $app->make(StoreActivityLogUseCase::class),
+                $app->make(CreateActivityLogUseCase::class),
                 $app->make(GetCurrentSemesterUseCase::class),
             );
         });

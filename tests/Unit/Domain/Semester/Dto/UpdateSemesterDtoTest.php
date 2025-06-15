@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Domain\Semester\Dto;
+namespace Tests\Unit\Domain\Dto;
 
-use App\Domain\Semester\Dto\UpdateSemesterDto;
-use App\Enums\SemesterSeasonEnum;
+use App\Domain\Dto\UpdateSemesterDto;
+use App\Domain\Enums\SemesterSeasonEnum;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;

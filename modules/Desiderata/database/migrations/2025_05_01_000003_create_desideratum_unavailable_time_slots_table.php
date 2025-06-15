@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekdayEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

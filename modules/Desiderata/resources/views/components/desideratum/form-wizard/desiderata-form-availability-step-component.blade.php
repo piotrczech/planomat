@@ -66,7 +66,7 @@
                             {{ __('desiderata::desiderata.Time') }}
                         </th>
                         
-                        @foreach (\App\Enums\WeekdayEnum::cases() as $day)
+                        @foreach (\App\Domain\Enums\WeekdayEnum::cases() as $day)
                             <th class="py-3 px-4 bg-zinc-50 dark:bg-zinc-700/50 text-center text-sm font-medium text-zinc-500 dark:text-zinc-400">
                                 {{ $day->label() }}
                             </th>
@@ -77,10 +77,10 @@
                     @foreach (array_keys(reset($unavailableTimeSlots)) as $slotId)
                         <tr class="divide-x divide-zinc-200 dark:divide-zinc-700">
                             <td class="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">
-                                {{ $unavailableTimeSlots[\App\Enums\WeekdayEnum::MONDAY->value][$slotId]['range'] }}
+                                {{ $unavailableTimeSlots[\App\Domain\Enums\WeekdayEnum::MONDAY->value][$slotId]['range'] }}
                             </td>
                             
-                            @foreach (\App\Enums\WeekdayEnum::cases() as $day)
+                            @foreach (\App\Domain\Enums\WeekdayEnum::cases() as $day)
                                 <td class="py-3 px-4 text-center">
                                     <div 
                                         wire:click="toggleTimeSlot('{{ $day->value }}', {{ $slotId }})"

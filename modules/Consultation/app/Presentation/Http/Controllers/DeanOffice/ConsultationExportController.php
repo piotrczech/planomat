@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Http\Controllers\DeanOffice;
 
-use App\Http\Controllers\Controller; // Zakładam, że masz bazowy Controller
+use App\Presentation\Http\Controllers\Controller; // Zakładam, że masz bazowy Controller
 use Modules\Consultation\Application\UseCases\DeanOffice\ExportAllConsultationsToPdfUseCase;
 use Modules\Consultation\Application\UseCases\DeanOffice\ExportUnfilledConsultationsToPdfUseCase;
 use Symfony\Component\HttpFoundation\Response;

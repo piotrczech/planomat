@@ -6,14 +6,14 @@ namespace Modules\Desiderata\Infrastructure\Repositories;
 
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
-use App\Enums\CoursePreferenceTypeEnum;
+use App\Domain\Enums\CoursePreferenceTypeEnum;
 use Illuminate\Support\Collection;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Infrastructure\Models\DesideratumUnavailableTimeSlot;
 use Modules\Desiderata\Infrastructure\Models\DesideratumCoursePreference;
-use App\Models\User;
-use App\Enums\RoleEnum;
-use App\Models\Course;
+use App\Infrastructure\Models\User;
+use App\Domain\Enums\RoleEnum;
+use App\Infrastructure\Models\Course;
 
 class DesideratumRepository implements DesideratumRepositoryInterface
 {

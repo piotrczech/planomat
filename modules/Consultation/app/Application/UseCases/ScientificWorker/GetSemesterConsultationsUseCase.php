@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
-use App\Models\Semester;
+use App\Infrastructure\Models\Semester;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Application\Semester\UseCases;
+namespace Tests\Unit\Application\UseCases\Semester;
 
-use App\Application\Semester\UseCases\UpdateSemesterUseCase;
-use App\Domain\Semester\Dto\UpdateSemesterDto;
-use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
-use App\Models\Semester;
-use App\Enums\SemesterSeasonEnum;
+use App\Application\UseCases\Semester\UpdateSemesterUseCase;
+use App\Domain\Dto\UpdateSemesterDto;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
+use App\Infrastructure\Models\Semester;
+use App\Domain\Enums\SemesterSeasonEnum;
 use Tests\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;

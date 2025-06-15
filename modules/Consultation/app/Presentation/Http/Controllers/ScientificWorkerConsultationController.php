@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Presentation\Http\Controllers\Controller;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetConsultationSummaryTimeUseCase;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetLastUpdateDateForSemesterConsultationUseCase;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetLastUpdateDateForSessionConsultationUseCase;

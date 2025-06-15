@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Database\Factories;
 
-use App\Models\Semester;
-use App\Models\User;
+use App\Infrastructure\Models\Semester;
+use App\Infrastructure\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 

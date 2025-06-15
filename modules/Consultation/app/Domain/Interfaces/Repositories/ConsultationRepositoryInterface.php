@@ -7,7 +7,7 @@ namespace Modules\Consultation\Domain\Interfaces\Repositories;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Illuminate\Database\Eloquent\Collection;
-use Modules\Consultation\Enums\ConsultationType;
+use Modules\Consultation\Domain\Enums\ConsultationType;
 
 interface ConsultationRepositoryInterface
 {

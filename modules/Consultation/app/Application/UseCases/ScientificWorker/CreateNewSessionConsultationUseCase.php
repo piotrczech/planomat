@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
-use App\Application\ActivityLog\UseCases\StoreActivityLogUseCase;
-use App\Application\Semester\UseCases\GetCurrentSemesterUseCase;
-use App\Domain\ActivityLog\Dto\StoreActivityLogDto;
-use App\Enums\ActivityLogActionEnum;
-use App\Enums\ActivityLogModuleEnum;
+use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
+use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Domain\Dto\StoreActivityLogDto;
+use App\Domain\Enums\ActivityLogActionEnum;
+use App\Domain\Enums\ActivityLogModuleEnum;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
@@ -18,7 +18,7 @@ final class CreateNewSessionConsultationUseCase
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
         private readonly GetCurrentSemesterUseCase $getCurrentSemesterUseCase,
-        private readonly StoreActivityLogUseCase $storeActivityLogUseCase,
+        private readonly CreateActivityLogUseCase $createActivityLogUseCase,
     ) {
     }
 
@@ -38,7 +38,7 @@ final class CreateNewSessionConsultationUseCase
         );
 
         if ($resultId > 0) {
-            $this->storeActivityLogUseCase->execute(
+            $this->createActivityLogUseCase->execute(
                 new StoreActivityLogDto(
                     userId: (string) $scientificWorkerId,
                     module: ActivityLogModuleEnum::CONSULTATION->value,

@@ -150,7 +150,7 @@
                     aria-labelledby="consultation-weekday-legend"
                     wire:model="consultationWeekday"
                 >
-                    @foreach(\App\Enums\WeekdayEnum::cases() as $weekday)
+                    @foreach(\App\Domain\Enums\WeekdayEnum::cases() as $weekday)
                         <option value="{{ $weekday->value }}">
                             {{ $weekday->label() }}
                         </option>
@@ -177,7 +177,7 @@
                     class="w-full {{ $errors->has('dailyConsultationWeekType') ? 'border-red-500 dark:border-red-400' : '' }}"
                     wire:model="dailyConsultationWeekType"
                 >
-                    @foreach(\App\Enums\WeekTypeEnum::cases() as $weekType)
+                    @foreach(\App\Domain\Enums\WeekTypeEnum::cases() as $weekType)
                         <option value="{{ $weekType->value }}">
                             {{ $weekType->label() }}
                         </option>

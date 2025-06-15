@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Database\Factories;
 
-use App\Enums\CoursePreferenceTypeEnum;
-use App\Models\Course;
+use App\Domain\Enums\CoursePreferenceTypeEnum;
+use App\Infrastructure\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use Modules\Desiderata\Infrastructure\Models\DesideratumCoursePreference;

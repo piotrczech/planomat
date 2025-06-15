@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\SemesterSeasonEnum;
-use App\Models\Semester;
+use App\Domain\Enums\SemesterSeasonEnum;
+use App\Infrastructure\Models\Semester;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 

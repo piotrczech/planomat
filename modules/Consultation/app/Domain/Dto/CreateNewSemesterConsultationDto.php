@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Domain\Dto;
 
-use App\Enums\WeekdayEnum;
-use App\Enums\WeekTypeEnum;
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
 use Carbon\Carbon;
 use Spatie\LaravelData\Attributes\Validation\After;
 use Spatie\LaravelData\Attributes\Validation\In;
@@ -17,7 +17,7 @@ use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
-use App\Models\Semester;
+use App\Infrastructure\Models\Semester;
 
 final class CreateNewSemesterConsultationDto extends Data
 {

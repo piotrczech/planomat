@@ -105,6 +105,30 @@ select:focus[data-flux-control] {
     @apply !border-gray-200 dark:!border-gray-600 border-l;
 }
 
+.ts-wrapper.single.input-active .ts-control {
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-2 border-gray-200 dark:border-red-500;
+}
+
+.ts-dropdown .option {
+    @apply bg-transparent border-none text-inherit transition-all duration-200;
+}
+
+.ts-dropdown .option:hover {
+    @apply bg-zinc-100 text-zinc-900 dark:bg-zinc-600 dark:text-zinc-100;
+}
+
+.ts-dropdown .option.active {
+    @apply bg-zinc-200 text-zinc-900 dark:bg-zinc-500 dark:text-zinc-100;
+}
+
+.ts-dropdown .option.selected {
+    @apply bg-blue-50 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200;
+}
+
+.ts-dropdown .option.selected.active {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-800/80 dark:text-blue-100;
+}
+
 .flatpickr-error input,
 .flatpickr-error .flatpickr-input {
     @apply !border-red-500 dark:!border-red-400;

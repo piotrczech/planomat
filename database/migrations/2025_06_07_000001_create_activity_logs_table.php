@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Enums\ActivityLogActionEnum;
-use App\Enums\ActivityLogModuleEnum;
-use App\Models\User;
+use App\Domain\Enums\ActivityLogActionEnum;
+use App\Domain\Enums\ActivityLogModuleEnum;
+use App\Infrastructure\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

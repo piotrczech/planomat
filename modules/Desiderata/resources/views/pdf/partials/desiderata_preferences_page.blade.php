@@ -1,5 +1,5 @@
 @php
-    use App\Enums\CoursePreferenceTypeEnum;
+    use App\Domain\Enums\CoursePreferenceTypeEnum;
 
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
     $worker = $desideratum->scientificWorker;

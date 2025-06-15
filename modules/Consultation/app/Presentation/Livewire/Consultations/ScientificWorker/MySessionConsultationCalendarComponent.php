@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
-use App\Application\Semester\UseCases\GetCurrentSemesterDatesUseCase;
+use App\Application\UseCases\Semester\GetCurrentSemesterDatesUseCase;
 use Carbon\Carbon;
 use Livewire\Component;
 use Exception;

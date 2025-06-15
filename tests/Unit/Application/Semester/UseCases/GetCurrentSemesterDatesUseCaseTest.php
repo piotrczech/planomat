@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Application\Semester\UseCases;
+namespace Tests\Unit\Application\UseCases\Semester;
 
-use App\Application\Semester\UseCases\GetCurrentSemesterDatesUseCase;
-use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
-use App\Models\Semester;
+use App\Application\UseCases\Semester\GetCurrentSemesterDatesUseCase;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
+use App\Infrastructure\Models\Semester;
 use Carbon\Carbon;
 use Mockery;
 use PHPUnit\Framework\TestCase;

@@ -72,7 +72,7 @@
     <div class="header">
         <div class="title">Raport Konsultacji Pracowników Naukowych</div>
         <div class="subtitle">
-            Typ: {{ $consultationType === \Modules\Consultation\Enums\ConsultationType::Semester ? 'Konsultacje semestralne' : 'Konsultacje sesyjne' }}
+            Typ: {{ $consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester ? 'Konsultacje semestralne' : 'Konsultacje sesyjne' }}
         </div>
     </div>
     
@@ -95,7 +95,7 @@
             <tbody>
                 @foreach($scientificWorkers as $worker)
                     @php
-                        $consultations = $consultationType === \Modules\Consultation\Enums\ConsultationType::Semester
+                        $consultations = $consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester
                             ? $worker->semesterConsultations
                             : $worker->sessionConsultations;
                         $consultationCount = $consultations->count();
@@ -109,9 +109,9 @@
                         @if($consultationCount > 0)
                             @php $first = $consultations->first(); @endphp
                             <td>
-                                @if($consultationType === \Modules\Consultation\Enums\ConsultationType::Semester)
+                                @if($consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester)
                                     {{ $first->day->label() }}
-                                    @if($first->week_type !== \App\Enums\WeekTypeEnum::ALL)
+                                    @if($first->week_type !== \App\Domain\Enums\WeekTypeEnum::ALL)
                                         ({{ $first->week_type->label() }})
                                     @endif
                                     , {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
@@ -129,9 +129,9 @@
                         @foreach($consultations->slice(1) as $consultation)
                             <tr>
                                 <td>
-                                     @if($consultationType === \Modules\Consultation\Enums\ConsultationType::Semester)
+                                     @if($consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester)
                                         {{ $consultation->day->label() }}
-                                        @if($consultation->week_type !== \App\Enums\WeekTypeEnum::ALL)
+                                        @if($consultation->week_type !== \App\Domain\Enums\WeekTypeEnum::ALL)
                                             ({{ $consultation->week_type->label() }})
                                         @endif
                                         , {{ $consultation->start_time->format('H:i') }} - {{ $consultation->end_time->format('H:i') }}

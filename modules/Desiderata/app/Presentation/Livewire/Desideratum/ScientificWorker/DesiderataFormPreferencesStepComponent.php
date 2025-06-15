@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
-use App\Application\Course\UseCases\GetAllCoursesUseCase;
+use App\Application\UseCases\Course\GetAllCoursesUseCase;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Dto\DesiderataFormPreferencesDto;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;

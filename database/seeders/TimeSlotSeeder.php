@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\TimeSlot;
+use App\Infrastructure\Models\TimeSlot;
 use Illuminate\Database\Seeder;
 
 class TimeSlotSeeder extends Seeder

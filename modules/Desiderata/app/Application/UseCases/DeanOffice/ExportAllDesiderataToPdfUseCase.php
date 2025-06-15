@@ -8,7 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
-use App\Domain\Semester\Interfaces\SemesterRepositoryInterface;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
 
 final class ExportAllDesiderataToPdfUseCase
 {

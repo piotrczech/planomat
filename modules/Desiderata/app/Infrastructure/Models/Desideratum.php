@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Infrastructure\Models;
 
-use App\Models\Course;
-use App\Models\Semester;
-use App\Models\User;
-use App\Enums\CoursePreferenceTypeEnum;
+use App\Infrastructure\Models\Course;
+use App\Infrastructure\Models\Semester;
+use App\Infrastructure\Models\User;
+use App\Domain\Enums\CoursePreferenceTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
