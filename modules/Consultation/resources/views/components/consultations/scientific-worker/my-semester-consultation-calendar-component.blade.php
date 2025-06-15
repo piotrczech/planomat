@@ -160,10 +160,8 @@
     <div class="hidden md:block dark:bg-zinc-900 rounded-lg">
         <div class="overflow-x-auto bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
             <div class="min-w-[750px]">
-                <!-- Główna siatka CSS Grid z 8 kolumnami (godziny + 7 dni) -->
                 <div class="grid" style="grid-template-columns: auto repeat(7, 1fr);">
                     
-                    <!-- Nagłówki dni tygodnia -->
                     <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium"></div>
                     @foreach (\App\Domain\Enums\WeekdayEnum::cases() as $index => $day)
                         <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium {{ in_array($index, [5, 6]) ? 'text-red-600 dark:text-red-400 font-bold' : 'text-zinc-700 dark:text-zinc-300' }}">
@@ -171,49 +169,36 @@
                         </div>
                     @endforeach
                     
-                    <!-- Zawartość kalendarza z godzinami i slotami czasowymi -->
                     <div class="col-span-8">
                         <div class="grid" style="grid-template-columns: auto repeat(7, 1fr); grid-template-rows: repeat(56, 16px);">
                             
                             @php
-                                // Tablica wszystkich godzin pełnych
                                 $timeLabels = [];
-                                // Zaczynamy od wiersza 1
                                 $rowIndex = 1;
                                 
-                                // Godziny od 7:00 do 20:00
                                 for ($hour = 7; $hour <= 20; $hour++) {
                                     $timeLabels[$rowIndex] = sprintf('%02d:00', $hour);
-                                    $rowIndex += 4; // Każda godzina to 4 kwadranse
+                                    $rowIndex += 4;
                                 }
                                 
-                                // Funkcja mapująca czas na indeks wiersza w siatce
                                 $timeToRowIndex = function($time) {
                                     $hour = (int)substr($time, 0, 2);
                                     $minute = (int)substr($time, 3, 2);
                                     
-                                    // Konwertuj czas na minuty od północy
                                     $totalMinutes = $hour * 60 + $minute;
-                                    
-                                    // Czas bazowy to 7:00 = 420 minut
                                     $baseTime = 7 * 60;
-                                    
-                                    // Różnica w minutach
                                     $minutesDiff = $totalMinutes - $baseTime;
                                     
-                                    // Każde 15 minut to 1 jednostka w siatce
                                     return 1 + ($minutesDiff / 15);
                                 };
                             @endphp
                             
-                            <!-- Hours labels and horizontal lines -->
                             @foreach ($timeLabels as $row => $time)
                                 <div class="p-1 border-r border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 flex items-center justify-center text-sm text-zinc-600 dark:text-zinc-400 font-medium" style="grid-row: {{ $row }} / span 4; grid-column: 1;">
                                     {{ $time }}
                                 </div>
                             @endforeach
                             
-                            <!-- Empty grid cells and vertical lines -->
                             @for ($row = 1; $row <= 56; $row++)
                                 @for ($col = 2; $col <= 8; $col++)
                                     <div class="border-r border-b border-zinc-100 dark:border-zinc-800" style="grid-row: {{ $row }}; grid-column: {{ $col }};"></div>
@@ -235,15 +220,15 @@
                                                     $event['startTime'] < $existingEvent['endTime'] &&
                                                     $event['endTime'] > $existingEvent['startTime']
                                                 ) {
-                                                    $groups[$groupIndex][] = $event; // przypisz do grupy
+                                                    $groups[$groupIndex][] = $event;
                                                     $added = true;
-                                                    break 2; // wyjdź z obu pętli
+                                                    break 2;
                                                 }
                                             }
                                         }
 
                                         if (! $added) {
-                                            $groups[] = [$event]; // utwórz nową grupę
+                                            $groups[] = [$event];
                                         }
                                     }
 

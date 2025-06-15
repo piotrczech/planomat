@@ -16,8 +16,6 @@ final readonly class UpdateSemesterUseCase
 
     public function execute(int $id, UpdateSemesterDto $dto): ?Semester
     {
-        // Logika biznesowa specyficzna dla aktualizacji (np. zdarzenia) może być tutaj.
-        // Walidacja jest obsługiwana przez UpdateSemesterDto.
         return $this->semesterRepository->update($id, $dto);
     }
 }

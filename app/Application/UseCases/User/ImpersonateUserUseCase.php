@@ -38,9 +38,9 @@ final class ImpersonateUserUseCase
 
         Log::info('[ImpersonateUserUseCase] Attempting impersonation.', [
             'admin_user_id' => $adminUser->id,
-            'admin_user_role' => $adminUser->role->value, // Zakładając, że RoleEnum ma ->value
+            'admin_user_role' => $adminUser->role->value,
             'user_to_impersonate_id' => $userToImpersonate->id,
-            'user_to_impersonate_role' => $userToImpersonate->role->value, // Zakładając, że RoleEnum ma ->value
+            'user_to_impersonate_role' => $userToImpersonate->role->value,
         ]);
 
         if ($adminUser->is($userToImpersonate)) {

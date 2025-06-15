@@ -11,10 +11,9 @@ use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\Email;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Confirmed;
-use Spatie\LaravelData\Attributes\Validation\Rule; // For custom rules or direct rule objects
+use Spatie\LaravelData\Attributes\Validation\Rule;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Unique;
-// For unique rule etc.
 use Spatie\LaravelData\Attributes\Validation\Enum;
 
 final class StoreUserDto extends Data
@@ -35,13 +34,9 @@ final class StoreUserDto extends Data
         #[Min(8)]
         #[Confirmed]
         public readonly string $password,
-
-        // password_confirmation is automatically handled by Livewire/Laravel if password has Confirmed rule
-        // public readonly string $password_confirmation,
-
         #[Required]
         #[Enum(RoleEnum::class)]
-        public readonly RoleEnum $role = RoleEnum::SCIENTIFIC_WORKER, // Domyślna rola
+        public readonly RoleEnum $role = RoleEnum::SCIENTIFIC_WORKER,
     ) {
     }
 

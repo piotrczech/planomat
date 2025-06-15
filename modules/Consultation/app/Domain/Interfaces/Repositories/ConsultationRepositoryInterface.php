@@ -43,15 +43,6 @@ interface ConsultationRepositoryInterface
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string;
 
-    /**
-     * Fetches all semester and session consultations, grouped by scientific worker, formatted for PDF export.
-     *
-     * @return array An array where keys are scientific worker IDs and values are arrays
-     *               containing worker's name and their list of consultations.
-     *               Each consultation should have 'type', 'term_or_day', 'hours', 'location', 'week_type' (if applicable).
-     */
-    public function fetchAllForPdfExport(): Collection;
-
     public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection;
 
     public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection;

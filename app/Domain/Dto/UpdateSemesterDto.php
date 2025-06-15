@@ -43,7 +43,7 @@ final class UpdateSemesterDto extends Data
                 'between:1901,2155',
                 $semesterId ? IlluminateRule::unique('semesters')->where(function ($query) use ($context) {
                     return $query->where('season', $context['season'] ?? null);
-                })->ignore($semesterId) : 'unique:semesters,start_year', // Fallback, chociaz ID powinno byc
+                })->ignore($semesterId) : 'unique:semesters,start_year',
             ],
             'season' => ['required', new \Illuminate\Validation\Rules\Enum(SemesterSeasonEnum::class)],
             'semester_start_date' => ['required', 'date_format:Y-m-d'],
@@ -54,7 +54,6 @@ final class UpdateSemesterDto extends Data
 
     public static function messages(): array
     {
-        // Komunikaty są takie same jak w StoreSemesterDto, plus te dla ID
         return [
             'id.required' => __('admin_settings.semester_manager.validation.id_required'),
             'id.integer' => __('admin_settings.semester_manager.validation.id_integer'),

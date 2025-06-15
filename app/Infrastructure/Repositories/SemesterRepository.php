@@ -29,7 +29,6 @@ final class SemesterRepository implements SemesterRepositoryInterface
     {
         return Semester::query()
             ->when($searchTerm, function ($query, $searchTerm): void {
-                // Wyszukiwanie po roku lub części daty
                 $query->where(function ($q) use ($searchTerm): void {
                     $q->where('start_year', 'like', "%{$searchTerm}%")
                         ->orWhere('semester_start_date', 'like', "%{$searchTerm}%")

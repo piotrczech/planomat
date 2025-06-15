@@ -41,9 +41,7 @@ class SemesterManager extends Component
     {
         $this->showSemesterFormModal = false;
         $this->editingSemesterId = null;
-        // Tutaj można dodać powiadomienie dla użytkownika (np. toast)
-        // $this->dispatch('notify', ['message' => __('admin_settings.semester_manager.notifications.semester_saved'), 'type' => 'success']);
-        $this->resetPage(); // Odświeżenie listy
+        $this->resetPage();
     }
 
     public function handleDeleteSemesterConfirmed(Application $app, int $semesterId): void
@@ -54,9 +52,7 @@ class SemesterManager extends Component
             $deleteSemesterUseCase->execute($this->deletingSemesterId);
             $this->deletingSemesterId = null;
             $this->showDeleteConfirmationModal = false;
-            // Tutaj można dodać powiadomienie dla użytkownika
-            // $this->dispatch('notify', ['message' => __('admin_settings.semester_manager.notifications.semester_deleted'), 'type' => 'success']);
-            $this->resetPage(); // Odświeżenie listy
+            $this->resetPage();
         }
     }
 

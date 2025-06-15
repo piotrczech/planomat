@@ -32,7 +32,6 @@ final class CreateNewSemesterConsultationUseCase
             return 0;
         }
 
-        // todo: validation that consultation not overlaps with other consultations
         $isWeekday = in_array($dto->consultationWeekday, [
             WeekdayEnum::MONDAY->value,
             WeekdayEnum::TUESDAY->value,

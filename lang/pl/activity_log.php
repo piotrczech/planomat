@@ -8,7 +8,7 @@ return [
         'desiderata' => 'Moduł dezyderatów',
         'semester' => 'Moduł semestrów',
     ],
-    'module_accusative' => [ // biernik
+    'module_accusative' => [
         'consultation' => 'konsultację',
         'desiderata' => 'dezyderat',
         'semester' => 'semestr',

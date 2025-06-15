@@ -261,13 +261,6 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return $this->getAllScientificWorkersWithConsultations($semesterId, $type);
     }
 
-    public function fetchAllForPdfExport(): Collection
-    {
-        // Pusta implementacja, aby spełnić wymagania interfejsu.
-        // Ta metoda nie jest już używana w logice aplikacji.
-        return new Collection;
-    }
-
     public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type): Collection
     {
         $consultationRelation = match ($type) {

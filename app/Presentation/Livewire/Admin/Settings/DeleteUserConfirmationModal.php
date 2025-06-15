@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Presentation\Livewire\Admin\Settings;
 
-use App\Application\UseCases\User\GetUserUseCase; // To potentially show user name
+use App\Application\UseCases\User\GetUserUseCase;
 use App\Infrastructure\Models\User;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
-
-// Dodano import dla spójności
 
 class DeleteUserConfirmationModal extends Component
 {
@@ -28,7 +26,6 @@ class DeleteUserConfirmationModal extends Component
         }
     }
 
-    // This method can be called by parent to set the user ID and load data
     public function loadUser(int $userId, GetUserUseCase $getUserUseCase): void
     {
         $this->userId = $userId;
@@ -39,11 +36,7 @@ class DeleteUserConfirmationModal extends Component
     {
         if ($this->userId) {
             $this->dispatch('deleteUserConfirmed', userId: $this->userId);
-            // The parent (UserManager) will handle closing this modal via its own state variable
-            // or by emitting 'closeDeleteConfirmationModal' event if needed.
         }
-        // Fallback if dispatch to parent doesn't close it:
-        // $this->dispatch('closeDeleteConfirmationModal');
     }
 
     public function cancel(): void

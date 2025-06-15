@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
 use App\Domain\Enums\WeekdayEnum;
+use App\Infrastructure\Models\Semester;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
 use Modules\Desiderata\Domain\Dto\DesiderataFormAvailabilityDto;
@@ -27,20 +28,16 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
 
     public function mount(DesideratumRepositoryInterface $repository): void
     {
-        // Inicjalizujemy strukturę slotów czasowych
         $this->initTimeSlots();
 
-        // Pobieramy aktualne dane, jeśli istnieją
         $currentUserId = Auth::id();
-        $semesterId = 1; // Tutaj można dodać logikę pobierania aktualnego semestru
+        $semesterId = Semester::getCurrentSemester()->id;
 
         $existingDesideratum = $repository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
 
         if ($existingDesideratum) {
-            // Ustawiamy dodatkowe notatki
             $this->additionalNotes = $existingDesideratum->additionalNotes;
 
-            // Ustawiamy niedostępne sloty czasowe
             if (!empty($existingDesideratum->unavailableTimeSlots)) {
                 $this->selectedSlotsCount = 0;
 
@@ -67,7 +64,7 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
 
     private function initTimeSlots(): void
     {
-        // Przykładowe przedziały czasowe (docelowo z bazy)
+        // TODO
         $timeSlots = [
             ['id' => 1, 'range' => '7:30-9:00'],
             ['id' => 2, 'range' => '9:15-11:00'],
@@ -78,7 +75,6 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
             ['id' => 7, 'range' => '18:55-20:35'],
         ];
 
-        // Inicjalizacja tablicy niedostępnych slotów
         foreach (WeekdayEnum::cases() as $day) {
             $this->unavailableTimeSlots[$day->value] = [];
 
@@ -96,13 +92,10 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
     {
         $isCurrentlySelected = $this->unavailableTimeSlots[$day][$slotId]['selected'];
 
-        // Jeśli próbujemy odznaczyć - po prostu zmieniamy stan
         if ($isCurrentlySelected) {
             $this->unavailableTimeSlots[$day][$slotId]['selected'] = false;
             $this->selectedSlotsCount--;
-        }
-        // Jeśli próbujemy zaznaczyć - sprawdzamy limit
-        elseif ($this->selectedSlotsCount < $this->maxUnavailableSlots) {
+        } elseif ($this->selectedSlotsCount < $this->maxUnavailableSlots) {
             $this->unavailableTimeSlots[$day][$slotId]['selected'] = true;
             $this->selectedSlotsCount++;
         }
@@ -111,7 +104,6 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
     public function saveDesideratum(UpdateOrCreateDesideratumUseCase $useCase): void
     {
         try {
-            // Walidacja danych z bieżącego kroku
             $this->validate(DesiderataFormAvailabilityDto::rules(), DesiderataFormAvailabilityDto::messages());
 
             $preferencesState = $this->state()->forStepClass(DesiderataFormPreferencesStepComponent::class);

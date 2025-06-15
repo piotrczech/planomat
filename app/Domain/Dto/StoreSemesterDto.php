@@ -10,8 +10,6 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Illuminate\Validation\Rule;
 
-// Potrzebne do budowania reguły unikalności
-
 final class StoreSemesterDto extends Data
 {
     public function __construct(
@@ -35,8 +33,8 @@ final class StoreSemesterDto extends Data
             'start_year' => [
                 'required',
                 'integer',
-                'digits:4', // Rok powinien mieć 4 cyfry
-                'between:1901,2155', // Dodana reguła zakresu dla typu YEAR
+                'digits:4',
+                'between:1901,2155',
                 Rule::unique('semesters')->where(function ($query) use ($context) {
                     return $query->where('season', $context['season'] ?? null);
                 }),

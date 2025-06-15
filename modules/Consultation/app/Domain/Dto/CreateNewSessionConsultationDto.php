@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Domain\Dto;
 
+use App\Infrastructure\Models\Semester;
 use Carbon\Carbon;
 use Spatie\LaravelData\Attributes\Validation\After;
 use Spatie\LaravelData\Attributes\Validation\Date;
@@ -44,7 +45,6 @@ final class CreateNewSessionConsultationDto extends Data
                 'string',
                 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
                 function ($attribute, $value, $fail): void {
-                    // Sprawdzenie czy czas rozpoczęcia jest w zakresie 7:30-19:30
                     $startTime = Carbon::createFromFormat('H:i', $value);
                     $minTime = Carbon::createFromFormat('H:i', '07:30');
                     $maxTime = Carbon::createFromFormat('H:i', '19:30');
@@ -60,7 +60,6 @@ final class CreateNewSessionConsultationDto extends Data
                 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
                 'after:consultationStartTime',
                 function ($attribute, $value, $fail): void {
-                    // Sprawdzenie czy czas zakończenia jest w zakresie 8:30-20:30
                     $endTime = Carbon::createFromFormat('H:i', $value);
                     $minTime = Carbon::createFromFormat('H:i', '08:30');
                     $maxTime = Carbon::createFromFormat('H:i', '20:30');
@@ -70,7 +69,6 @@ final class CreateNewSessionConsultationDto extends Data
                     }
                 },
                 function ($attribute, $value, $fail): void {
-                    // Sprawdzanie czy konsultacja nie jest krótsza niż 60 minut
                     $formData = request()->all();
 
                     if (isset($formData['consultationStartTime'])) {
@@ -97,15 +95,15 @@ final class CreateNewSessionConsultationDto extends Data
                 'required',
                 'date',
                 function ($attribute, $value, $fail): void {
-                    // Można tutaj dodać dodatkową walidację daty
-                    // np. sprawdzenie czy data mieści się w okresie sesji
-                    // Przykład:
-                    // $consultationDate = Carbon::parse($value);
-                    // $sessionStart = Carbon::parse('2023-06-01');
-                    // $sessionEnd = Carbon::parse('2023-06-30');
-                    // if ($consultationDate->lt($sessionStart) || $consultationDate->gt($sessionEnd)) {
-                    //     $fail(__('consultation::consultation.Date must be between session dates'));
-                    // }
+                    $consultationDate = Carbon::parse($value);
+
+                    $semester = Semester::getCurrentSemester();
+                    $sessionStart = Carbon::parse($semester->session_start_date);
+                    $sessionEnd = Carbon::parse($semester->end_date);
+
+                    if ($consultationDate->lt($sessionStart) || $consultationDate->gt($sessionEnd)) {
+                        $fail(__('consultation::consultation.Date must be between session dates'));
+                    }
                 },
             ],
         ];

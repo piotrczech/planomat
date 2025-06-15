@@ -6,9 +6,6 @@ namespace App\Presentation\Livewire\Admin\Settings;
 
 use App\Application\UseCases\Course\DeleteCourseUseCase;
 use App\Application\UseCases\Course\ListCoursesUseCase;
-// use App\Domain\Course\DataTransferObjects\CourseData; // Usunięty import
-// Założenie, że walidacja będzie w CourseFormModal
-use App\Infrastructure\Models\Course; // Można usunąć jeśli nie używamy bezpośrednio
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -42,8 +39,6 @@ class CourseManager extends Component
     public function handleCourseSaved(): void
     {
         $this->showCourseFormModal = false;
-        // Optionally, dispatch a browser event for user notification (e.g., a toast message)
-        // $this->dispatch('notify', ['message' => __('admin_settings.course_manager.notifications.course_saved'), 'type' => 'success']);
     }
 
     public function handleDeleteCourseConfirmed(DeleteCourseUseCase $deleteCourseUseCase): void
@@ -52,22 +47,20 @@ class CourseManager extends Component
             $deleteCourseUseCase->execute($this->deletingCourseId);
             $this->deletingCourseId = null;
             $this->showDeleteConfirmationModal = false;
-            // Optionally, dispatch a browser event for user notification
-            // $this->dispatch('notify', ['message' => __('admin_settings.course_manager.notifications.course_deleted'), 'type' => 'success']);
         }
     }
 
     public function openCreateCourseModal(): void
     {
         $this->editingCourseId = null;
-        $this->resetErrorBag(); // Clear previous validation errors
+        $this->resetErrorBag();
         $this->showCourseFormModal = true;
     }
 
     public function openEditCourseModal(int $courseId): void
     {
         $this->editingCourseId = $courseId;
-        $this->resetErrorBag(); // Clear previous validation errors
+        $this->resetErrorBag();
         $this->showCourseFormModal = true;
     }
 

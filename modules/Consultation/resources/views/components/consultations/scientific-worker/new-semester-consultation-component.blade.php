@@ -17,22 +17,18 @@
                 locale: 'pl',
                 disable: [
                     (date) => {
-                        // Domyślnie blokuj wszystkie dni poza weekendem
                         if (!(date.getDay() === 0 || date.getDay() === 6)) {
                             return true;
                         }
                         
-                        // Jeśli wybrano sobotę, odblokuj tylko soboty
                         if (this.selectedWeekday === 'saturday') {
                             return date.getDay() !== 6;
                         }
                         
-                        // Jeśli wybrano niedzielę, odblokuj tylko niedziele
                         if (this.selectedWeekday === 'sunday') {
                             return date.getDay() !== 0;
                         }
                         
-                        // Dla pozostałych przypadków pozwól na oba dni weekendu
                         return false;
                     }
                 ]
@@ -41,13 +37,10 @@
         
         updateFlatpickr() {
             if (this.consultationDaysPickerInstance) {
-                // Usuń poprzednią instancję
                 this.consultationDaysPickerInstance.destroy();
                 
-                // Wyczyść wartość inputa
                 this.$refs.datesInput.value = '';
                 
-                // Utwórz nową instancję z aktualnymi opcjami
                 this.consultationDaysPickerInstance = flatpickr(
                     this.$refs.datesInput, 
                     this.consultationDaysPickerOptions
@@ -67,7 +60,6 @@
             selectedWeekday = day;
             isWeekdaySelected = day !== 'saturday' && day !== 'sunday';
             
-            // Po zmianie dnia tygodnia zaktualizuj flatpickr
             $nextTick(() => updateFlatpickr());
         }
 
@@ -77,14 +69,11 @@
         weekdaySelect.on('change', (value) => updateSelectedWeekday(value));
         updateSelectedWeekday(weekdaySelect.getValue());
         
-        // Inicjalizacja pickera po załadowaniu strony
         $nextTick(() => initializeDatePicker());
 
-        // Nasłuchiwanie eventów
         $wire.on('consultationSaved', (data) => {
             showSuccessAlert = true;
 
-            // reset day to monday
             weekdaySelect.setValue('monday');
             updateSelectedWeekday('monday');
 
@@ -108,7 +97,6 @@
         </p>
     </flux:text>
 
-    <!-- Komunikat sukcesu -->
     <div x-show="showSuccessAlert" x-transition class="mb-6">
         <flux:callout 
             variant="success" 

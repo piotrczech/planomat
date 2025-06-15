@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-    // Nagłówki
     'My Desiderata' => 'Moje dezyderaty',
     'Stage: Teaching preferences' => 'Etap: Preferencje dydaktyczne',
     'Desiderata Form' => 'Formularz dezyderat',
@@ -17,11 +16,9 @@ return [
     'Success' => 'Sukces',
     'Error' => 'Błąd',
 
-    // Kroki formularza
     'Preferences' => 'Preferencje',
     'Availability' => 'Dostępność',
 
-    // Preferencje dydaktyczne - nagłówki sekcji
     'Teaching preferences' => 'Preferencje dydaktyczne',
     'Teaching preferences description' => 'Na tym etapie należy wskazać preferencje dotyczące prowadzonych zajęć - w szczególności wybór kursów, formy prowadzenia oraz inne istotne czynniki. Informacje o dostępności czasowej będą uzupełniane w kolejnym kroku.',
     'Teaching mode' => 'Forma prowadzenia zajęć',
@@ -33,14 +30,11 @@ return [
     'Working hours' => 'Obciążenie godzinowe',
     'Additional notes' => 'Dodatkowe uwagi',
 
-    // Forma prowadzenia zajęć
     'Stationary studies' => 'Chcę prowadzić zajęcia stacjonarne',
     'Non-stationary studies' => 'Chcę prowadzić zajęcia niestacjonarne',
 
-    // Nadgodziny
     'I agree to work overtime' => 'Wyrażam zgodę na nadgodziny',
 
-    // Kursy
     'Courses I can teach' => 'Kursy, które mogę prowadzić',
     'I want to teach' => 'Chcę prowadzić',
     'I do not want to teach' => 'Nie chcę prowadzić',
@@ -52,18 +46,14 @@ return [
     'Remove' => 'Usuń',
     'No courses selected' => 'Nie wybrano kursów',
 
-    // Prace dyplomowe
     'Number of master theses' => 'Liczba prac magisterskich',
     'Number of bachelor theses' => 'Liczba prac inżynierskich',
 
-    // Obciążenie godzinowe
     'Maximum hours per day' => 'Maksymalna liczba godzin dziennie',
     'Maximum consecutive hours' => 'Maksymalna liczba godzin z rzędu',
 
-    // Dodatkowe uwagi
     'Additional notes (optional)' => 'Dodatkowe uwagi (opcjonalne)',
 
-    // Dostępność czasowa
     'Time availability' => 'Dostępność czasowa',
     'Mark up to 5 time slots when you are NOT available' => 'Zaznacz maksymalnie 5 bloków czasowych, w których NIE jesteś dostępny',
     'Availability schedule description' => 'Na tym etapie należy wskazać (nie)dostępność czasową na nadchodzący semestr. Prosimy o zaznaczenie bloków czasowych, w których Państwo nie będą Państwo dostępni do prowadzenia zajęć.',
@@ -71,14 +61,12 @@ return [
     'Maximum limit reached' => 'Osiągnięto maksymalną liczbę',
     'Time' => 'Godzina',
 
-    // Przyciski nawigacji
     'Next step' => 'Następny krok',
     'Previous step' => 'Poprzedni krok',
     'Save preferences' => 'Zapisz preferencje',
     'Saving...' => 'Zapisywanie...',
     'Validating...' => 'Walidacja...',
 
-    // Dodatkowe informacje
     'Additional information' => 'Dodatkowe informacje',
     'Additional information description' => 'Dodatkowe informacje dotyczące Twoich preferencji dydaktycznych',
     'Additional information placeholder' => 'Wpisz dodatkowe informacje...',
@@ -87,14 +75,12 @@ return [
     'Please select time slots when you are NOT available' => 'Poniżej znajduje się interaktywny kalendarz dostępności, który umożliwia wskazanie (nie)dostępności czasowej na nadchodzący semestr. Poprzez kliknięcie w "kółeczko" przy odpowiednim dniu i godzinie wskazują Państwo swoją niedostępność. Umożliwiamy wybór maksymalnie 5 takich bloków czasowych.',
     'Please select time slots when you are available' => 'Wybierz bloki czasowe, w których jesteś dostępny',
 
-    // Walidacja i błędy biznesowe
     'You can select up to 2 unwanted courses' => 'Można wybrać maksymalnie 2 niechciane kursy',
     'You can select up to 5 unavailable time slots' => 'Można wybrać maksymalnie 5 niedostępnych terminów',
     'You must select at least one form of studies' => 'Należy wybrać co najmniej jedną formę studiów (stacjonarne lub niestacjonarne)',
     'Desiderata have been saved successfully' => 'Dezyderaty zostały zapisane pomyślnie',
     'An error occurred while saving desiderata' => 'Wystąpił błąd podczas zapisywania dezyderatów',
 
-    // Komunikaty walidacyjne
     'Validation errors' => 'Błędy walidacji',
     'Please correct the errors in the form' => 'Popraw błędy w formularzu',
     'The teaching mode is required' => 'Forma prowadzenia zajęć jest wymagana',

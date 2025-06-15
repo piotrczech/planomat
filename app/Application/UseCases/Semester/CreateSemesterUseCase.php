@@ -16,8 +16,6 @@ final readonly class CreateSemesterUseCase
 
     public function execute(StoreSemesterDto $dto): Semester
     {
-        // Logika biznesowa specyficzna dla tworzenia semestru (np. zdarzenia) może być tutaj.
-        // Walidacja jest obsługiwana przez StoreSemesterDto.
         return $this->semesterRepository->create($dto);
     }
 }

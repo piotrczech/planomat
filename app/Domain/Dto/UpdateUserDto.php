@@ -36,8 +36,7 @@ final class UpdateUserDto extends Data
         #[StringType]
         #[Min(8)]
         #[Confirmed]
-        public readonly ?string $password, // Nullable, bo opcjonalne
-
+        public readonly ?string $password,
         #[Required]
         #[Enum(RoleEnum::class)]
         public readonly RoleEnum $role,

@@ -37,7 +37,6 @@ class UserManager extends Component
 
     public function mount(): void
     {
-        // Tutaj można dodać logikę inicjalizacji, jeśli jest potrzebna
     }
 
     public function updatedUserSearch(): void
@@ -53,18 +52,14 @@ class UserManager extends Component
     #[On('userSaved')]
     public function handleUserSaved(): void
     {
-        // dump('UserManager handleUserSaved CALLED', ['showCreateUserModal' => $this->showCreateUserModal, 'showEditUserModal' => $this->showEditUserModal, 'editingUserId' => $this->editingUserId]);
-
         if ($this->showCreateUserModal) {
-            // dump('UserManager handleUserSaved: Closing CREATE modal');
             $this->showCreateUserModal = false;
         } elseif ($this->showEditUserModal) {
-            // dump('UserManager handleUserSaved: Closing EDIT modal for userId: ' . $this->editingUserId);
             $this->showEditUserModal = false;
             $this->editingUserId = null;
         }
         $this->dispatch('notify', title: __('admin_settings.users.notifications.user_saved_title'), message: __('admin_settings.users.notifications.user_saved_message'), type: 'success');
-        $this->resetPage(); // Odśwież listę użytkowników
+        $this->resetPage();
     }
 
     #[On('deleteUserConfirmed')]
@@ -128,12 +123,9 @@ class UserManager extends Component
 
     public function impersonateUser(int $userIdToImpersonate, ImpersonateUserUseCase $impersonateUserUseCase): void
     {
-        // Sprawdzenie, czy użytkownik nie próbuje impersonifikować samego siebie
-        // $adminUserId jest tutaj nadal potrzebne do tego sprawdzenia, ale nie jest przekazywane do UseCase.
         $currentAuthId = Auth::id();
 
         if (!$currentAuthId) {
-            // Ten przypadek jest mało prawdopodobny, jeśli metoda jest wywoływana przez zalogowanego użytkownika
             $this->dispatch('notify', title: __('Error'), message: __('Authenticated user not found.'), type: 'error');
 
             return;
@@ -146,18 +138,15 @@ class UserManager extends Component
         }
 
         try {
-            // Wywołanie UseCase z poprawną liczbą argumentów
             $success = $impersonateUserUseCase->execute($userIdToImpersonate);
 
             if ($success) {
-                // Przekierowanie na dashboard po udanej impersonifikacji
                 $this->redirect(route('dashboard'), navigate: true);
             } else {
-                // Ten blok może nie być osiągnięty, jeśli UseCase rzuca wyjątki lub warunki (canImpersonate/canBeImpersonated) są false
                 $this->dispatch('notify', title: __('admin_settings.users.notifications.impersonation_failed_title'), message: __('admin_settings.users.notifications.impersonation_failed_message'), type: 'error');
             }
         } catch (Exception $e) {
-            report($e); // Logowanie błędu
+            report($e);
             $this->dispatch('notify', title: __('admin_settings.users.notifications.impersonation_error_title'), message: __('admin_settings.users.notifications.impersonation_error_admin_message'), type: 'error');
         }
     }
@@ -165,8 +154,6 @@ class UserManager extends Component
     public function render(ListUsersUseCase $listUsersUseCase): View
     {
         $users = $listUsersUseCase->execute($this->userSearch, $this->perPage, RoleEnum::SCIENTIFIC_WORKER);
-
-        // dump('UserManager RENDER: showCreateUserModal=' . ($this->showCreateUserModal ? 'true' : 'false') . ', showEditUserModal=' . ($this->showEditUserModal ? 'true' : 'false') . ', editingUserId=' . ($this->editingUserId ?? 'null'));
 
         return view('livewire.admin.settings.user-manager', [
             'users' => $users,

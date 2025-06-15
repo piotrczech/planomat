@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-    // Nagłówki
     'Consultations' => 'Konsultacje',
     'Manage consultation schedule' => 'Zarządzanie harmonogramem konsultacji',
     'My Consultation' => 'Moje konsultacje',
@@ -18,7 +17,6 @@ return [
         'Light' => 'Łatwo zarządzaj swoim harmonogramem konsultacji semestralnych. Dodawaj, edytuj lub usuwaj terminy konsultacji, aby Twoja dostępność dla studentów była zawsze aktualna. Upewnij się, że Twój harmonogram jest dokładny i dostępny.',
     ],
 
-    // Typy konsultacji
     'Consultation type' => 'Typ konsultacji',
     'Semester consultations' => 'Konsultacje w semestrze',
     'Exam session consultations' => 'Konsultacje w sesji',
@@ -27,12 +25,10 @@ return [
     'Semester Consultations' => 'Konsultacje semestralne',
     'Session Consultations' => 'Konsultacje sesyjne',
 
-    // Sekcje formularza
     'Add new consultation' => 'Dodaj nową konsultację',
     'Semester consultation schedule' => 'Harmonogram konsultacji semestralnych',
     'Exam session consultation schedule' => 'Harmonogram konsultacji w sesji',
 
-    // Pola formularza konsultacji semestralnych
     'Weekday' => 'Dzień tygodnia',
     'Select weekday' => 'Wybierz dzień tygodnia',
     'Week type' => 'Typ tygodnia',
@@ -42,30 +38,24 @@ return [
     'Select specific dates' => 'Wybierz konkretne daty',
     'Weekend dates' => 'Daty weekendowe',
 
-    // Pola formularza konsultacji sesyjnych
     'Session date' => 'Data sesji',
 
-    // Wspólne pola
     'Start time' => 'Godzina rozpoczęcia',
     'End time' => 'Godzina zakończenia',
     'Between 7:30-20:35' => 'Pomiędzy 7:30-20:35',
     'Location' => 'Miejsce',
     'e.g. C-13, room 208' => 'np. C-13, sala 208',
 
-    // Przyciski
     'Add consultation' => 'Dodaj konsultację',
     'Save consultation schedule' => 'Zapisz harmonogram konsultacji',
 
-    // Widoki kalendarza
     'Table view' => 'Widok tabeli',
     'Calendar view' => 'Widok kalendarza',
 
-    // Walidacja
     'Time outside allowed range' => 'Czas poza dozwolonym zakresem',
     'End time must be after start time' => 'Czas zakończenia musi być po czasie rozpoczęcia',
     'Duration must be 60-180 minutes' => 'Czas trwania musi wynosić 60-180 minut',
 
-    // Konsultacje semestralne
     'New semester consultation' => 'Nowa konsultacja semestralna',
     'Consultation weekday' => 'Dzień tygodnia',
     'Consultation week type' => 'Typ tygodnia',
@@ -79,7 +69,6 @@ return [
     'My semester consultation description' => 'W poniższym kalendarzu po kliknięciu na wybrany "bloczek" można zobaczyć jej szczegóły lub usunąć termin.',
     'New semester consultation description' => 'W poniższym formularzu można dodać nową konsultację, która terminem nie nachodzi na dowolną inną konsultację. Dla przypadków edycji zalecamy usunięcię niepoprawnego wpisu i dodanie nowego.',
 
-    // Konsultacje sesyjne
     'New session consultation' => 'Nowa konsultacja w sesji',
     'New consultation sessions description' => 'W poniższym formularzu możesz dodać nową konsultację w sesji. Termin konsultacji nie może się nachodzić na inną konsultację.',
     'Consultation date' => 'Termin konsultacji',
@@ -89,7 +78,6 @@ return [
     'Session consultation location description' => 'np. C-19, A2.12',
     'Add consultation sessions' => 'Dodaj konsultację',
 
-    // Consultation session calendar component
     'Total consultation time in your schedule' => 'Łączny czas konsultacji w harmonogramie (pon-pt)',
     'Exam session period' => 'Okres sesji egzaminacyjnej',
     'Date' => 'Data',
@@ -109,7 +97,6 @@ return [
     'consultation_singular' => 'konsultacja',
     'consultations_plural' => 'konsultacje',
 
-    // Komunikaty sukcesu i błędu
     'Success' => 'Sukces',
     'Error' => 'Błąd',
     'Successfully created' => 'Pomyślnie utworzono',
@@ -135,7 +122,6 @@ return [
     'Consultation location' => 'Miejsce',
     'Consultation location description' => 'np. C-19, A2.12',
 
-    // Nowe tłumaczenia dla komunikatów walidacji
     'Validation errors' => 'Błędy walidacji',
     'Please correct the errors in the form' => 'Proszę poprawić błędy w formularzu',
     'The consultation start time must be between 7:30 and 19:30' => 'Czas rozpoczęcia konsultacji musi być pomiędzy 7:30 a 19:30',
@@ -145,7 +131,6 @@ return [
     'A consultation with a conflicting time already exists.' => 'Konsultacja o kolidującym terminie już istnieje.',
     'overlapping_consultations_cta' => '{1} :count nałożona konsultacja. Kliknij.|[2,4] :count nałożone konsultacje. Kliknij.|[5,*] :count nałożonych konsultacji. Kliknij.',
 
-    // Tłumaczenia dla komunikatów z metody messages() w DTO
     'Weekday is required' => 'Wybór dnia tygodnia jest wymagany',
     'Invalid weekday selected' => 'Wybrano nieprawidłowy dzień tygodnia',
     'Week type is required for weekday consultations' => 'Typ tygodnia jest wymagany dla konsultacji w dni robocze',
@@ -158,7 +143,6 @@ return [
     'Location is required' => 'Miejsce konsultacji jest wymagane',
     'Location must be at least 2 characters long' => 'Miejsce konsultacji musi zawierać co najmniej 2 znaki',
 
-    // Komunikaty dla elementów interfejsu
     'Close' => 'Zamknij',
     'Yes, delete' => 'Tak, usuń',
     'Confirm Deletion' => 'Potwierdź usunięcie',
@@ -166,7 +150,6 @@ return [
     'N/A' => 'Brak danych',
     'Remove' => 'Usuń',
 
-    // Nowe tłumaczenia dla walidacji konsultacji sesyjnych
     'Consultation date is required' => 'Data konsultacji jest wymagana',
     'Invalid date format' => 'Nieprawidłowy format daty',
     'Date must be between session dates' => 'Data musi zawierać się w okresie sesji',

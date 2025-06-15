@@ -124,7 +124,7 @@
             @foreach($calendarDays as $day)
                 @php
                     $isDisabled = !$day['isInSessionRange'] || !$day['isCurrentMonth'];
-                    $isWeekend = in_array($day['dayOfWeek'], [6, 0]); // 6=sobota, 0=niedziela
+                    $isWeekend = in_array($day['dayOfWeek'], [6, 0]); // 6=Saturday, 0=Sunday
                     $consultationsForDay = collect($consultationEvents)
                         ->filter(fn($event) => $event['consultation_date'] === $day['date'])
                         ->toArray();

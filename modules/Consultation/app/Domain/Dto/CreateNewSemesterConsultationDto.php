@@ -89,7 +89,7 @@ final class CreateNewSemesterConsultationDto extends Data
                             });
                     }
 
-                    // Sprawdzanie konfliktu dla weekendów
+                    // TODO
                     if (in_array($value, [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])) {
                         $weeklyDates = $context->fullPayload['weeklyConsultationDates'];
 
@@ -115,7 +115,6 @@ final class CreateNewSemesterConsultationDto extends Data
                 'string',
                 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
                 function ($attribute, $value, $fail): void {
-                    // Sprawdzenie czy czas rozpoczęcia jest w zakresie 7:30-19:30
                     $startTime = Carbon::createFromFormat('H:i', $value);
                     $minTime = Carbon::createFromFormat('H:i', '07:30');
                     $maxTime = Carbon::createFromFormat('H:i', '19:30');
@@ -131,7 +130,6 @@ final class CreateNewSemesterConsultationDto extends Data
                 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
                 'after:consultationStartTime',
                 function ($attribute, $value, $fail): void {
-                    // Sprawdzenie czy czas zakończenia jest w zakresie 8:30-20:30
                     $endTime = Carbon::createFromFormat('H:i', $value);
                     $minTime = Carbon::createFromFormat('H:i', '08:30');
                     $maxTime = Carbon::createFromFormat('H:i', '20:30');
@@ -141,7 +139,6 @@ final class CreateNewSemesterConsultationDto extends Data
                     }
                 },
                 function ($attribute, $value, $fail): void {
-                    // Sprawdzanie czy konsultacja nie jest krótsza niż 60 minut
                     $startTimeValue = request()->input('consultationStartTime');
 
                     if ($startTimeValue) {

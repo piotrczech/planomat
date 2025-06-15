@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-    // Ogólne
     'Dashboard' => 'Panel główny',
     'Search' => 'Szukaj',
     'Repository' => 'Pliki źródłowe',
@@ -12,7 +11,6 @@ return [
     'My Desiderata' => 'Dezyderaty',
     'My Consultation' => 'Konsultacje',
 
-    // Auth/Login
     'Log in to your account' => 'Zaloguj się na swoje konto',
     'Enter your email and password below to log in' => 'Wprowadź swój email i hasło, aby się zalogować',
     'Email address' => 'Adres email',
@@ -22,7 +20,6 @@ return [
     'Log in' => 'Zaloguj się',
     'Log Out' => 'Wyloguj się',
 
-    // Auth/Forgot Password
     'Forgot password' => 'Zapomniałem hasła',
     'Enter your email to receive a password reset link' => 'Wprowadź swój email, aby otrzymać link do resetowania hasła',
     'Email Address' => 'Adres email',
@@ -30,13 +27,11 @@ return [
     'Or, return to' => 'Lub wróć do',
     'log in' => 'logowania',
 
-    // Auth/Reset Password
     'Reset password' => 'Resetuj hasło',
     'Create a new secure password for your account' => 'Utwórz nowe bezpieczne hasło dla swojego konta',
     'Confirm Password' => 'Potwierdź hasło',
     'Reset Password' => 'Resetuj hasło',
 
-    // Auth/Verify Email
     'Verify your email' => 'Zweryfikuj swój email',
     'A new verification link has been sent to your email address.' => 'Nowy link weryfikacyjny został wysłany na Twój adres email.',
     'Before proceeding, please check your email for a verification link.' => 'Przed kontynuowaniem sprawdź swój email w poszukiwaniu linku weryfikacyjnego.',
@@ -44,18 +39,14 @@ return [
     'click here to request another' => 'kliknij tutaj, aby poprosić o kolejny',
     'Resend Verification Email' => 'Wyślij ponownie email weryfikacyjny',
 
-    // Welcome
     'See code on GitHub' => 'Zobacz kod na GitHub',
 
-    // Status Messages
     'A reset link will be sent if the account exists.' => 'Link do resetowania zostanie wysłany, jeśli konto istnieje.',
     'Saved.' => 'Zapisano.',
 
-    // Confirmation
     'This is a secure area of the application. Please confirm your password before continuing.' => 'To jest bezpieczny obszar aplikacji. Potwierdź swoje hasło przed kontynuowaniem.',
     'Confirm' => 'Potwierdź',
 
-    // Settings
     'Settings' => 'Ustawienia',
     'Manage your profile and account settings' => 'Zarządzaj swoim profilem i ustawieniami konta',
     'Profile' => 'Profil',
@@ -67,32 +58,27 @@ return [
     'Click here to re-send the verification email.' => 'Kliknij tutaj, aby ponownie wysłać email weryfikacyjny.',
     'Save' => 'Zapisz',
 
-    // Password
     'Update password' => 'Aktualizuj hasło',
     'Ensure your account is using a long, random password to stay secure' => 'Upewnij się, że Twoje konto używa długiego, losowego hasła, aby pozostać bezpiecznym',
     'Current password' => 'Aktualne hasło',
     'New password' => 'Nowe hasło',
 
-    // Appearance
     'Appearance' => 'Wygląd',
     'Update the appearance settings for your account' => 'Zaktualizuj ustawienia wyglądu dla swojego konta',
     'Light' => 'Jasny',
     'Dark' => 'Ciemny',
     'System' => 'Systemowy',
 
-    // Delete Account
     'Delete account' => 'Usuń konto',
     'Delete your account and all of its resources' => 'Usuń swoje konto i wszystkie jego zasoby',
     'Are you sure you want to delete your account?' => 'Czy na pewno chcesz usunąć swoje konto?',
     'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'Po usunięciu konta wszystkie jego zasoby i dane zostaną trwale usunięte. Wprowadź swoje hasło, aby potwierdzić, że chcesz trwale usunąć swoje konto.',
     'Cancel' => 'Anuluj',
 
-    // Planomat
     'Planomat' => 'PlanoMAT',
     'Important Actions' => 'Ważne akcje',
     'Planomat Administration Panel' => 'Panel administracyjny PlanoMAT',
 
-    // Nowe tłumaczenia dla paska impersonifikacji
     'impersonating_message' => 'Jesteś tymczasowo zalogowany jako <strong>:name</strong>.',
     'leave_impersonation' => 'Opuść tryb tymczasowy',
 ];

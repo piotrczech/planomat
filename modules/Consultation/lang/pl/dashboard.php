@@ -27,6 +27,5 @@ return [
     'Your office hours' => 'Twoje godziny konsultacji',
     'Edit' => 'Edytuj',
 
-    // Klucze dla admin-dean.blade.php (jeśli specyficzne dla tej karty w kontekście admina)
     'Go to Consultations' => 'Zarządzaj konsultacjami',
 ];

@@ -54,7 +54,6 @@ return [
         ],
     ],
 
-    // Users
     'users' => [
         'Manage Users' => 'Manage Users',
         'Manage Users Page Description' => 'Add, edit, and delete system users and manage their roles.',

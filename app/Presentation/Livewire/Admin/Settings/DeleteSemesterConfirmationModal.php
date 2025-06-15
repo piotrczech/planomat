@@ -37,9 +37,6 @@ class DeleteSemesterConfirmationModal extends Component
     public function confirmDelete(): void
     {
         $this->dispatch('deleteSemesterConfirmed', $this->semesterId);
-        // Modal zostanie zamknięty przez komponent nadrzędny (SemesterManager)
-        // po otrzymaniu zdarzenia i przetworzeniu usunięcia lub bezpośrednio
-        // przez SemesterManager po wywołaniu handleDeleteSemesterConfirmed
     }
 
     public function closeModal(): void
