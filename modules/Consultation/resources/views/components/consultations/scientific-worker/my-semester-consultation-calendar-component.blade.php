@@ -337,12 +337,12 @@
                                         </span>
                                     </div>
 
-                                    <div class="flex items-center mt-1" x-show="consultation.weekend_consultation_dates">
+                                    <div class="flex items-center mt-1" x-show="consultation.weekendConsultationDates">
                                         <flux:icon 
                                             name="calendar-days" 
                                             class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
                                         />
-                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.weekend_consultation_dates"></span>
+                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.weekendConsultationDates"></span>
                                     </div>
                                 </div>
                                 

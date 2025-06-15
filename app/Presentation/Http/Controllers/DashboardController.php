@@ -5,20 +5,30 @@ declare(strict_types=1);
 namespace App\Presentation\Http\Controllers;
 
 use App\Domain\Enums\RoleEnum;
-use Illuminate\Contracts\View\View;
+use App\Infrastructure\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
-    public function __invoke(): View
+    /**
+     * Redirect user to appropriate dashboard based on their role
+     */
+    public function __invoke(): RedirectResponse
     {
         /** @var User|null $user */
         $user = Auth::user();
 
-        if ($user && ($user->hasRole(RoleEnum::ADMINISTRATOR) || $user->hasRole(RoleEnum::DEAN_OFFICE_WORKER))) {
-            return view('dashboards.admin-dean');
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        return view('dashboards.scientific-worker');
+        $redirectRoute = match ($user->role) {
+            RoleEnum::ADMINISTRATOR, RoleEnum::DEAN_OFFICE_WORKER => 'admin-dean-dashboard',
+            RoleEnum::SCIENTIFIC_WORKER => 'scientific-worker-dashboard',
+            default => 'login'
+        };
+
+        return redirect()->route($redirectRoute);
     }
 }

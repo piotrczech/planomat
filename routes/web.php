@@ -24,10 +24,15 @@ Route::middleware(['auth'])->group(function (): void {
 });
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::view('admin-dean-dashboard', 'dashboards.admin-dean')->name('admin-dean-dashboard'); // TODO: add middleware for admin role
-    Route::view('scientific-worker-dashboard', 'dashboards.scientific-worker')->name('scientific-worker-dashboard'); // TODO: add middleware for scientific worker role
+    Route::view('admin-dean-dashboard', 'dashboards.admin-dean')
+        ->name('admin-dean-dashboard')
+        ->middleware('admin.dean');
 
-    Route::middleware(['auth', 'verified'])
+    Route::view('scientific-worker-dashboard', 'dashboards.scientific-worker')
+        ->name('scientific-worker-dashboard')
+        ->middleware('scientific.worker');
+
+    Route::middleware(['admin.dean'])
         ->prefix('admin/settings')
         ->name('admin.settings.')
         ->controller(SettingsController::class)

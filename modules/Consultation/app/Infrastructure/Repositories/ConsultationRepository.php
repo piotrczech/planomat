@@ -74,30 +74,20 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             return 0;
         }
 
-        $consultationDates = explode(',', $dto->weeklyConsultationDates);
-        $consultationsCreated = 0;
+        $weekday = $dto->consultationWeekday === WeekdayEnum::SATURDAY->value ? WeekdayEnum::SATURDAY->value : WeekdayEnum::SUNDAY->value;
 
-        foreach ($consultationDates as $dateString) {
-            $date = Carbon::createFromFormat('d.m', mb_trim($dateString))->setYear((int) date('Y'));
+        $consultation = ConsultationSemester::create([
+            'scientific_worker_id' => $scientificWorkerId,
+            'semester_id' => $semesterId,
+            'day' => $weekday,
+            'week_type' => null,
+            'weekend_consultation_dates' => $dto->weeklyConsultationDates,
+            'start_time' => $dto->consultationStartTime,
+            'end_time' => $dto->consultationEndTime,
+            'location' => $dto->consultationLocation,
+        ]);
 
-            $weekday = $date->dayOfWeek === 0 ? WeekdayEnum::SUNDAY->value : WeekdayEnum::SATURDAY->value;
-
-            $consultation = ConsultationSemester::create([
-                'scientific_worker_id' => $scientificWorkerId,
-                'semester_id' => $semesterId,
-                'day' => $weekday,
-                'week_type' => WeekTypeEnum::ALL->value,
-                'start_time' => $dto->consultationStartTime,
-                'end_time' => $dto->consultationEndTime,
-                'location' => $dto->consultationLocation,
-            ]);
-
-            if ($consultation->exists) {
-                $consultationsCreated++;
-            }
-        }
-
-        return $consultationsCreated;
+        return $consultation->exists ? 1 : 0;
     }
 
     public function getSemesterConsultations(int $scientificWorkerId, int $semesterId): array
@@ -118,10 +108,11 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
                 default => 0,
             };
 
-            $weekTypeString = match ($consultation->week_type->value) {
+            $weekTypeString = match ($consultation->week_type?->value ?? null) {
                 WeekTypeEnum::ALL->value => 'every',
                 WeekTypeEnum::EVEN->value => 'even',
                 WeekTypeEnum::ODD->value => 'odd',
+                null => null,
                 default => 'every',
             };
 

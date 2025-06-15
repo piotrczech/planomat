@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Models;
 
 use App\Domain\Enums\RoleEnum;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,11 +20,6 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Impersonate, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -31,21 +27,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -55,9 +41,11 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the user's initials
-     */
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
+    }
+
     public function initials(): string
     {
         return Str::of($this->name)
@@ -66,25 +54,16 @@ class User extends Authenticatable
             ->implode('');
     }
 
-    /**
-     * Check if user has specific role
-     */
     public function hasRole(RoleEnum $role): bool
     {
         return $this->role === $role;
     }
 
-    /**
-     * Determine if the user can impersonate another user.
-     */
     public function canImpersonate(): bool
     {
         return $this->hasRole(RoleEnum::ADMINISTRATOR) || $this->hasRole(RoleEnum::DEAN_OFFICE_WORKER);
     }
 
-    /**
-     * Determine if the user can be impersonated.
-     */
     public function canBeImpersonated(): bool
     {
         return !$this->hasRole(RoleEnum::ADMINISTRATOR) && !$this->hasRole(RoleEnum::DEAN_OFFICE_WORKER);
