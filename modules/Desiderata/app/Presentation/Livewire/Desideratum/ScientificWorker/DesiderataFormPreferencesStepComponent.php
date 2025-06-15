@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
 use App\Application\UseCases\Course\GetAllCoursesUseCase;
+use App\Infrastructure\Models\Semester;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Dto\DesiderataFormPreferencesDto;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
@@ -37,7 +38,7 @@ class DesiderataFormPreferencesStepComponent extends StepComponent
     public function mount(GetAllCoursesUseCase $getAllCoursesUseCase, DesideratumRepositoryInterface $desideratumRepository): void
     {
         $currentUserId = Auth::id();
-        $semesterId = 1;
+        $semesterId = Semester::getCurrentSemester()->id;
 
         $coursesCollection = $getAllCoursesUseCase->execute();
         $this->allCourseOptions = $coursesCollection->map(fn ($course) => ['value' => $course->id, 'text' => $course->name])->toArray();

@@ -16,6 +16,7 @@ use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
 use Modules\Consultation\Infrastructure\Models\ConsultationSession;
 use App\Domain\Enums\WeekdayEnum;
 use App\Domain\Enums\WeekTypeEnum;
+use App\Infrastructure\Models\Semester;
 use App\Infrastructure\Models\User;
 
 final class ConsultationRepository implements ConsultationRepositoryInterface
@@ -23,7 +24,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
     public function createNewSemesterConsultation(CreateNewSemesterConsultationDto $dto): int
     {
         $scientificWorkerId = Auth::id();
-        $currentSemesterId = 1;
+        $currentSemesterId = Semester::getCurrentSemester()->id;
 
         if (in_array($dto->consultationWeekday, [
             WeekdayEnum::MONDAY->value,
