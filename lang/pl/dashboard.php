@@ -61,4 +61,10 @@ return [
     'No recent activities' => 'Brak ostatnich aktywności w ciągu ostatnich 14 dni.',
     'Recent activities placeholder' => 'Brak ostatnich aktywności do wyświetlenia lub moduł w budowie.',
     'View all activities' => 'Zobacz wszystkie aktywności',
+
+    // Semester information
+    'Current semester' => 'Aktualny semestr:',
+    'No semester found please contact administrator. Functionality is not available.' => 'Nie znaleziono semestru, skontaktuj się z administratorem. Funkcjonalność jest niedostępna.',
+    'No semester found please contact administrator.' => 'Nie znaleziono semestru, skontaktuj się z administratorem.',
+    'module_disabled_no_semester' => 'Moduł wyłączony - brak aktualnego semestru',
 ];

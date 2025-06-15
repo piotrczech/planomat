@@ -24,4 +24,5 @@ return [
     'scientific_worker_access_required' => 'Dostęp wymaga uprawnień pracownika naukowego.',
     'admin_dean_access_required' => 'Dostęp wymaga uprawnień administratora lub pracownika dziekanatu.',
     'admin_access_required' => 'Dostęp wymaga uprawnień administratora.',
+    'no_current_semester_functionality_unavailable' => 'Funkcjonalność niedostępna - brak aktualnego semestru.',
 ];

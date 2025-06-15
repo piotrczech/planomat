@@ -8,7 +8,7 @@ use Modules\Consultation\Presentation\Http\Controllers\ScientificWorkerConsultat
 
 Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function (): void {
 
-    Route::group(['prefix' => 'scientific-worker', 'middleware' => 'scientific.worker'], function (): void {
+    Route::group(['prefix' => 'scientific-worker', 'middleware' => ['scientific.worker', 'require.semester']], function (): void {
         Route::get('', [ScientificWorkerConsultationController::class, 'index'])
             ->name('consultations.scientific-worker.my-consultation');
         Route::get('semester-consultation', [ScientificWorkerConsultationController::class, 'semesterConsultationIndex'])

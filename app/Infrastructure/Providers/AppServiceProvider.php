@@ -12,7 +12,9 @@ use App\Domain\Interfaces\SemesterRepositoryInterface;
 use App\Infrastructure\Repositories\SemesterRepository;
 use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Infrastructure\Repositories\UserRepository;
+use App\Presentation\View\Composers\CurrentSemesterComposer;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -43,5 +45,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::component('App\\Presentation\\View\\Components\\UserLayout', 'user-layout');
+
+        View::composer(['components.layouts.app.header', 'dashboards.*'], CurrentSemesterComposer::class);
     }
 }

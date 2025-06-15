@@ -81,4 +81,7 @@ return [
 
     'impersonating_message' => 'Jesteś tymczasowo zalogowany jako <strong>:name</strong>.',
     'leave_impersonation' => 'Opuść tryb tymczasowy',
+
+    // Functionality availability
+    'functionality_disabled_no_semester' => 'Funkcjonalność niedostępna - brak aktualnego semestru',
 ];

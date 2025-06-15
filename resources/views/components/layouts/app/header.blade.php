@@ -28,27 +28,37 @@
                     {{ __('app.Dashboard') }}
                 </flux:navbar.item>
 
-                @if(Module::isEnabled('Desiderata'))
-                    <flux:navbar.item icon="ticket" :href="route('desiderata.scientific-worker.my-desiderata')" :current="request()->routeIs('desiderata.scientific-worker.my-desiderata')" wire:navigate>
-                        {{ __('app.My Desiderata') }}
-                    </flux:navbar.item>
-                @endif
+                <flux:navbar.item 
+                    icon="ticket" 
+                    :href="$currentSemester ? route('desiderata.scientific-worker.my-desiderata') : null"
+                    :class="!$currentSemester ? 'opacity-50 cursor-not-allowed flex' : ''"
+                    :title="!$currentSemester ? __('app.functionality_disabled_no_semester') : null"
+                    :current="request()->routeIs('desiderata.scientific-worker.my-desiderata')"
+                    wire:navigate
+                >
+                    {{ __('app.My Desiderata') }}
+                    @if(!$currentSemester)
+                        <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500 inline-flex" />
+                    @endif
+                </flux:navbar.item>
 
-                @if(Module::isEnabled('Consultation'))
-                    <flux:navbar.item
-                        icon="megaphone"
-                        :href="route('consultations.scientific-worker.my-semester-consultation')"
-                        :current="
-                            request()->routeIs('consultations.scientific-worker.my-semester-consultation')
-                            || request()->routeIs('consultations.scientific-worker.my-session-consultation')
-                            || request()->routeIs('consultations.scientific-worker.my-consultation')
-                        "
-                        wire:navigate
-                    >
-                        {{ __('app.My Consultation') }}
-                    </flux:navbar.item>
-                @endif
-
+                <flux:navbar.item
+                    icon="megaphone"
+                    :href="$currentSemester ? route('consultations.scientific-worker.my-semester-consultation') : null"
+                    :class="!$currentSemester ? 'opacity-50 cursor-not-allowed flex' : ''"
+                    :title="!$currentSemester ? __('app.functionality_disabled_no_semester') : null"
+                    :current="
+                        request()->routeIs('consultations.scientific-worker.my-semester-consultation')
+                        || request()->routeIs('consultations.scientific-worker.my-session-consultation')
+                        || request()->routeIs('consultations.scientific-worker.my-consultation')
+                    "
+                    wire:navigate
+                >
+                    {{ __('app.My Consultation') }}
+                    @if(!$currentSemester)
+                        <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500 inline-flex" />
+                    @endif
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -122,12 +132,39 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('app.Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('app.Dashboard') }}
+                        {{ __('app.Dashboard') }}
+                    </flux:navlist.item>
+                    
+                    <flux:navlist.item 
+                        icon="ticket"
+                        :href="$currentSemester ? route('desiderata.scientific-worker.my-desiderata') : null"
+                        :class="!$currentSemester ? 'opacity-50 cursor-not-allowed' : ''"
+                        :current="request()->routeIs('desiderata.scientific-worker.my-desiderata')"
+                    >
+                        {{ __('app.My Desiderata') }}
+                        @if(!$currentSemester)
+                            <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500" />
+                        @endif
+                    </flux:navlist.item>
+
+                    <flux:navlist.item
+                        icon="megaphone"
+                        :href="$currentSemester ? route('consultations.scientific-worker.my-semester-consultation') : null"
+                        :class="!$currentSemester ? 'opacity-50 cursor-not-allowed' : ''"
+                        :current="
+                            request()->routeIs('consultations.scientific-worker.my-semester-consultation')
+                            || request()->routeIs('consultations.scientific-worker.my-session-consultation')
+                            || request()->routeIs('consultations.scientific-worker.my-consultation')
+                        "
+                        wire:navigate
+                    >
+                        {{ __('app.My Consultation') }}
+                        @if(!$currentSemester)
+                            <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500" />
+                        @endif
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
-
-            <flux:spacer />
 
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/piotrczech/planomat" target="_blank">

@@ -8,7 +8,7 @@ use Modules\Desiderata\Presentation\Http\Controllers\ScientificWorkerDesiderataC
 
 Route::middleware(['auth', 'verified'])->prefix('desiderata')->group(function (): void {
 
-    Route::group(['prefix' => 'scientific-worker', 'middleware' => 'scientific.worker'], function (): void {
+    Route::group(['prefix' => 'scientific-worker', 'middleware' => ['scientific.worker', 'require.semester']], function (): void {
         Route::get('/', [ScientificWorkerDesiderataController::class, 'index'])
             ->name('desiderata.scientific-worker.my-desiderata');
     });

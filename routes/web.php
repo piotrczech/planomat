@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Presentation\Http\Controllers\Admin\SettingsController;
+use App\Presentation\Http\Controllers\AdminDeanDashboardController;
 use App\Presentation\Http\Controllers\DashboardController;
+use App\Presentation\Http\Controllers\ScientificWorkerDashboardController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -24,11 +26,11 @@ Route::middleware(['auth'])->group(function (): void {
 });
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::view('admin-dean-dashboard', 'dashboards.admin-dean')
+    Route::get('admin-dean-dashboard', AdminDeanDashboardController::class)
         ->name('admin-dean-dashboard')
         ->middleware('admin.dean');
 
-    Route::view('scientific-worker-dashboard', 'dashboards.scientific-worker')
+    Route::get('scientific-worker-dashboard', ScientificWorkerDashboardController::class)
         ->name('scientific-worker-dashboard')
         ->middleware('scientific.worker');
 
