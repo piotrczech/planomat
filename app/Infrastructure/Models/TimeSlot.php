@@ -14,6 +14,8 @@ final class TimeSlot extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'start_time',
         'end_time',
