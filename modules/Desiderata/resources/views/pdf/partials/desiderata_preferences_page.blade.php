@@ -49,11 +49,7 @@
             <td style="width: 40%;">Kursy, które <strong>mogę</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if($couldCourses->isNotEmpty())
-                    <ul style="margin: 0; padding: 0; list-style-type: none;">
-                        @foreach($couldCourses as $pref)
-                            <li style="margin-bottom: 0.5em;">{{ $pref->course?->name ?? 'Błąd' }}</li>
-                        @endforeach
-                    </ul>
+                    {{ $couldCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
                 @else
                     Brak wskazanych.
                 @endif
@@ -63,11 +59,7 @@
             <td>Kursy, które <strong>chciałbym</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if($wantedCourses->isNotEmpty())
-                    <ul style="margin: 0; padding: 0; list-style-type: none;">
-                        @foreach($wantedCourses as $pref)
-                            <li style="margin-bottom: 0.5em;">{{ $pref->course?->name ?? 'Błąd' }}</li>
-                        @endforeach
-                    </ul>
+                    {{ $wantedCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
                 @else
                     Brak wskazanych.
                 @endif
@@ -77,11 +69,7 @@
             <td>Kursy, których <strong>nie chciałbym</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if($unwantedCourses->isNotEmpty())
-                    <ul style="margin: 0; padding: 0; list-style-type: none;">
-                         @foreach($unwantedCourses as $pref)
-                            <li style="margin-bottom: 0.5em;">{{ $pref->course?->name ?? 'Błąd' }}</li>
-                        @endforeach
-                    </ul>
+                    {{ $unwantedCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
                 @else
                     Brak wskazanych.
                 @endif
@@ -115,8 +103,8 @@
 
     @if($desideratum->additional_notes)
         <div class="section-title">Dodatkowe uwagi</div>
-        <div class="notes-box">
-            {!! nl2br(e($desideratum->additional_notes)) !!}
+        <div class="notes-box" style="max-height: 100px; overflow: hidden;">
+            {!! nl2br(str_replace(["\r", "\n"], ' ', e($desideratum->additional_notes))) !!}
         </div>
     @endif
 </div> 

@@ -74,4 +74,6 @@ return [
     'You must select at least one form of studies' => 'You must select at least one form of studies (stationary or non-stationary)',
     'Desiderata have been saved successfully' => 'Desiderata have been saved successfully',
     'An error occurred while saving desiderata' => 'An error occurred while saving desiderata',
+    'Additional notes cannot exceed 250 characters' => 'Additional notes cannot exceed 250 characters',
+    'Additional notes cannot contain line breaks' => 'Additional notes cannot contain line breaks',
 ];

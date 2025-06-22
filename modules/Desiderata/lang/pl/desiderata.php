@@ -6,7 +6,7 @@ return [
     'My Desiderata' => 'Moje dezyderaty',
     'Stage: Teaching preferences' => 'Etap: Preferencje dydaktyczne',
     'Desiderata Form' => 'Formularz dezyderat',
-    'My Desiderata Description' => 'Dezyderaty to formularz, w którym można wskazać preferencje dotyczące prowadzenia zajęć w nadchodzącym semestrze – m.in. preferowane kursy, godziny oraz inne istotne czynniki. Formularz składa się z dwóch części: preferencji dydaktycznych oraz dostępności.',
+    'My Desiderata Description' => 'Dezyderaty to formularz, w którym można wskazać preferencje dotyczące prowadzenia zajęć w nadchodzącym semestrze – m.in. preferowane kursy, godziny. Formularz składa się z dwóch części: preferencji dydaktycznych oraz dostępności.',
     'Dezyderaty' => 'Dezyderaty',
     'Please complete your teaching preferences for the upcoming semester' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
@@ -105,6 +105,7 @@ return [
     'The maximum consecutive hours must be at least 1' => 'Maksymalna liczba godzin z rzędu musi wynosić co najmniej 1',
     'The maximum consecutive hours cannot exceed 8' => 'Maksymalna liczba godzin z rzędu nie może przekraczać 8',
     'Unavailable time slots must be an array' => 'Niedostępne terminy muszą być tablicą',
-    'Additional notes cannot exceed 1000 characters' => 'Dodatkowe uwagi nie mogą przekraczać 1000 znaków',
+    'Additional notes cannot exceed 1000 characters' => 'Dodatkowe uwagi nie mogą przekraczać 250 znaków',
+    'Additional notes cannot contain line breaks' => 'Dodatkowe uwagi nie mogą zawierać znaków nowej linii (enter)',
     'All courses are either wanted or unwanted' => 'Rozdysponowano wszystkie kursy',
 ];

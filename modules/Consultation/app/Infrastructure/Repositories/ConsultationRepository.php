@@ -238,6 +238,9 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         };
 
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->whereHas($consultationRelation, function ($query) use ($semesterId): void {
+                $query->where('semester_id', $semesterId);
+            })
             ->with([
                 $consultationRelation => function ($query) use ($semesterId): void {
                     $query->where('semester_id', $semesterId)

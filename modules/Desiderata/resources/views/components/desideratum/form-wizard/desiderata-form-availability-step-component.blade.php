@@ -119,14 +119,38 @@
             {{ __('desiderata::desiderata.Additional information description') }}
         </flux:description>
 
-        <flux:textarea
-            id="additional-info"
-            name="additional-info"
-            rows="4"
-            class="w-full {{ $errors->has('additionalNotes') ? 'border-red-500 dark:border-red-400' : '' }}"
-            aria-labelledby="additional-info-legend"
-            wire:model="additionalNotes"
-        />
+        <div x-data="{ charCount: 0, maxChars: 500 }" class="space-y-2">
+            <div class="flex justify-end">
+                <flux:text 
+                    class="text-sm"
+                    x-bind:class="{ 
+                        'text-red-500 dark:text-red-400': charCount > maxChars,
+                        'text-gray-500 dark:text-gray-400': charCount <= maxChars 
+                    }"
+                >
+                    <span x-text="charCount"></span>/250
+                </flux:text>
+            </div>
+
+            <flux:textarea
+                id="additional-info"
+                name="additional-info"
+                rows="4"
+                class="w-full {{ $errors->has('additionalNotes') ? 'border-red-500 dark:border-red-400' : '' }}"
+                aria-labelledby="additional-info-legend"
+                wire:model="additionalNotes"
+                x-data
+                x-on:keydown.enter.prevent
+                x-on:input="charCount = $el.value.length"
+                x-init="
+                    $el.addEventListener('input', (e) => { 
+                        e.target.value = e.target.value.replace(/[\r\n]/g, ' ');
+                        charCount = e.target.value.length;
+                    });
+                    charCount = $el.value.length;
+                "
+            />
+        </div>
         
         @error('additionalNotes') 
             <flux:text class="text-red-500 dark:text-red-400 text-sm mt-2">

@@ -19,7 +19,12 @@ final class DesiderataFormAvailabilityDto extends Data
         return [
             'unavailableTimeSlots' => ['nullable', 'array'],
             'unavailableTimeSlots.*' => ['array'],
-            'additionalNotes' => ['nullable', 'string', 'max:1000'],
+            'additionalNotes' => [
+                'nullable',
+                'string',
+                'max:500',
+                'regex:/^[^\r\n]*$/',
+            ],
         ];
     }
 
@@ -28,6 +33,7 @@ final class DesiderataFormAvailabilityDto extends Data
         return [
             'unavailableTimeSlots.array' => __('desiderata::desiderata.Unavailable time slots must be an array'),
             'additionalNotes.max' => __('desiderata::desiderata.Additional notes cannot exceed 1000 characters'),
+            'additionalNotes.regex' => __('desiderata::desiderata.Additional notes cannot contain line breaks'),
         ];
     }
 }

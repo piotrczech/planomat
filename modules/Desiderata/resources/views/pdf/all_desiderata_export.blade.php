@@ -97,7 +97,7 @@
 </head>
 <body>
     <div class="cover-page">
-        <div class="cover-title">Raport Dezyderat Pracowników Naukowych</div>
+        <div class="cover-title">Dezyderaty pracowników Wydziału Matematyki</div>
         <div class="cover-subtitle">dla semestru: <strong>{{ $semester->name }} ({{ $semester->academic_year }})</strong></div>
         <div class="cover-date">Data wygenerowania raportu: {{ $reportDate }}</div>
     </div>
