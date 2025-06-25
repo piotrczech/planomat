@@ -19,13 +19,13 @@ class NewSemesterConsultationComponent extends Component
 
     public string $dailyConsultationWeekType;
 
-    public string $weeklyConsultationDates;
-
     public string $consultationStartTime;
 
     public string $consultationEndTime;
 
-    public string $consultationLocation;
+    public string $consultationLocationBuilding;
+
+    public ?string $consultationLocationRoom = null;
 
     public bool $isAddingConsultation = false;
 
@@ -49,10 +49,10 @@ class NewSemesterConsultationComponent extends Component
             $data = [
                 'consultationWeekday' => $this->consultationWeekday,
                 'dailyConsultationWeekType' => $this->dailyConsultationWeekType,
-                'weeklyConsultationDates' => $this->weeklyConsultationDates,
                 'consultationStartTime' => $this->consultationStartTime,
                 'consultationEndTime' => $this->consultationEndTime,
-                'consultationLocation' => $this->consultationLocation,
+                'consultationLocationBuilding' => $this->consultationLocationBuilding,
+                'consultationLocationRoom' => $this->consultationLocationRoom,
             ];
 
             $dto = CreateNewSemesterConsultationDto::validateAndCreate($data);
@@ -80,10 +80,10 @@ class NewSemesterConsultationComponent extends Component
     {
         $this->consultationWeekday = WeekdayEnum::MONDAY->value;
         $this->dailyConsultationWeekType = WeekTypeEnum::ALL->value;
-        $this->weeklyConsultationDates = '';
         $this->consultationStartTime = '';
         $this->consultationEndTime = '';
-        $this->consultationLocation = '';
+        $this->consultationLocationBuilding = '';
+        $this->consultationLocationRoom = null;
         $this->isAddingConsultation = false;
         $this->resetErrorBag();
         $this->successMessage = '';

@@ -4,45 +4,27 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Domain\Dto;
 
-use App\Domain\Enums\WeekdayEnum;
 use App\Domain\Enums\WeekTypeEnum;
 use Carbon\Carbon;
 use Spatie\LaravelData\Attributes\Validation\After;
-use Spatie\LaravelData\Attributes\Validation\In;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Regex;
 use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\RequiredIf;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 use Illuminate\Support\Facades\Auth;
-use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
 use App\Infrastructure\Models\Semester;
+use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
 
 final class CreateNewSemesterConsultationDto extends Data
 {
     public function __construct(
         #[Required]
         #[StringType]
-        #[In(WeekdayEnum::MONDAY->value, WeekdayEnum::TUESDAY->value, WeekdayEnum::WEDNESDAY->value, WeekdayEnum::THURSDAY->value, WeekdayEnum::FRIDAY->value, WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value)]
         public string $consultationWeekday,
-        #[RequiredIf('consultationWeekday', 'in', [
-            WeekdayEnum::MONDAY->value,
-            WeekdayEnum::TUESDAY->value,
-            WeekdayEnum::WEDNESDAY->value,
-            WeekdayEnum::THURSDAY->value,
-            WeekdayEnum::FRIDAY->value,
-        ])]
+        #[Required]
         #[StringType]
-        #[In(WeekTypeEnum::ALL->value, WeekTypeEnum::EVEN->value, WeekTypeEnum::ODD->value)]
         public string $dailyConsultationWeekType,
-        #[RequiredIf('consultationWeekday', 'in', [
-            WeekdayEnum::SATURDAY->value,
-            WeekdayEnum::SUNDAY->value,
-        ])]
-        #[StringType]
-        #[Regex('/^(\d{1,2}\.\d{1,2})(,\s*\d{1,2}\.\d{1,2})*$/')]
-        public ?string $weeklyConsultationDates,
         #[Required]
         #[StringType]
         #[Regex('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/')]
@@ -55,7 +37,9 @@ final class CreateNewSemesterConsultationDto extends Data
         #[Required]
         #[StringType]
         #[Min(2)]
-        public string $consultationLocation,
+        public string $consultationLocationBuilding,
+        #[StringType]
+        public ?string $consultationLocationRoom = null,
     ) {
     }
 
@@ -74,36 +58,18 @@ final class CreateNewSemesterConsultationDto extends Data
                     $userId = Auth::id();
                     $semesterId = Semester::getCurrentSemester()->id;
 
-                    $query = ConsultationSemester::where('scientific_worker_id', $userId)
+                    $query = SemesterConsultation::where('scientific_worker_id', $userId)
                         ->where('semester_id', $semesterId)
                         ->where(function ($q) use ($startTime, $endTime): void {
                             $q->where('start_time', '<', $endTime)
                                 ->where('end_time', '>', $startTime);
                         });
 
-                    if (in_array($value, [WeekdayEnum::MONDAY->value, WeekdayEnum::TUESDAY->value, WeekdayEnum::WEDNESDAY->value, WeekdayEnum::THURSDAY->value, WeekdayEnum::FRIDAY->value])) {
-                        $query->where('day', $value)
-                            ->where(function ($q): void {
-                                $q->where('week_type', WeekTypeEnum::ALL->value)
-                                    ->orWhere('week_type', request()->input('dailyConsultationWeekType'));
-                            });
-                    }
-
-                    // TODO
-                    if (in_array($value, [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])) {
-                        $weeklyDates = $context->fullPayload['weeklyConsultationDates'];
-
-                        if (!empty($weeklyDates)) {
-                            $dates = explode(',', $weeklyDates);
-                            $trimmedDates = array_map('trim', $dates);
-
-                            $query->where(function ($q) use ($trimmedDates): void {
-                                foreach ($trimmedDates as $date) {
-                                    $q->orWhere('weekend_consultation_dates', 'LIKE', "%{$date}%");
-                                }
-                            });
-                        }
-                    }
+                    $query->where('day', $value)
+                        ->where(function ($q): void {
+                            $q->where('week_type', WeekTypeEnum::ALL->value)
+                                ->orWhere('week_type', request()->input('dailyConsultationWeekType'));
+                        });
 
                     if ($query->exists()) {
                         $fail(__('consultation::consultation.A consultation with a conflicting time already exists.'));
@@ -166,15 +132,14 @@ final class CreateNewSemesterConsultationDto extends Data
             'consultationWeekday.in' => __('consultation::consultation.Invalid weekday selected'),
             'dailyConsultationWeekType.required_if' => __('consultation::consultation.Week type is required for weekday consultations'),
             'dailyConsultationWeekType.in' => __('consultation::consultation.Invalid week type selected'),
-            'weeklyConsultationDates.required_if' => __('consultation::consultation.Consultation dates are required for weekend consultations'),
-            'weeklyConsultationDates.regex' => __('consultation::consultation.Invalid date format. Use format: DD.MM'),
             'consultationStartTime.required' => __('consultation::consultation.Start time is required'),
             'consultationStartTime.regex' => __('consultation::consultation.Invalid time format. Use format: HH:MM'),
             'consultationEndTime.required' => __('consultation::consultation.End time is required'),
             'consultationEndTime.regex' => __('consultation::consultation.Invalid time format. Use format: HH:MM'),
             'consultationEndTime.after' => __('consultation::consultation.End time must be after start time'),
-            'consultationLocation.required' => __('consultation::consultation.Location is required'),
-            'consultationLocation.min' => __('consultation::consultation.Location must be at least 2 characters long'),
+            'consultationLocationBuilding.required' => __('consultation::consultation.Location is required'),
+            'consultationLocationBuilding.min' => __('consultation::consultation.Location must be at least 2 characters long'),
+            'consultationLocationRoom.min' => __('consultation::consultation.Room must be at least 1 character long'),
         ];
     }
 }

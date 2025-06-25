@@ -32,9 +32,10 @@ final readonly class DeleteSemesterUseCase
                 $desideratum->unavailableTimeSlots()->delete();
             }
 
-            $semester->consultationSemesters()->delete();
-            $semester->consultationSessions()->delete();
             $semester->desiderata()->delete();
+            $semester->semesterConsultations()->delete();
+            $semester->sessionConsultations()->delete();
+            $semester->partTimeConsultations()->delete();
 
             return $this->semesterRepository->delete($id);
         });

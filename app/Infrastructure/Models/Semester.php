@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Domain\Enums\SemesterSeasonEnum;
-use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
-use Modules\Consultation\Infrastructure\Models\ConsultationSession;
+use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
+use Modules\Consultation\Infrastructure\Models\SessionConsultation;
+use Modules\Consultation\Infrastructure\Models\PartTimeConsultation;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 
 class Semester extends Model
@@ -54,14 +55,19 @@ class Semester extends Model
         return null;
     }
 
-    public function consultationSemesters(): HasMany
+    public function semesterConsultations(): HasMany
     {
-        return $this->hasMany(ConsultationSemester::class, 'semester_id');
+        return $this->hasMany(SemesterConsultation::class, 'semester_id');
     }
 
-    public function consultationSessions(): HasMany
+    public function sessionConsultations(): HasMany
     {
-        return $this->hasMany(ConsultationSession::class, 'semester_id');
+        return $this->hasMany(SessionConsultation::class, 'semester_id');
+    }
+
+    public function partTimeConsultations(): HasMany
+    {
+        return $this->hasMany(PartTimeConsultation::class, 'semester_id');
     }
 
     public function desiderata(): HasMany

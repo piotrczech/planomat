@@ -22,7 +22,7 @@ final class GetLastUpdateDateForSemesterConsultationUseCase
             return null;
         }
 
-        return $this->consultationRepository->getLastSemesterConsultationUpdateDate(
+        return $this->consultationRepository->getLastUpdateDateForSemesterConsultation(
             $scientificWorkerId,
         );
     }

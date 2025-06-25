@@ -11,39 +11,42 @@ use Modules\Consultation\Domain\Enums\ConsultationType;
 
 interface ConsultationRepositoryInterface
 {
-    public function createWeekdayConsultation(
-        int $scientificWorkerId,
-        int $semesterId,
-        CreateNewSemesterConsultationDto $dto,
-    ): bool;
+    public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection;
 
-    public function createWeekendConsultations(
-        int $scientificWorkerId,
-        int $semesterId,
-        CreateNewSemesterConsultationDto $dto,
-    ): int;
+    /**
+     * Creates
+     */
+    public function createNewSemesterConsultation(CreateNewSemesterConsultationDto $dto): int;
 
+    public function createNewSessionConsultation(CreateNewSessionConsultationDto $dto): int;
+
+    // public function createPartTimeConsultation(): PartTimeConsultation;
+
+    /**
+     * Gets
+     */
     public function getSemesterConsultations(int $scientificWorkerId, int $semesterId): array;
-
-    public function deleteSemesterConsultation(int $consultationId, int $scientificWorkerId): bool;
-
-    public function createSessionConsultation(
-        int $scientificWorkerId,
-        int $semesterId,
-        CreateNewSessionConsultationDto $dto,
-    ): int;
 
     public function getSessionConsultations(int $scientificWorkerId, int $semesterId): array;
 
-    public function deleteSessionConsultation(int $consultationId, int $scientificWorkerId): bool;
+    // public function getPartTimeConsultations(int $scientificWorkerId, int $semesterId): Collection;
 
-    public function getLastSemesterConsultationUpdateDate(int $scientificWorkerId): ?string;
+    /**
+     * Deletes
+     */
+    public function deleteSemesterConsultation(int $consultationId): bool;
 
-    public function getLastSessionConsultationUpdateDate(int $scientificWorkerId): ?string;
+    public function deleteSessionConsultation(int $consultationId): bool;
+
+    // public function deletePartTimeConsultation(int $consultationId): bool;
+
+    public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId): ?string;
+
+    public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId): ?string;
+
+    // public function getLastPartTimeConsultationUpdateDate(int $scientificWorkerId): ?string;
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string;
-
-    public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection;
 
     public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection;
 

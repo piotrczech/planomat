@@ -12,7 +12,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('consultation_semesters', function (Blueprint $table): void {
+        Schema::create('semester_consultations', function (Blueprint $table): void {
             $table->mediumIncrements('id');
 
             $table->unsignedSmallInteger('scientific_worker_id');
@@ -29,14 +29,14 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->enum('day', WeekdayEnum::values());
+            $table->enum('day', WeekdayEnum::values(includeWeekend: false));
             $table->enum('week_type', WeekTypeEnum::values())->nullable();
-            $table->string('weekend_consultation_dates')->nullable();
 
             $table->time('start_time');
             $table->time('end_time');
 
-            $table->string('location', 100);
+            $table->string('location_building', 100);
+            $table->string('location_room', 100)->nullable();
 
             $table->timestamps();
         });
@@ -44,6 +44,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('consultation_semesters');
+        Schema::dropIfExists('semester_consultations');
     }
 };

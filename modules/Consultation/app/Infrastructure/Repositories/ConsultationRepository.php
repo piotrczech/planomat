@@ -12,10 +12,9 @@ use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use Modules\Consultation\Domain\Enums\ConsultationType;
-use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
-use Modules\Consultation\Infrastructure\Models\ConsultationSession;
+use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
+use Modules\Consultation\Infrastructure\Models\SessionConsultation;
 use App\Domain\Enums\WeekdayEnum;
-use App\Domain\Enums\WeekTypeEnum;
 use App\Infrastructure\Models\Semester;
 use App\Infrastructure\Models\User;
 
@@ -26,65 +25,15 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         $scientificWorkerId = Auth::id();
         $currentSemesterId = Semester::getCurrentSemester()->id;
 
-        if (in_array($dto->consultationWeekday, [
-            WeekdayEnum::MONDAY->value,
-            WeekdayEnum::TUESDAY->value,
-            WeekdayEnum::WEDNESDAY->value,
-            WeekdayEnum::THURSDAY->value,
-            WeekdayEnum::FRIDAY->value,
-        ])) {
-            return $this->createWeekdayConsultation(
-                $scientificWorkerId,
-                $currentSemesterId,
-                $dto,
-            ) ? 1 : 0;
-        }
-
-        return $this->createWeekendConsultations(
-            $scientificWorkerId,
-            $currentSemesterId,
-            $dto,
-        );
-    }
-
-    public function createWeekdayConsultation(
-        int $scientificWorkerId,
-        int $semesterId,
-        CreateNewSemesterConsultationDto $dto,
-    ): bool {
-        $consultation = ConsultationSemester::create([
+        $consultation = SemesterConsultation::create([
             'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => $semesterId,
+            'semester_id' => $currentSemesterId,
             'day' => $dto->consultationWeekday,
             'week_type' => $dto->dailyConsultationWeekType,
             'start_time' => $dto->consultationStartTime,
             'end_time' => $dto->consultationEndTime,
-            'location' => $dto->consultationLocation,
-        ]);
-
-        return $consultation->exists;
-    }
-
-    public function createWeekendConsultations(
-        int $scientificWorkerId,
-        int $semesterId,
-        CreateNewSemesterConsultationDto $dto,
-    ): int {
-        if (empty($dto->weeklyConsultationDates)) {
-            return 0;
-        }
-
-        $weekday = $dto->consultationWeekday === WeekdayEnum::SATURDAY->value ? WeekdayEnum::SATURDAY->value : WeekdayEnum::SUNDAY->value;
-
-        $consultation = ConsultationSemester::create([
-            'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => $semesterId,
-            'day' => $weekday,
-            'week_type' => null,
-            'weekend_consultation_dates' => $dto->weeklyConsultationDates,
-            'start_time' => $dto->consultationStartTime,
-            'end_time' => $dto->consultationEndTime,
-            'location' => $dto->consultationLocation,
+            'location_building' => $dto->consultationLocationBuilding,
+            'location_room' => $dto->consultationLocationRoom,
         ]);
 
         return $consultation->exists ? 1 : 0;
@@ -92,46 +41,26 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
     public function getSemesterConsultations(int $scientificWorkerId, int $semesterId): array
     {
-        $consultations = ConsultationSemester::where('scientific_worker_id', $scientificWorkerId)
+        $consultations = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
             ->where('semester_id', $semesterId)
             ->get();
 
         return $consultations->map(function ($consultation) {
-            $weekdayNumber = match ($consultation->day->value) {
-                WeekdayEnum::MONDAY->value => 0,
-                WeekdayEnum::TUESDAY->value => 1,
-                WeekdayEnum::WEDNESDAY->value => 2,
-                WeekdayEnum::THURSDAY->value => 3,
-                WeekdayEnum::FRIDAY->value => 4,
-                WeekdayEnum::SATURDAY->value => 5,
-                WeekdayEnum::SUNDAY->value => 6,
-                default => 0,
-            };
-
-            $weekTypeString = match ($consultation->week_type?->value ?? null) {
-                WeekTypeEnum::ALL->value => 'every',
-                WeekTypeEnum::EVEN->value => 'even',
-                WeekTypeEnum::ODD->value => 'odd',
-                null => null,
-                default => 'every',
-            };
-
             return [
                 'id' => $consultation->id,
-                'weekday' => $weekdayNumber,
+                'weekday' => $consultation->day->value,
                 'startTime' => $consultation->start_time->format('H:i'),
                 'endTime' => $consultation->end_time->format('H:i'),
-                'location' => $consultation->location,
-                'weekType' => $weekTypeString,
-                'weekendConsultationDates' => $consultation->weekend_consultation_dates,
+                'locationBuilding' => $consultation->location_building,
+                'locationRoom' => $consultation->location_room,
+                'weekType' => $consultation->week_type->value,
             ];
         })->toArray();
     }
 
-    public function deleteSemesterConsultation(int $consultationId, int $scientificWorkerId): bool
+    public function deleteSemesterConsultation(int $consultationId): bool
     {
-        $consultation = ConsultationSemester::where('id', $consultationId)
-            ->where('scientific_worker_id', $scientificWorkerId)
+        $consultation = SemesterConsultation::where('id', $consultationId)
             ->first();
 
         if (!$consultation) {
@@ -141,18 +70,19 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return (bool) $consultation->delete();
     }
 
-    public function createSessionConsultation(
-        int $scientificWorkerId,
-        int $semesterId,
-        CreateNewSessionConsultationDto $dto,
-    ): int {
-        $consultation = ConsultationSession::create([
+    public function createNewSessionConsultation(CreateNewSessionConsultationDto $dto): int
+    {
+        $scientificWorkerId = Auth::id();
+        $currentSemesterId = Semester::getCurrentSemester()->id;
+
+        $consultation = SessionConsultation::create([
             'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => $semesterId,
+            'semester_id' => $currentSemesterId,
             'consultation_date' => $dto->consultationDate,
             'start_time' => $dto->consultationStartTime,
             'end_time' => $dto->consultationEndTime,
-            'location' => $dto->consultationLocation,
+            'location_building' => $dto->consultationLocationBuilding,
+            'location_room' => $dto->consultationLocationRoom,
         ]);
 
         return $consultation->exists ? $consultation->id : 0;
@@ -160,7 +90,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
     public function getSessionConsultations(int $scientificWorkerId, int $semesterId): array
     {
-        $consultations = ConsultationSession::where('scientific_worker_id', $scientificWorkerId)
+        $consultations = SessionConsultation::where('scientific_worker_id', $scientificWorkerId)
             ->where('semester_id', $semesterId)
             ->orderBy('consultation_date')
             ->orderBy('start_time')
@@ -172,15 +102,15 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
                 'consultation_date' => Carbon::parse($consultation->consultation_date)->toDateString(),
                 'start_time' => Carbon::parse($consultation->start_time)->format('H:i'),
                 'end_time' => Carbon::parse($consultation->end_time)->format('H:i'),
-                'location' => $consultation->location,
+                'locationBuilding' => $consultation->location_building,
+                'locationRoom' => $consultation->location_room,
             ];
         })->toArray();
     }
 
-    public function deleteSessionConsultation(int $consultationId, int $scientificWorkerId): bool
+    public function deleteSessionConsultation(int $consultationId): bool
     {
-        $consultation = ConsultationSession::where('id', $consultationId)
-            ->where('scientific_worker_id', $scientificWorkerId)
+        $consultation = SessionConsultation::where('id', $consultationId)
             ->first();
 
         if (!$consultation) {
@@ -190,18 +120,18 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return (bool) $consultation->delete();
     }
 
-    public function getLastSemesterConsultationUpdateDate(int $scientificWorkerId): ?string
+    public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId): ?string
     {
-        $latestConsultation = ConsultationSemester::where('scientific_worker_id', $scientificWorkerId)
+        $latestConsultation = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
             ->orderByDesc('updated_at')
             ->first();
 
         return $latestConsultation?->updated_at?->toDateString();
     }
 
-    public function getLastSessionConsultationUpdateDate(int $scientificWorkerId): ?string
+    public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId): ?string
     {
-        $latestConsultation = ConsultationSession::where('scientific_worker_id', $scientificWorkerId)
+        $latestConsultation = SessionConsultation::where('scientific_worker_id', $scientificWorkerId)
             ->orderByDesc('updated_at')
             ->first();
 
@@ -210,7 +140,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string
     {
-        $consultations = ConsultationSemester::where('scientific_worker_id', $scientificWorkerId)
+        $consultations = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
             ->whereNotIn('day', [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])
             ->get();
 

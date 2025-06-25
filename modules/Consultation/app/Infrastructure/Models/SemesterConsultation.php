@@ -4,27 +4,29 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Infrastructure\Models;
 
+use App\Domain\Enums\WeekdayEnum;
+use App\Domain\Enums\WeekTypeEnum;
 use App\Infrastructure\Models\Semester;
 use App\Infrastructure\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ConsultationSession extends Model
+class SemesterConsultation extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'scientific_worker_id',
         'semester_id',
-        'consultation_date',
+        'day',
+        'week_type',
         'start_time',
         'end_time',
-        'location',
+        'location_building',
+        'location_room',
     ];
 
     protected $casts = [
-        'consultation_date' => 'date',
+        'day' => WeekdayEnum::class,
+        'week_type' => WeekTypeEnum::class,
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
     ];

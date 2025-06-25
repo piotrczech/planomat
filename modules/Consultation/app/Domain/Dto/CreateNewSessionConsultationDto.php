@@ -6,6 +6,8 @@ namespace Modules\Consultation\Domain\Dto;
 
 use App\Infrastructure\Models\Semester;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Modules\Consultation\Infrastructure\Models\SessionConsultation;
 use Spatie\LaravelData\Attributes\Validation\After;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\Min;
@@ -33,7 +35,9 @@ final class CreateNewSessionConsultationDto extends Data
         #[Required]
         #[StringType]
         #[Min(2)]
-        public string $consultationLocation,
+        public string $consultationLocationBuilding,
+        #[StringType]
+        public ?string $consultationLocationRoom = null,
     ) {
     }
 
@@ -86,10 +90,16 @@ final class CreateNewSessionConsultationDto extends Data
                     }
                 },
             ],
-            'consultationLocation' => [
+            'consultationLocationBuilding' => [
                 'required',
                 'string',
                 'min:2',
+                'max:100',
+            ],
+            'consultationLocationRoom' => [
+                'nullable',
+                'string',
+                'max:100',
             ],
             'consultationDate' => [
                 'required',
@@ -103,6 +113,31 @@ final class CreateNewSessionConsultationDto extends Data
 
                     if ($consultationDate->lt($sessionStart) || $consultationDate->gt($sessionEnd)) {
                         $fail(__('consultation::consultation.Date must be between session dates'));
+                    }
+                },
+                function ($attribute, $value, $fail): void {
+                    $formData = request()->all();
+
+                    if (!isset($formData['consultationStartTime']) || !isset($formData['consultationEndTime'])) {
+                        return;
+                    }
+
+                    $date = Carbon::parse($value);
+                    $newConsultationStart = Carbon::parse($value . ' ' . $formData['consultationStartTime']);
+                    $newConsultationEnd = Carbon::parse($value . ' ' . $formData['consultationEndTime']);
+
+                    $overlappingConsultations = SessionConsultation::where('scientific_worker_id', Auth::id())
+                        ->where('consultation_date', $date->format('Y-m-d'))
+                        ->where(function ($query) use ($newConsultationStart, $newConsultationEnd): void {
+                            $query->where(function ($q) use ($newConsultationStart, $newConsultationEnd): void {
+                                $q->where('start_time', '<=', $newConsultationEnd->format('H:i:s'))
+                                    ->where('end_time', '>=', $newConsultationStart->format('H:i:s'));
+                            });
+                        })
+                        ->count();
+
+                    if ($overlappingConsultations > 0) {
+                        $fail(__('consultation::consultation.A consultation with a conflicting time already exists.'));
                     }
                 },
             ],
@@ -119,8 +154,10 @@ final class CreateNewSessionConsultationDto extends Data
             'consultationEndTime.required' => __('consultation::consultation.End time is required'),
             'consultationEndTime.regex' => __('consultation::consultation.Invalid time format. Use format: HH:MM'),
             'consultationEndTime.after' => __('consultation::consultation.End time must be after start time'),
-            'consultationLocation.required' => __('consultation::consultation.Location is required'),
-            'consultationLocation.min' => __('consultation::consultation.Location must be at least 2 characters long'),
+            'consultationLocationBuilding.required' => __('consultation::consultation.Building is required'),
+            'consultationLocationBuilding.min' => __('consultation::consultation.Building must be at least 2 characters long'),
+            'consultationLocationBuilding.max' => __('consultation::consultation.Building cannot be longer than 100 characters'),
+            'consultationLocationRoom.max' => __('consultation::consultation.Room cannot be longer than 100 characters'),
         ];
     }
 }

@@ -22,6 +22,6 @@ final class GetLastUpdateDateForSessionConsultationUseCase
             return null;
         }
 
-        return $this->consultationRepository->getLastSessionConsultationUpdateDate($scientificWorkerId);
+        return $this->consultationRepository->getLastUpdateDateForSessionConsultation($scientificWorkerId);
     }
 }

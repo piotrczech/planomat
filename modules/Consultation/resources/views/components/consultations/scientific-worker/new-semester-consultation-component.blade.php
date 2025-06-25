@@ -2,80 +2,18 @@
     class="p-2"
     x-data="{
         isInitialized: false,
-        isWeekdaySelected: false,
         selectedWeekday: null,
-        consultationDaysPickerInstance: null,
         showSuccessAlert: false,
         showErrorAlert: false,
         errorMessage: '',
         successMessage: '',
-
-        get consultationDaysPickerOptions() {
-            return {
-                dateFormat: 'd.m',
-                mode: 'multiple',
-                locale: 'pl',
-                disable: [
-                    (date) => {
-                        if (!(date.getDay() === 0 || date.getDay() === 6)) {
-                            return true;
-                        }
-                        
-                        if (this.selectedWeekday === 'saturday') {
-                            return date.getDay() !== 6;
-                        }
-                        
-                        if (this.selectedWeekday === 'sunday') {
-                            return date.getDay() !== 0;
-                        }
-                        
-                        return false;
-                    }
-                ]
-            };
-        },
-        
-        updateFlatpickr() {
-            if (this.consultationDaysPickerInstance) {
-                this.consultationDaysPickerInstance.destroy();
-                
-                this.$refs.datesInput.value = '';
-                
-                this.consultationDaysPickerInstance = flatpickr(
-                    this.$refs.datesInput, 
-                    this.consultationDaysPickerOptions
-                );
-            }
-        },
-        
-        initializeDatePicker() {
-            this.consultationDaysPickerInstance = flatpickr(
-                this.$refs.datesInput, 
-                this.consultationDaysPickerOptions
-            );
-        }
     }"
     x-init="
-        const updateSelectedWeekday = (day) => {
-            selectedWeekday = day;
-            isWeekdaySelected = day !== 'saturday' && day !== 'sunday';
-            
-            $nextTick(() => updateFlatpickr());
-        }
-
-        const weekdaySelect = new TomSelect('#consultation-weekday', { create: false, searchField: [], controlInput: null });
+        new TomSelect('#consultation-weekday', { create: false, searchField: [], controlInput: null });
         new TomSelect('#consultation-week-type', { create: false, searchField: [], controlInput: null });
-
-        weekdaySelect.on('change', (value) => updateSelectedWeekday(value));
-        updateSelectedWeekday(weekdaySelect.getValue());
         
-        $nextTick(() => initializeDatePicker());
-
         $wire.on('consultationSaved', (data) => {
             showSuccessAlert = true;
-
-            weekdaySelect.setValue('monday');
-            updateSelectedWeekday('monday');
 
             successMessage = '{{ __('consultation::consultation.Successfully created') }}';
             window.scrollTo(0, 0);
@@ -111,7 +49,7 @@
         </flux:callout>
     </div>
 
-    <!-- Ogólny komunikat o błędach -->
+    <!-- General error message -->
     @if ($errors->any())
         <div class="mb-6">
             <flux:callout
@@ -138,9 +76,9 @@
                     aria-labelledby="consultation-weekday-legend"
                     wire:model="consultationWeekday"
                 >
-                    @foreach(\App\Domain\Enums\WeekdayEnum::cases() as $weekday)
-                        <option value="{{ $weekday->value }}">
-                            {{ $weekday->label() }}
+                    @foreach(\App\Domain\Enums\WeekdayEnum::values(includeWeekend: false) as $weekday)
+                        <option value="{{ $weekday }}">
+                            {{ \App\Domain\Enums\WeekdayEnum::from($weekday)->label() }}
                         </option>
                     @endforeach
                 </select>
@@ -153,8 +91,7 @@
             @enderror
         </div>
 
-        {{-- for pon-pt --}}
-        <div class="mb-6" x-show="isWeekdaySelected">
+        <div class="mb-6">
             <flux:label for="consultation-week-type" class="block mb-2 font-medium">
                 {{ __('consultation::consultation.Consultation week type') }}
             </flux:label>
@@ -174,28 +111,6 @@
             </div>
 
             @error('dailyConsultationWeekType')
-                <flux:text class="text-red-500 dark:text-red-400 mt-2 text-sm">
-                    {{ $message }}
-                </flux:text>
-            @enderror
-        </div>
-
-        {{-- for sob-ndz --}}
-        <div class="mb-6" x-show="!isWeekdaySelected">
-            <flux:label for="consultation-dates" class="block mb-2 font-medium">
-                {{ __('consultation::consultation.Consultation dates') }}
-            </flux:label>
-            
-            <div wire:ignore>
-                <flux:input
-                    x-ref="datesInput"
-                    type="text"
-                    class="w-full {{ $errors->has('weeklyConsultationDates') ? 'border-red-500 dark:border-red-400' : '' }}"
-                    wire:model="weeklyConsultationDates"
-                />
-            </div>
-
-            @error('weeklyConsultationDates')
                 <flux:text class="text-red-500 dark:text-red-400 mt-2 text-sm">
                     {{ $message }}
                 </flux:text>
@@ -282,20 +197,41 @@
         </div>
 
         <div class="mb-6">
-            <flux:label for="consultation-location" class="block mb-2 font-medium">
-                {{ __('consultation::consultation.Consultation location') }}
+            <flux:label for="consultation-location-building" class="block mb-2 font-medium">
+                {{ __('consultation::consultation.Building') }}
             </flux:label>
             
             <flux:input
-                id="consultation-location"
+                id="consultation-location-building"
                 type="text"
-                class="w-full {{ $errors->has('consultationLocation') ? 'border-red-500 dark:border-red-400' : '' }}"
-                :placeholder="__('consultation::consultation.Consultation location description')"
-                aria-labelledby="consultation-location-legend"
-                wire:model="consultationLocation"
+                class="w-full {{ $errors->has('consultationLocationBuilding') ? 'border-red-500 dark:border-red-400' : '' }}"
+                :placeholder="__('consultation::consultation.Building description')"
+                aria-labelledby="consultation-location-building-legend"
+                wire:model="consultationLocationBuilding"
             />
 
-            @error('consultationLocation')
+            @error('consultationLocationBuilding')
+                <flux:text class="text-red-500 dark:text-red-400 mt-2 text-sm">
+                    {{ $message }}
+                </flux:text>
+            @enderror
+        </div>
+
+        <div class="mb-6">
+            <flux:label for="consultation-location-room" class="block mb-2 font-medium">
+                {{ __('consultation::consultation.Room') }}
+            </flux:label>
+            
+            <flux:input
+                id="consultation-location-room"
+                type="text"
+                class="w-full {{ $errors->has('consultationLocationRoom') ? 'border-red-500 dark:border-red-400' : '' }}"
+                :placeholder="__('consultation::consultation.Room description')"
+                aria-labelledby="consultation-location-room-legend"
+                wire:model="consultationLocationRoom"
+            />
+
+            @error('consultationLocationRoom')
                 <flux:text class="text-red-500 dark:text-red-400 mt-2 text-sm">
                     {{ $message }}
                 </flux:text>

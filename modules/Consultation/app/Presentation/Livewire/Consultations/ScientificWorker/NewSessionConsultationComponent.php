@@ -19,7 +19,9 @@ class NewSessionConsultationComponent extends Component
 
     public string $consultationEndTime = '';
 
-    public string $consultationLocation = '';
+    public string $consultationLocationBuilding = '';
+
+    public ?string $consultationLocationRoom = null;
 
     public ?string $successMessage = null;
 
@@ -83,11 +85,12 @@ class NewSessionConsultationComponent extends Component
         }
     }
 
-    private function resetForm(): void
+    public function resetForm(): void
     {
         $this->consultationDate = '';
         $this->consultationStartTime = '';
         $this->consultationEndTime = '';
-        $this->consultationLocation = '';
+        $this->consultationLocationBuilding = '';
+        $this->consultationLocationRoom = null;
     }
 }

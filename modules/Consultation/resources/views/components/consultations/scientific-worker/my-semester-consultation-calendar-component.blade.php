@@ -112,7 +112,7 @@
                                 style="cursor: pointer;"
                             >
                                 <div class="font-semibold text-indigo-800 dark:text-indigo-200 mb-1 flex items-center justify-between">
-                                    <span>{{ \App\Domain\Enums\WeekdayEnum::cases()[$event['weekday']]->label() }}</span>
+                                    <span>{{ \App\Domain\Enums\WeekdayEnum::from($event['weekday'])->label() }}</span>
                                     @if (!empty($event['location']))
                                         <span class="text-sm font-normal text-zinc-600 dark:text-zinc-300 truncate ml-2 max-w-[60%]" title="{{ $event['location'] }}">
                                             {{ $event['location'] }}
@@ -160,17 +160,17 @@
     <div class="hidden md:block dark:bg-zinc-900 rounded-lg">
         <div class="overflow-x-auto bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
             <div class="min-w-[750px]">
-                <div class="grid" style="grid-template-columns: auto repeat(7, 1fr);">
+                <div class="grid" style="grid-template-columns: auto repeat(5, 1fr);">
                     
-                    <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium"></div>
-                    @foreach (\App\Domain\Enums\WeekdayEnum::cases() as $index => $day)
-                        <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium {{ in_array($index, [5, 6]) ? 'text-red-600 dark:text-red-400 font-bold' : 'text-zinc-700 dark:text-zinc-300' }}">
-                            {{ $day->shortLabel() }}
+                    <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium">Godz</div>
+                    @foreach (\App\Domain\Enums\WeekdayEnum::values(includeWeekend: false) as $weekday)
+                        <div class="bg-zinc-100 dark:bg-zinc-800 p-2 text-center font-medium text-zinc-700 dark:text-zinc-300">
+                            {{ \App\Domain\Enums\WeekdayEnum::from($weekday)->shortLabel() }}
                         </div>
                     @endforeach
                     
-                    <div class="col-span-8">
-                        <div class="grid" style="grid-template-columns: auto repeat(7, 1fr); grid-template-rows: repeat(56, 16px);">
+                    <div class="col-span-6">
+                        <div class="grid" style="grid-template-columns: auto repeat(5, 1fr); grid-template-rows: repeat(56, 16px);">
                             
                             @php
                                 $timeLabels = [];
@@ -200,12 +200,13 @@
                             @endforeach
                             
                             @for ($row = 1; $row <= 56; $row++)
-                                @for ($col = 2; $col <= 8; $col++)
+                                @for ($col = 2; $col <= 6; $col++)
                                     <div class="border-r border-b border-zinc-100 dark:border-zinc-800" style="grid-row: {{ $row }}; grid-column: {{ $col }};"></div>
                                 @endfor
                             @endfor
                             
                             @foreach ($consultationEvents as $weekday => $events)
+                                @continue(!in_array($weekday, \App\Domain\Enums\WeekdayEnum::values(includeWeekend: false)))
                                 @php
                                     usort($events, fn($a, $b) => strcmp($a['startTime'], $b['startTime']));
                                     
@@ -232,7 +233,7 @@
                                         }
                                     }
 
-                                    $column = $weekday + 2;
+                                    $column = (int)$weekday + 2;
                                 @endphp
 
                                 @foreach ($groups as $group)
@@ -319,30 +320,31 @@
                                         </span>
                                     </div>
                                     
-                                    <div class="flex items-center mt-1" x-show="consultation.location">
+                                    <div class="flex items-center mt-1">
                                         <flux:icon 
                                             name="map-pin" 
                                             class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
                                         />
-                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.location"></span>
+                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationBuilding"></span>
+                                        <span x-show="consultation.locationRoom">,&nbsp;</span>
+                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationRoom"></span>
                                     </div>
                                     
-                                    <div class="flex items-center mt-1" x-show="consultation.weekType && consultation.weekType !== 'every'">
+                                    <div class="flex items-center mt-1">
                                         <flux:icon 
                                             name="calendar-days" 
                                             class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
                                         />
-                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" 
-                                              x-text="consultation.weekType === 'even' ? '{{ __('consultation::consultation.Even weeks') }}' : '{{ __('consultation::consultation.Odd weeks') }}'">
+                                        <span
+                                            class="text-sm text-zinc-600 dark:text-zinc-300" 
+                                            x-text="consultation.weekType === 'all' ?
+                                                '{{ __('consultation::consultation.Every week') }}'
+                                                : consultation.weekType === 'even'
+                                                    ? '{{ __('consultation::consultation.Even weeks') }}'
+                                                    : '{{ __('consultation::consultation.Odd weeks') }}'
+                                            "
+                                        >
                                         </span>
-                                    </div>
-
-                                    <div class="flex items-center mt-1" x-show="consultation.weekendConsultationDates">
-                                        <flux:icon 
-                                            name="calendar-days" 
-                                            class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
-                                        />
-                                        <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.weekendConsultationDates"></span>
                                     </div>
                                 </div>
                                 

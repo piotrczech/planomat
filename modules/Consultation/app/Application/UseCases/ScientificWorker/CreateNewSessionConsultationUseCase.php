@@ -31,11 +31,7 @@ final class CreateNewSessionConsultationUseCase
             return 0;
         }
 
-        $resultId = $this->consultationRepository->createSessionConsultation(
-            $scientificWorkerId,
-            $currentSemester->id,
-            $dto,
-        );
+        $resultId = $this->consultationRepository->createNewSessionConsultation($dto);
 
         if ($resultId > 0) {
             $this->createActivityLogUseCase->execute(

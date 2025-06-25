@@ -40,8 +40,20 @@ enum WeekdayEnum: string
         };
     }
 
-    public static function values(): array
+    public static function values($includeWeekend = false): array
     {
-        return array_column(self::cases(), 'value');
+        if ($includeWeekend) {
+            return array_column(self::cases(), 'value');
+        }
+
+        $withoutWeekend = [
+            self::MONDAY,
+            self::TUESDAY,
+            self::WEDNESDAY,
+            self::THURSDAY,
+            self::FRIDAY,
+        ];
+
+        return array_column($withoutWeekend, 'value');
     }
 }

@@ -13,8 +13,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Lab404\Impersonate\Models\Impersonate;
-use Modules\Consultation\Infrastructure\Models\ConsultationSemester;
-use Modules\Consultation\Infrastructure\Models\ConsultationSession;
+use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
+use Modules\Consultation\Infrastructure\Models\SessionConsultation;
+use Modules\Consultation\Infrastructure\Models\PartTimeConsultation;
+use Modules\Desiderata\Infrastructure\Models\Desideratum;
 
 class User extends Authenticatable
 {
@@ -72,16 +74,21 @@ class User extends Authenticatable
 
     public function semesterConsultations(): HasMany
     {
-        return $this->hasMany(ConsultationSemester::class, 'scientific_worker_id');
+        return $this->hasMany(SemesterConsultation::class, 'scientific_worker_id');
     }
 
     public function sessionConsultations(): HasMany
     {
-        return $this->hasMany(ConsultationSession::class, 'scientific_worker_id');
+        return $this->hasMany(SessionConsultation::class, 'scientific_worker_id');
+    }
+
+    public function partTimeConsultations(): HasMany
+    {
+        return $this->hasMany(PartTimeConsultation::class, 'scientific_worker_id');
     }
 
     public function desiderata(): HasMany
     {
-        return $this->hasMany(\Modules\Desiderata\Infrastructure\Models\Desideratum::class, 'scientific_worker_id');
+        return $this->hasMany(Desideratum::class, 'scientific_worker_id');
     }
 }

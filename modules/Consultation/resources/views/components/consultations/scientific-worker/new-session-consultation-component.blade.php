@@ -209,20 +209,41 @@
         </div>
 
         <div class="mb-6">
-            <flux:label for="consultation-location" class="block mb-2 font-medium">
-                {{ __('consultation::consultation.Consultation location') }}
+            <flux:label for="consultation-location-building" class="block mb-2 font-medium">
+                {{ __('consultation::consultation.Building') }}
             </flux:label>
             
             <flux:input
-                id="consultation-location"
+                id="consultation-location-building"
                 type="text"
-                class="w-full {{ $errors->has('consultationLocation') ? 'border-red-500 dark:border-red-400' : '' }}"
-                :placeholder="__('consultation::consultation.Consultation location description')"
-                aria-labelledby="consultation-location-legend"
-                wire:model="consultationLocation"
+                class="w-full {{ $errors->has('consultationLocationBuilding') ? 'border-red-500 dark:border-red-400' : '' }}"
+                :placeholder="__('consultation::consultation.Building description')"
+                aria-labelledby="consultation-location-building-legend"
+                wire:model="consultationLocationBuilding"
             />
 
-            @error('consultationLocation')
+            @error('consultationLocationBuilding')
+                <flux:text class="text-red-500 dark:text-red-400 mt-2 text-sm">
+                    {{ $message }}
+                </flux:text>
+            @enderror
+        </div>
+
+        <div class="mb-6">
+            <flux:label for="consultation-location-room" class="block mb-2 font-medium">
+                {{ __('consultation::consultation.Room') }}
+            </flux:label>
+            
+            <flux:input
+                id="consultation-location-room"
+                type="text"
+                class="w-full {{ $errors->has('consultationLocationRoom') ? 'border-red-500 dark:border-red-400' : '' }}"
+                :placeholder="__('consultation::consultation.Room description')"
+                aria-labelledby="consultation-location-room-legend"
+                wire:model="consultationLocationRoom"
+            />
+
+            @error('consultationLocationRoom')
                 <flux:text class="text-red-500 dark:text-red-400 mt-2 text-sm">
                     {{ $message }}
                 </flux:text>

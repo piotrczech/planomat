@@ -114,13 +114,15 @@
                                     @if($first->week_type !== \App\Domain\Enums\WeekTypeEnum::ALL)
                                         {{ $first->week_type->shortLabel() }}
                                     @endif
-                                    , {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
+                                    {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
                                 @else
                                     {{ $first->consultation_date->format('d.m.Y') }}, 
                                     {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
                                 @endif
                             </td>
-                            <td>{{ $first->location }}</td>
+                            <td>
+                                {{ $first->location_building }}@if($first->location_room),&nbsp;{{ $first->location_room }}@endif
+                            </td>
                         @else
                             <td colspan="2" class="no-data">Brak zgłoszonych terminów</td>
                         @endif
@@ -140,7 +142,9 @@
                                         {{ $consultation->start_time->format('H:i') }} - {{ $consultation->end_time->format('H:i') }}
                                     @endif
                                 </td>
-                                <td>{{ $consultation->location }}</td>
+                                <td>
+                                    {{ $consultation->location_building }}@if($consultation->location_room),&nbsp;{{ $consultation->location_room }}@endif
+                                </td>
                             </tr>
                         @endforeach
                     @endif

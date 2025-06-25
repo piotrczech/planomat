@@ -236,12 +236,14 @@
                                             <span class="font-medium text-zinc-800 dark:text-zinc-100" x-text="`${consultation.start_time} - ${consultation.end_time}`"></span>
                                         </div>
                                         
-                                        <div class="flex items-center mt-1" x-show="consultation.location">
+                                        <div class="flex items-center mt-1">
                                             <flux:icon 
                                                 name="map-pin" 
                                                 class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
                                             />
-                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.location"></span>
+                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationBuilding"></span>
+                                            <span x-show="consultation.locationRoom">,&nbsp;</span>
+                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationRoom"></span>
                                         </div>
                                     </div>
                                     

@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('consultation_sessions', function (Blueprint $table): void {
+        Schema::create('session_consultations', function (Blueprint $table): void {
             $table->mediumIncrements('id');
 
             $table->unsignedSmallInteger('scientific_worker_id');
@@ -32,7 +32,8 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
 
-            $table->string('location', 100);
+            $table->string('location_building', 100);
+            $table->string('location_room', 100)->nullable();
 
             $table->timestamps();
         });
@@ -40,6 +41,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('consultation_sessions');
+        Schema::dropIfExists('session_consultations');
     }
 };
