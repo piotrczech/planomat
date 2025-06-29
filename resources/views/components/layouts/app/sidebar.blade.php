@@ -56,6 +56,15 @@
                             >
                                 {{ __('admin_settings.Manage Semesters') }}
                             </flux:navlist.item>
+                            <flux:navlist.item 
+                                icon="globe-alt"
+                                :href="route('admin.settings.general.global')" 
+                                :current="request()->routeIs('admin.settings.general.global')" 
+                                wire:navigate
+                                class="text-sm"
+                            >
+                                {{ __('admin_settings.Global Settings') }}
+                            </flux:navlist.item>
                         </div>
                     @endif
                 </flux:navlist.group>

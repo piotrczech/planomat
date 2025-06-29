@@ -6,11 +6,13 @@ namespace App\Infrastructure\Providers;
 
 use App\Domain\Interfaces\ActivityLogRepositoryInterface;
 use App\Domain\Interfaces\CourseRepositoryInterface;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
+use App\Domain\Interfaces\SettingRepositoryInterface;
+use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Infrastructure\Repositories\ActivityLogRepository;
 use App\Infrastructure\Repositories\CourseRepository;
-use App\Domain\Interfaces\SemesterRepositoryInterface;
 use App\Infrastructure\Repositories\SemesterRepository;
-use App\Domain\Interfaces\UserRepositoryInterface;
+use App\Infrastructure\Repositories\SettingRepository;
 use App\Infrastructure\Repositories\UserRepository;
 use App\Presentation\View\Composers\CurrentSemesterComposer;
 use Illuminate\Support\Facades\Blade;
@@ -22,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            CourseRepositoryInterface::class,
-            CourseRepository::class,
+            UserRepositoryInterface::class,
+            UserRepository::class,
         );
 
         $this->app->bind(
@@ -32,13 +34,18 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            UserRepositoryInterface::class,
-            UserRepository::class,
+            CourseRepositoryInterface::class,
+            CourseRepository::class,
         );
 
         $this->app->bind(
             ActivityLogRepositoryInterface::class,
             ActivityLogRepository::class,
+        );
+
+        $this->app->bind(
+            SettingRepositoryInterface::class,
+            SettingRepository::class,
         );
     }
 

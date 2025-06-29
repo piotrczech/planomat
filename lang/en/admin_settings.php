@@ -135,4 +135,16 @@ return [
         'Session Consultations' => 'Session Consultations',
     ],
     'Cancel' => 'Cancel',
+    'Users' => 'Users',
+    'Manage users' => 'Manage users',
+    'Create new user' => 'Create new user',
+    'User created successfully' => 'User created successfully',
+
+    'Global Settings' => 'Global Settings',
+    'Saved.' => 'Saved.',
+    'Active semester for consultations' => 'Active semester for consultations',
+    'Active semester for desiderata' => 'Active semester for desiderata',
+    'Save' => 'Save',
+    'Manage Global Settings Description' => 'Manage key application settings, such as active semesters.',
+    'Saving...' => 'Saving...',
 ];

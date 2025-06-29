@@ -221,4 +221,17 @@ return [
         'Export All' => 'Eksportuj wszystkie',
         'Export Unfilled' => 'Lista nieuzupełnionych',
     ],
+
+    'Users' => 'Użytkownicy',
+    'Manage users' => 'Zarządzaj użytkownikami',
+    'Create new user' => 'Stwórz nowego użytkownika',
+    'User created successfully' => 'Użytkownik stworzony pomyślnie',
+
+    'Global Settings' => 'Ustawienia globalne',
+    'Saved.' => 'Zapisano.',
+    'Active semester for consultations' => 'Aktywny semestr dla konsultacji',
+    'Active semester for desiderata' => 'Aktywny semestr dla dezyderatów',
+    'Save' => 'Zapisz',
+    'Manage Global Settings Description' => 'Zarządzaj kluczowymi ustawieniami aplikacji, takimi jak aktywne semestry.',
+    'Saving...' => 'Zapisywanie...',
 ];

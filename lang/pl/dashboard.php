@@ -50,7 +50,7 @@ return [
     'Quick Actions' => 'Szybkie akcje',
     'Download All Desiderata PDF' => 'Pobierz wszystkie dezyderaty (PDF)',
     'Download All Desiderata PDF Description' => 'Pobierz raport PDF ze wszystkimi dezyderatami.',
-    'Download All Consultations PDF' => 'Pobierz wszystkie konsultacje (PDF)',
+    'Download Consultations' => 'Pobierz konsultacje',
     'Download All Consultations PDF Description' => 'Pobierz raport PDF ze wszystkimi konsultacjami.',
     'Go to Settings' => 'Przejdź do ustawień',
     'Go to Settings Description' => 'Przejdź do panelu ustawień aplikacji.',

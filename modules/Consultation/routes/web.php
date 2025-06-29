@@ -20,9 +20,13 @@ Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function
     });
 
     Route::group(['prefix' => 'dean-office', 'middleware' => 'admin.dean'], function (): void {
-        Route::get('export/all/pdf/{semester}/{type}', [ConsultationExportController::class, 'downloadAllPdf'])
+        Route::get('export/all-consultations/pdf', [ConsultationExportController::class, 'downloadAllPdf'])
             ->name('consultations.dean-office.export.all-consultations.pdf');
-        Route::get('export/unfilled/pdf/{semester}/{type}', [ConsultationExportController::class, 'downloadUnfilledPdf'])
+
+        Route::get('export/all-consultations/csv', [ConsultationExportController::class, 'downloadAllCsv'])
+            ->name('consultations.dean-office.export.all-consultations.csv');
+
+        Route::get('export/unfilled-consultations/pdf', [ConsultationExportController::class, 'downloadUnfilledPdf'])
             ->name('consultations.dean-office.export.unfilled-consultations.pdf');
     });
 });

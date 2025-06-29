@@ -28,4 +28,9 @@ class SettingsController extends Controller
     {
         return view('admin.settings.general.manage-users');
     }
+
+    public function manageGlobalSettings(): View
+    {
+        return view('admin.settings.general.manage-global');
+    }
 }

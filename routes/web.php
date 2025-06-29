@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
                 Route::get('courses', 'manageCourses')->name('courses');
                 Route::get('semesters', 'manageSemesters')->name('semesters');
                 Route::get('users', 'manageUsers')->name('users');
+                Route::get('global', 'manageGlobalSettings')->name('global');
             });
         });
 });

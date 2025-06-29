@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             TimeSlotSeeder::class,
             CourseSeeder::class,
             SemesterSeeder::class,
+            SettingSeeder::class,
             UserSeeder::class,
         ]);
     }
