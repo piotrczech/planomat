@@ -72,7 +72,14 @@
     <div class="header">
         <div class="title">Konsultacje pracowników Wydziału Matematyki</div>
         <div class="subtitle">
-            Typ: {{ $consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester ? 'Konsultacje semestralne' : 'Konsultacje sesyjne' }}
+            @php
+                $typeLabel = match($consultationType) {
+                    \Modules\Consultation\Domain\Enums\ConsultationType::Semester => 'Konsultacje semestralne i zaoczne',
+                    \Modules\Consultation\Domain\Enums\ConsultationType::Session => 'Konsultacje sesyjne',
+                    default => 'Konsultacje'
+                };
+            @endphp
+            Typ: {{ $typeLabel }}
         </div>
     </div>
     
@@ -81,8 +88,8 @@
         <div class="right"><span class="page-number"></span></div>
     </div>
 
-    @if($scientificWorkers->isEmpty())
-        <p class="no-data">Brak pracowników naukowych w systemie.</p>
+    @if(empty($processedWorkers))
+        <p class="no-data">Brak konsultacji do wyświetlenia.</p>
     @else
         <table>
             <thead>
@@ -93,61 +100,45 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($scientificWorkers as $worker)
+                @foreach($processedWorkers as $workerData)
                     @php
-                        $consultations = $consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester
-                            ? $worker->semesterConsultations
-                            : $worker->sessionConsultations;
-                        $consultationCount = $consultations->count();
-                        $rowspan = $consultationCount > 0 ? $consultationCount : 1;
+                        $rowspan = count($workerData['lines']) > 0 ? count($workerData['lines']) : 1;
                     @endphp
                     <tr>
                         <td rowspan="{{ $rowspan }}" class="worker-name">
-                            {{ $worker->name }}
+                            {{ $workerData['name'] }}
                         </td>
 
-                        @if($consultationCount > 0)
-                            @php $first = $consultations->first(); @endphp
-                            <td>
-                                @if($consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester)
-                                    {{ $first->day->label() }}
-                                    @if($first->week_type !== \App\Domain\Enums\WeekTypeEnum::ALL)
-                                        {{ $first->week_type->shortLabel() }}
-                                    @endif
-                                    {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
-                                @else
-                                    {{ $first->consultation_date->format('d.m.Y') }}, 
-                                    {{ $first->start_time->format('H:i') }} - {{ $first->end_time->format('H:i') }}
+                        @if(count($workerData['lines']) > 0)
+                            @php $isFirstRow = true; @endphp
+                            @foreach($workerData['lines'] as $line)
+                                @if (!$isFirstRow)
+                                    <tr>
                                 @endif
-                            </td>
-                            <td>
-                                {{ $first->location_building }}@if($first->location_room),&nbsp;{{ $first->location_room }}@endif
-                            </td>
+                                
+                                <td>
+                                    @if($line['is_html'])
+                                        {!! $line['schedule'] !!}
+                                    @else
+                                        {{ $line['schedule'] }}
+                                    @endif
+                                </td>
+                                <td>{!! $line['location'] !!}</td>
+                                
+                                @if ($isFirstRow)
+                                    @php $isFirstRow = false; @endphp
+                                @else
+                                    </tr>
+                                @endif
+                            @endforeach
+                            {{-- This condition ensures that the very first <tr> is closed if there were any lines --}}
+                            @if(!$isFirstRow)
+                                </tr> 
+                            @endif
                         @else
                             <td colspan="2" class="no-data">Brak zgłoszonych terminów</td>
-                        @endif
-                    </tr>
-                    @if($consultationCount > 1)
-                        @foreach($consultations->slice(1) as $consultation)
-                            <tr>
-                                <td>
-                                     @if($consultationType === \Modules\Consultation\Domain\Enums\ConsultationType::Semester)
-                                        {{ $consultation->day->label() }}
-                                        @if($consultation->week_type !== \App\Domain\Enums\WeekTypeEnum::ALL)
-                                            {{ $consultation->week_type->shortLabel() }}
-                                        @endif
-                                        , {{ $consultation->start_time->format('H:i') }} - {{ $consultation->end_time->format('H:i') }}
-                                    @else
-                                        {{ $consultation->consultation_date->format('d.m.Y') }},
-                                        {{ $consultation->start_time->format('H:i') }} - {{ $consultation->end_time->format('H:i') }}
-                                    @endif
-                                </td>
-                                <td>
-                                    {{ $consultation->location_building }}@if($consultation->location_room),&nbsp;{{ $consultation->location_room }}@endif
-                                </td>
                             </tr>
-                        @endforeach
-                    @endif
+                        @endif
                 @endforeach
             </tbody>
         </table>

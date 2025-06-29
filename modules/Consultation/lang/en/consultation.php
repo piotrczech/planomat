@@ -8,6 +8,7 @@ return [
     'My Consultation' => 'My Consultation',
     'My Semester Consultation' => 'My Semester Consultation',
     'My Session Consultation' => 'My Session Consultation',
+    'My Part-time Consultation' => 'My Part-time Consultation',
     'Please manage your consultation schedule for students' => 'Please manage your consultation schedule for students',
     'Last updated' => 'Last updated',
     'Last updated by You' => 'Last updated by You',
@@ -25,8 +26,10 @@ return [
     'Exam session consultations' => 'Exam session consultations',
     'Semester Consultation' => 'Semester Consultation',
     'Session Consultation' => 'Session Consultation',
+    'Part-time Consultation' => 'Part-time Consultation',
     'Semester Consultations' => 'Semester Consultations',
     'Session Consultations' => 'Session Consultations',
+    'Part-time Consultations' => 'Part-time Consultations',
 
     'Add new consultation' => 'Add new consultation',
     'Semester consultation schedule' => 'Semester consultation schedule',
@@ -49,6 +52,8 @@ return [
     'Location' => 'Location',
     'Building' => 'Building',
     'Room' => 'Room',
+    'Building description' => 'e.g. C-13',
+    'Room description' => 'e.g. 208',
     'e.g. C-13, room 208' => 'e.g. C-13, room 208',
 
     'Add consultation' => 'Add consultation',
@@ -58,7 +63,6 @@ return [
     'Calendar view' => 'Calendar view',
 
     'Time outside allowed range' => 'Time outside allowed range',
-    'End time must be after start time' => 'End time must be after start time',
     'Duration must be 60-180 minutes' => 'Duration must be 60-180 minutes',
 
     'New semester consultation' => 'New semester consultation',
@@ -75,16 +79,20 @@ return [
 
     'New session consultation' => 'New session consultation',
     'New consultation sessions description' => 'In the form below, you can add a new consultation during the exam session. The consultation time must not overlap with another consultation.',
-    'Consultation date' => 'Consultation date',
+    'New part-time consultation' => 'New part-time consultation',
+    'New part-time consultation description' => 'In the form below, you can add a new part-time (weekend) consultation. The consultation time must not overlap with another consultation.',
+    'My part-time consultation description' => 'In the calendar below, click on a selected "block" to view its details or delete the appointment.',
     'Session consultation start time' => 'Session consultation start time',
     'Session consultation end time' => 'Session consultation end time',
     'Session consultation location' => 'Session consultation location',
     'Session consultation location description' => 'e.g. C-19, A2.12',
     'Add consultation sessions' => 'Add consultation sessions',
+    'Add part-time consultation' => 'Add part-time consultation',
 
     'Exam session period' => 'Exam session period',
     'Date' => 'Date',
-    'Date must be between session dates' => 'Date must be between session dates',
+    'Date must be a weekend' => 'Date must be a weekend (Saturday or Sunday)',
+    'Date must be between semester start and session start dates' => 'Date must be between semester start and session start dates',
     'Location placeholder' => 'E.g. Room 204, Building A',
     'Cancel' => 'Cancel',
     'Save' => 'Save',
@@ -108,6 +116,7 @@ return [
     'Failed to create consultation: :message' => 'Failed to create consultation: :message',
     'Successfully created :count consultation sessions' => 'Successfully created :count consultation sessions',
     'Successfully created consultation session' => 'Successfully created consultation session',
+    'Successfully created part-time consultation' => 'Successfully created part-time consultation',
     'Adding...' => 'Adding...',
     'No active semester found' => 'No active semester found',
     'Failed to load consultations: :message' => 'Failed to load consultations: :message',
@@ -127,26 +136,33 @@ return [
     'Please correct the errors in the form' => 'Please correct the errors in the form',
 
     // Length validation
+    'Building must be at least 2 characters long' => 'Building name must be at least 2 characters long',
+    'Room must be at least 1 character long' => 'Room number must be at least 1 character long',
+    'Location must be at least 2 characters long' => 'Location must be at least 2 characters long',
     'Building cannot be longer than 100 characters' => 'Building name cannot be longer than 100 characters',
     'Room cannot be longer than 100 characters' => 'Room number cannot be longer than 100 characters',
 
     // Format validation
-    'Invalid time format' => 'Invalid time format',
+    'Invalid time format. Use format: HH:MM' => 'Invalid time format. Use format: HH:MM',
     'Invalid date format' => 'Invalid date format',
     'Invalid weekday selected' => 'Invalid weekday selected',
     'Invalid week type selected' => 'Invalid week type selected',
 
     // Required fields validation
     'Weekday is required' => 'Weekday is required',
-    'Week type is required' => 'Week type is required',
+    'Week type is required for weekday consultations' => 'Week type is required for weekday consultations',
+    'Consultation dates are required for weekend consultations' => 'Consultation dates are required for weekend consultations',
     'Start time is required' => 'Start time is required',
     'End time is required' => 'End time is required',
+    'Location is required' => 'Location is required',
+    'Building is required' => 'Building is required',
+    'Room is required' => 'Room is required',
 
     // Consultation validation
+    'The consultation start time must be between 7:30 and 19:30' => 'The consultation start time must be between 7:30 and 19:30',
+    'The consultation end time must be between 8:30 and 20:30' => 'The consultation end time must be between 8:30 and 20:30',
     'Consultation already exists for this day and week type' => 'Consultation already exists for this day and week type',
-    'Consultation time must be between 7:30 and 20:30' => 'Consultation time must be between 7:30 and 20:30',
     'Consultation must be at least 60 minutes long' => 'Consultation must be at least 60 minutes long',
-    'Consultation cannot be longer than 180 minutes' => 'Consultation cannot be longer than 180 minutes',
     'End time must be after start time' => 'End time must be after start time',
 
     // Weekdays
@@ -166,5 +182,8 @@ return [
     'Remove' => 'Remove',
 
     'Consultation date is required' => 'Consultation date is required',
-    'Invalid date format' => 'Invalid date format',
+    'Date must be between session dates' => 'Date must be between session dates',
+    'No current semester found.' => 'No current semester found.',
+    'timeslot_taken' => 'The selected time slot is already taken.',
+    'end_time_after_start_time' => 'The consultation end time must be after the start time.',
 ];

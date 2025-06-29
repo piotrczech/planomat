@@ -14,7 +14,7 @@ final readonly class GetCurrentSemesterDatesUseCase
     }
 
     /**
-     * @return array{session_start_date: string, end_date: string}|null
+     * @return array{semester_start_date: string, session_start_date: string, end_date: string}|null
      */
     public function execute(): ?array
     {
@@ -22,6 +22,7 @@ final readonly class GetCurrentSemesterDatesUseCase
 
         if ($semester) {
             return [
+                'semester_start_date' => $semester->semester_start_date->toDateString(),
                 'session_start_date' => $semester->session_start_date->toDateString(),
                 'end_date' => $semester->end_date->toDateString(),
             ];

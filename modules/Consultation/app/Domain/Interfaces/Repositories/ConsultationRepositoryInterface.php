@@ -6,6 +6,7 @@ namespace Modules\Consultation\Domain\Interfaces\Repositories;
 
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
+use Modules\Consultation\Domain\Dto\CreateNewPartTimeConsultationDto;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Consultation\Domain\Enums\ConsultationType;
 
@@ -20,7 +21,7 @@ interface ConsultationRepositoryInterface
 
     public function createNewSessionConsultation(CreateNewSessionConsultationDto $dto): int;
 
-    // public function createPartTimeConsultation(): PartTimeConsultation;
+    public function createNewPartTimeConsultation(CreateNewPartTimeConsultationDto $dto): int;
 
     /**
      * Gets
@@ -29,7 +30,7 @@ interface ConsultationRepositoryInterface
 
     public function getSessionConsultations(int $scientificWorkerId, int $semesterId): array;
 
-    // public function getPartTimeConsultations(int $scientificWorkerId, int $semesterId): Collection;
+    public function getPartTimeConsultations(int $scientificWorkerId, int $semesterId): array;
 
     /**
      * Deletes
@@ -38,13 +39,13 @@ interface ConsultationRepositoryInterface
 
     public function deleteSessionConsultation(int $consultationId): bool;
 
-    // public function deletePartTimeConsultation(int $consultationId): bool;
+    public function deletePartTimeConsultation(int $consultationId): bool;
 
     public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId): ?string;
 
     public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId): ?string;
 
-    // public function getLastPartTimeConsultationUpdateDate(int $scientificWorkerId): ?string;
+    public function getLastUpdateDateForPartTimeConsultation(int $scientificWorkerId): ?string;
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string;
 

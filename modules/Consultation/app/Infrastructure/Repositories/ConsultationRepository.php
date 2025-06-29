@@ -8,10 +8,12 @@ use App\Domain\Enums\RoleEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Modules\Consultation\Domain\Dto\CreateNewPartTimeConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSemesterConsultationDto;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use Modules\Consultation\Domain\Enums\ConsultationType;
+use Modules\Consultation\Infrastructure\Models\PartTimeConsultation;
 use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
 use Modules\Consultation\Infrastructure\Models\SessionConsultation;
 use App\Domain\Enums\WeekdayEnum;
@@ -120,6 +122,56 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return (bool) $consultation->delete();
     }
 
+    public function createNewPartTimeConsultation(CreateNewPartTimeConsultationDto $dto): int
+    {
+        $scientificWorkerId = Auth::id();
+        $currentSemesterId = Semester::getCurrentSemester()->id;
+
+        $consultation = PartTimeConsultation::create([
+            'scientific_worker_id' => $scientificWorkerId,
+            'semester_id' => $currentSemesterId,
+            'consultation_date' => $dto->consultationDate,
+            'start_time' => $dto->consultationStartTime,
+            'end_time' => $dto->consultationEndTime,
+            'location_building' => $dto->consultationLocationBuilding,
+            'location_room' => $dto->consultationLocationRoom,
+        ]);
+
+        return $consultation->exists ? $consultation->id : 0;
+    }
+
+    public function getPartTimeConsultations(int $scientificWorkerId, int $semesterId): array
+    {
+        $consultations = PartTimeConsultation::where('scientific_worker_id', $scientificWorkerId)
+            ->where('semester_id', $semesterId)
+            ->orderBy('consultation_date')
+            ->orderBy('start_time')
+            ->get();
+
+        return $consultations->map(function ($consultation) {
+            return [
+                'id' => $consultation->id,
+                'consultation_date' => Carbon::parse($consultation->consultation_date)->toDateString(),
+                'start_time' => Carbon::parse($consultation->start_time)->format('H:i'),
+                'end_time' => Carbon::parse($consultation->end_time)->format('H:i'),
+                'locationBuilding' => $consultation->location_building,
+                'locationRoom' => $consultation->location_room,
+            ];
+        })->toArray();
+    }
+
+    public function deletePartTimeConsultation(int $consultationId): bool
+    {
+        $consultation = PartTimeConsultation::where('id', $consultationId)
+            ->first();
+
+        if (!$consultation) {
+            return false;
+        }
+
+        return (bool) $consultation->delete();
+    }
+
     public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId): ?string
     {
         $latestConsultation = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
@@ -132,6 +184,15 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
     public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId): ?string
     {
         $latestConsultation = SessionConsultation::where('scientific_worker_id', $scientificWorkerId)
+            ->orderByDesc('updated_at')
+            ->first();
+
+        return $latestConsultation?->updated_at?->toDateString();
+    }
+
+    public function getLastUpdateDateForPartTimeConsultation(int $scientificWorkerId): ?string
+    {
+        $latestConsultation = PartTimeConsultation::where('scientific_worker_id', $scientificWorkerId)
             ->orderByDesc('updated_at')
             ->first();
 
@@ -162,9 +223,24 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
     public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection
     {
+        if ($type === ConsultationType::Semester) {
+            return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+                ->where(function ($query) use ($semesterId): void {
+                    $query->whereHas('semesterConsultations', fn ($q) => $q->where('semester_id', $semesterId))
+                        ->orWhereHas('partTimeConsultations', fn ($q) => $q->where('semester_id', $semesterId));
+                })
+                ->with([
+                    'semesterConsultations' => fn ($q) => $q->where('semester_id', $semesterId)->orderBy('day')->orderBy('start_time'),
+                    'partTimeConsultations' => fn ($q) => $q->where('semester_id', $semesterId)->orderBy('consultation_date')->orderBy('start_time'),
+                ])
+                ->orderBy('name')
+                ->get();
+        }
+
         $consultationRelation = match ($type) {
-            ConsultationType::Semester => 'semesterConsultations',
             ConsultationType::Session => 'sessionConsultations',
+            ConsultationType::PartTime => 'partTimeConsultations',
+            default => 'semesterConsultations',
         };
 
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
@@ -172,9 +248,14 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
                 $query->where('semester_id', $semesterId);
             })
             ->with([
-                $consultationRelation => function ($query) use ($semesterId): void {
-                    $query->where('semester_id', $semesterId)
-                        ->orderBy('start_time');
+                $consultationRelation => function ($query) use ($semesterId, $type): void {
+                    $q = $query->where('semester_id', $semesterId);
+
+                    if ($type === ConsultationType::Semester) {
+                        $q->orderBy('day')->orderBy('start_time');
+                    } else { // Session and PartTime
+                        $q->orderBy('consultation_date')->orderBy('start_time');
+                    }
                 },
             ])
             ->orderBy('name')
@@ -191,6 +272,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         $consultationRelation = match ($type) {
             ConsultationType::Semester => 'semesterConsultations',
             ConsultationType::Session => 'sessionConsultations',
+            ConsultationType::PartTime => 'partTimeConsultations',
         };
 
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)

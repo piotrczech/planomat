@@ -8,4 +8,5 @@ enum ConsultationType: string
 {
     case Semester = 'semester';
     case Session = 'session';
+    case PartTime = 'part-time';
 }

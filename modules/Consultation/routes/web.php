@@ -15,6 +15,8 @@ Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function
             ->name('consultations.scientific-worker.my-semester-consultation');
         Route::get('session-consultation', [ScientificWorkerConsultationController::class, 'sessionConsultationIndex'])
             ->name('consultations.scientific-worker.my-session-consultation');
+        Route::get('part-time-consultation', [ScientificWorkerConsultationController::class, 'partTimeConsultationIndex'])
+            ->name('consultations.scientific-worker.my-part-time-consultation');
     });
 
     Route::group(['prefix' => 'dean-office', 'middleware' => 'admin.dean'], function (): void {

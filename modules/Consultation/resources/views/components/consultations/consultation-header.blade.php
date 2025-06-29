@@ -41,6 +41,15 @@
     >
         {{ __('consultation::consultation.Session Consultations') }}
     </flux:button>
+    <flux:button
+        :variant="request()->routeIs('consultations.scientific-worker.my-part-time-consultation')
+            ? 'primary'
+            : 'outline'"
+        :href="route('consultations.scientific-worker.my-part-time-consultation')"
+        role="link"
+    >
+        {{ __('consultation::consultation.Part-time Consultations') }}
+    </flux:button>
 </flux:button.group>
 
 <flux:separator variant="subtle" class="my-8" />

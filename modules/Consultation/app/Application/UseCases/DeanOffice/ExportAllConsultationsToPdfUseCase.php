@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\DeanOffice;
 
+use Modules\Consultation\Application\Services\ConsultationReportService;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use Modules\Consultation\Domain\Interfaces\Services\PdfGeneratorInterface;
 use Modules\Consultation\Domain\Enums\ConsultationType;
@@ -16,6 +17,7 @@ final class ExportAllConsultationsToPdfUseCase
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
         private readonly PdfGeneratorInterface $pdfGenerator,
+        private readonly ConsultationReportService $reportService,
     ) {
     }
 
@@ -29,8 +31,10 @@ final class ExportAllConsultationsToPdfUseCase
 
         $scientificWorkers = $this->consultationRepository->getAllScientificWorkersWithConsultations($semesterId, $consultationType);
 
+        $processedData = $this->reportService->prepareAllConsultationsReportData($scientificWorkers, $consultationType);
+
         $dataForPdf = [
-            'scientificWorkers' => $scientificWorkers,
+            'processedWorkers' => $processedData,
             'reportDate' => Carbon::now()->translatedFormat('d F Y H:i'),
             'consultationType' => $consultationType,
         ];

@@ -7,8 +7,10 @@ namespace Modules\Consultation\Infrastructure\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\MyPartTimeConsultationCalendarComponent;
 use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\MySemesterConsultationCalendarComponent;
 use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\MySessionConsultationCalendarComponent;
+use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\NewPartTimeConsultationComponent;
 use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\NewSemesterConsultationComponent;
 use Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker\NewSessionConsultationComponent;
 use Modules\Consultation\Presentation\Livewire\Dashboard\ConsultationsCard;
@@ -122,8 +124,10 @@ class ConsultationServiceProvider extends ServiceProvider
             'dashboard.consultations-card' => ConsultationsCard::class,
             'consultations.scientific-worker.new-semester-consultation' => NewSemesterConsultationComponent::class,
             'consultations.scientific-worker.new-session-consultation' => NewSessionConsultationComponent::class,
+            'consultations.scientific-worker.new-part-time-consultation' => NewPartTimeConsultationComponent::class,
             'consultations.scientific-worker.my-semester-consultation-calendar' => MySemesterConsultationCalendarComponent::class,
             'consultations.scientific-worker.my-session-consultation-calendar' => MySessionConsultationCalendarComponent::class,
+            'consultations.scientific-worker.my-part-time-consultation-calendar' => MyPartTimeConsultationCalendarComponent::class,
         ];
 
         foreach ($components as $alias => $component) {

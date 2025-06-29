@@ -6,6 +6,7 @@ namespace Modules\Consultation\Presentation\Http\Controllers;
 
 use App\Presentation\Http\Controllers\Controller;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetConsultationSummaryTimeUseCase;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetLastUpdateDateForPartTimeConsultationUseCase;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetLastUpdateDateForSemesterConsultationUseCase;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetLastUpdateDateForSessionConsultationUseCase;
 
@@ -35,6 +36,16 @@ class ScientificWorkerConsultationController extends Controller
         $lastUpdateDate = $getLastUpdatedDate->execute();
 
         return view('consultation::consultations.scientific-worker.my-session-consultation', [
+            'lastUpdateDate' => $lastUpdateDate,
+        ]);
+    }
+
+    public function partTimeConsultationIndex(
+        GetLastUpdateDateForPartTimeConsultationUseCase $getLastUpdatedDate,
+    ) {
+        $lastUpdateDate = $getLastUpdatedDate->execute();
+
+        return view('consultation::consultations.scientific-worker.my-part-time-consultation', [
             'lastUpdateDate' => $lastUpdateDate,
         ]);
     }
