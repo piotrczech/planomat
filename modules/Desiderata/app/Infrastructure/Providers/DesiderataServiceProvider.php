@@ -21,7 +21,7 @@ use Modules\Desiderata\Infrastructure\Authorization\DesideratumPolicy;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use Modules\Desiderata\Infrastructure\Repositories\DesideratumRepository;
 use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
-use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 
 class DesiderataServiceProvider extends ServiceProvider
 {
@@ -44,7 +44,6 @@ class DesiderataServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
-        // Rejestrujemy polityki autoryzacyjne
         $this->registerPolicies();
     }
 
@@ -65,7 +64,7 @@ class DesiderataServiceProvider extends ServiceProvider
             return new UpdateOrCreateDesideratumUseCase(
                 $app->make(DesideratumRepositoryInterface::class),
                 $app->make(CreateActivityLogUseCase::class),
-                $app->make(GetCurrentSemesterUseCase::class),
+                $app->make(GetActiveDesiderataSemesterUseCase::class),
             );
         });
     }

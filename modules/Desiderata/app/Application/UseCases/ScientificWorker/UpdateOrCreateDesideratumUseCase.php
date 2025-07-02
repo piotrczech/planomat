@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Application\UseCases\ScientificWorker;
 
 use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
-use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use App\Domain\Dto\StoreActivityLogDto;
 use App\Domain\Enums\ActivityLogActionEnum;
 use App\Domain\Enums\ActivityLogModuleEnum;
@@ -20,14 +20,14 @@ class UpdateOrCreateDesideratumUseCase
     public function __construct(
         private readonly DesideratumRepositoryInterface $desideratumRepository,
         private readonly CreateActivityLogUseCase $createActivityLogUseCase,
-        private readonly GetCurrentSemesterUseCase $getCurrentSemesterUseCase,
+        private readonly GetActiveDesiderataSemesterUseCase $getActiveDesiderataSemesterUseCase,
     ) {
     }
 
     public function execute(UpdateOrCreateDesideratumDto $dto): Desideratum
     {
         $user = Auth::user();
-        $currentSemester = $this->getCurrentSemesterUseCase->execute();
+        $currentSemester = $this->getActiveDesiderataSemesterUseCase->execute();
 
         if (!$user || !$currentSemester) {
             throw new Exception('Cannot create or update desideratum without a user or an active semester.');

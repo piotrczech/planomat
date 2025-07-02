@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
-use App\Application\UseCases\Semester\GetCurrentSemesterDatesUseCase;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Carbon\Carbon;
 use Livewire\Component;
 use Exception;
@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetPartTimeConsultationsUseCase;
 use Livewire\Attributes\On;
 use Modules\Consultation\Application\UseCases\ScientificWorker\DeletePartTimeConsultationUseCase;
+use App\Domain\Enums\SemesterSeasonEnum;
 
 class MyPartTimeConsultationCalendarComponent extends Component
 {
@@ -33,14 +34,29 @@ class MyPartTimeConsultationCalendarComponent extends Component
 
     public bool $calendarEnabled = false;
 
+    public string $title = '';
+
     public function mount(): void
     {
-        $semesterDatesUseCase = App::make(GetCurrentSemesterDatesUseCase::class);
-        $dates = $semesterDatesUseCase->execute();
+        $semesterDatesUseCase = App::make(GetActiveConsultationSemesterUseCase::class);
+        $semester = $semesterDatesUseCase->execute();
 
-        if ($dates && isset($dates['semester_start_date'], $dates['session_start_date'])) {
-            $this->semesterStart = Carbon::parse($dates['semester_start_date']);
-            $this->sessionStartPeriodEnd = Carbon::parse($dates['session_start_date']);
+        if ($semester) {
+            $seasonName = $semester->season === SemesterSeasonEnum::WINTER
+                ? __('consultation::consultation.in_semester_winter')
+                : __('consultation::consultation.in_semester_summer');
+
+            $this->title = __('consultation::consultation.my_part_time_consultations_title', [
+                'season' => $seasonName,
+                'academic_year' => $semester->academic_year,
+            ]);
+        } else {
+            $this->title = __('consultation::consultation.My Part-time Consultation');
+        }
+
+        if ($semester && isset($semester->semester_start_date, $semester->session_start_date)) {
+            $this->semesterStart = Carbon::parse($semester->semester_start_date);
+            $this->sessionStartPeriodEnd = Carbon::parse($semester->session_start_date);
             $this->calendarEnabled = true;
         } else {
             $this->errorMessage = __('consultation::consultation.No current semester dates found. Calendar functionality may be limited.');
@@ -51,7 +67,16 @@ class MyPartTimeConsultationCalendarComponent extends Component
 
         if ($this->calendarEnabled) {
             $this->generateAvailableMonths();
-            $this->currentMonth = $this->semesterStart->copy()->startOfMonth();
+
+            $now = Carbon::today();
+
+            if ($now->between($this->semesterStart, $this->sessionStartPeriodEnd)) {
+                $this->currentMonth = $now->copy()->startOfMonth();
+            } elseif ($now->lt($this->semesterStart)) {
+                $this->currentMonth = $this->semesterStart->copy()->startOfMonth();
+            } else {
+                $this->currentMonth = $this->sessionStartPeriodEnd->copy()->startOfMonth();
+            }
         } else {
             $this->currentMonth = Carbon::now()->startOfMonth();
         }

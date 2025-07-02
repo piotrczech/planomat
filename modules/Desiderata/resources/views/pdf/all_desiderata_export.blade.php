@@ -22,7 +22,6 @@
             font-weight: bold;
             margin-bottom: 15px;
             padding-bottom: 5px;
-            border-bottom: 1px solid #ccc;
         }
         .section-title {
             font-size: 12px;
@@ -97,13 +96,20 @@
 </head>
 <body>
     <div class="cover-page">
-        <div class="cover-title">Dezyderaty pracowników Wydziału Matematyki</div>
-        <div class="cover-subtitle">dla semestru: <strong>{{ $semester->name }} ({{ $semester->academic_year }})</strong></div>
+        @php
+            use App\Domain\Enums\SemesterSeasonEnum;
+
+            $seasonLabel = $semester->season === SemesterSeasonEnum::WINTER ? 'zimowy' : 'letni';
+
+            $titleText = 'Dezyderaty na semestr ' . $seasonLabel . ' ' . $semester->academic_year;
+        @endphp
+
+        <div class="cover-title">{{ $titleText }}</div>
         <div class="cover-date">Data wygenerowania raportu: {{ $reportDate }}</div>
     </div>
     <div class="page-break"></div>
 
-    <div class="report-generated-date">Wygenerowano: {{ $reportDate }}</div>
+    <div class="report-generated-date">wygenerowano: {{ $reportDate }}</div>
 
     @if($scientificWorkers->isEmpty())
         <div class="no-data-info">
@@ -118,7 +124,10 @@
                     $desideratum->setRelation('scientificWorker', $worker);
                 }
             @endphp
-            @include('desiderata::pdf.partials.desiderata_preferences_page', ['desideratum' => $desideratum])
+            @include('desiderata::pdf.partials.desiderata_preferences_page', [
+                'desideratum' => $desideratum,
+                'allCourses' => $allCourses,
+            ])
             <div class="page-break"></div>
             @include('desiderata::pdf.partials.desiderata_availability_page', ['desideratum' => $desideratum])
 
@@ -127,9 +136,5 @@
             @endif
         @endforeach
     @endif
-
-    <div class="footer-info">
-        Raport wygenerowany przez system planoMAT - {{ $reportDate }}
-    </div>
 </body>
 </html> 

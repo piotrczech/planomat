@@ -21,6 +21,8 @@ return [
     'course_manager.Course List Description' => 'Poniżej znajduje się lista wszystkich kursów zdefiniowanych w systemie.',
     'course_manager.Add Course' => 'Dodaj kurs',
     'course_manager.Course table placeholder' => 'Brak zdefiniowanych kursów. Kliknij "Dodaj kurs", aby rozpocząć.',
+    'course_manager.Delete Course' => 'Usuń kurs',
+    'course_manager.This action cannot be undone.' => 'Tej operacji nie można cofnąć.',
 
     'semester_manager.Semester List' => 'Lista semestrów',
     'semester_manager.This action cannot be undone.' => 'Tej operacji nie można cofnąć.',

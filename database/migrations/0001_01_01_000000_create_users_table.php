@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('usos_id')->nullable()->unique();
             $table->unsignedTinyInteger('role')->default(RoleEnum::SCIENTIFIC_WORKER->value);
             $table->rememberToken();
             $table->softDeletes();

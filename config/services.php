@@ -37,4 +37,11 @@ return [
         ],
     ],
 
+    'keycloak' => [
+        'client_id' => env('USOS_CLIENT_ID'),
+        'client_secret' => env('USOS_CLIENT_SECRET'),
+        'redirect' => env('USOS_REDIRECT_URI'),
+        'base_url' => env('USOS_BASE_URL'),
+        'realms' => env('USOS_REALM'),
+    ],
 ];

@@ -70,17 +70,30 @@
 </head>
 <body>
     <div class="header">
-        <div class="title">Konsultacje pracowników Wydziału Matematyki</div>
-        <div class="subtitle">
-            @php
-                $typeLabel = match($consultationType) {
-                    \Modules\Consultation\Domain\Enums\ConsultationType::Semester => 'Konsultacje semestralne i zaoczne',
-                    \Modules\Consultation\Domain\Enums\ConsultationType::Session => 'Konsultacje sesyjne',
-                    default => 'Konsultacje'
-                };
-            @endphp
-            Typ: {{ $typeLabel }}
-        </div>
+        @php
+            use Modules\Consultation\Domain\Enums\ConsultationType;
+            use App\Domain\Enums\SemesterSeasonEnum;
+
+            $titleText = 'Konsultacje';
+
+            if (isset($semester)) {
+                if ($consultationType === ConsultationType::Session) {
+                    $seasonLabel = $semester->season === SemesterSeasonEnum::WINTER
+                        ? __('consultation::consultation.in_session_winter')
+                        : __('consultation::consultation.in_session_summer');
+
+                    $titleText = 'Konsultacje w sesji ' . $seasonLabel . ' ' . $semester->academic_year;
+                } else {
+                    $seasonLabel = $semester->season === SemesterSeasonEnum::WINTER
+                        ? __('consultation::consultation.in_semester_winter')
+                        : __('consultation::consultation.in_semester_summer');
+
+                    $titleText = 'Konsultacje w semestrze ' . $seasonLabel . ' ' . $semester->academic_year;
+                }
+            }
+        @endphp
+
+        <div class="title">{{ $titleText }}</div>
     </div>
     
     <div class="footer">

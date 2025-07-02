@@ -39,7 +39,7 @@
         level="2"
         id="form-heading"
     >
-        {{ __('consultation::consultation.My Session Consultation') }}
+        {{ $title }}
     </flux:heading>
 
     <flux:text class="mb-6">

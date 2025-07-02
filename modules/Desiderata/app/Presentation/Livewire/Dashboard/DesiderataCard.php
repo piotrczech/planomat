@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Livewire\Dashboard;
 
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use App\Domain\Enums\RoleEnum;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class DesiderataCard extends Component
 {
-    public array $desiderataItems = [];
+    public $semester;
 
-    public function mount(): void
+    public function mount(GetActiveDesiderataSemesterUseCase $useCase): void
     {
+        $this->semester = $useCase->execute();
     }
 
     public function render()

@@ -105,15 +105,14 @@
                 <flux:input
                     x-data
                     x-ref="input"
-                    x-init="flatpickr($refs.input, {
+                    x-init="const fp = flatpickr($refs.input, {
                         dateFormat: 'Y-m-d',
                         locale: 'pl',
                         minDate: '{{ $startSessionDate }}',
                         maxDate: '{{ $endSessionDate }}',
-                        onChange: function(selectedDates, dateStr, instance) {
-                            $wire.consultationDate = dateStr;
-                        }
-                    });"
+                        onChange(selectedDates, dateStr) { $wire.consultationDate = dateStr; }
+                    });
+                    $watch('$wire.consultationDate', v => { if (!v) fp.clear(); });"
                     id="consultation-dates"
                     type="text"
                     class="w-full"
@@ -142,7 +141,7 @@
                 >
                     <flux:input
                         x-data
-                        x-init="flatpickr($refs.input, {
+                        x-init="const fp = flatpickr($refs.input, {
                             enableTime: true,
                             noCalendar: true,
                             dateFormat: 'H:i',
@@ -150,10 +149,9 @@
                             minTime: '7:30',
                             maxTime: '19:30',
                             locale: 'pl',
-                            onChange: function(selectedDates, dateStr, instance) {
-                                $wire.consultationStartTime = dateStr;
-                            }
-                        });"
+                            onChange(selectedDates, dateStr) { $wire.consultationStartTime = dateStr; }
+                        });
+                        $watch('$wire.consultationStartTime', v => { if (!v) fp.clear(); });"
                         x-ref="input"
                         id="consultation-start-time"
                         class="w-full {{ $errors->has('consultationStartTime') ? 'border-red-500 dark:border-red-400' : '' }}"
@@ -182,7 +180,7 @@
                 >
                     <flux:input
                         x-data
-                        x-init="flatpickr($refs.input, {
+                        x-init="const fp = flatpickr($refs.input, {
                             enableTime: true,
                             noCalendar: true,
                             dateFormat: 'H:i',
@@ -190,10 +188,9 @@
                             minTime: '8:30',
                             maxTime: '20:30',
                             locale: 'pl',
-                            onChange: function(selectedDates, dateStr, instance) {
-                                $wire.consultationEndTime = dateStr;
-                            }
-                        });"
+                            onChange(selectedDates, dateStr) { $wire.consultationEndTime = dateStr; }
+                        });
+                        $watch('$wire.consultationEndTime', v => { if (!v) fp.clear(); });"
                         x-ref="input"
                         id="consultation-end-time"
                         class="w-full {{ $errors->has('consultationEndTime') ? 'border-red-500 dark:border-red-400' : '' }}"

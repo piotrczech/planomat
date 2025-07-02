@@ -41,18 +41,10 @@ class Semester extends Model
 
     public function getAcademicYearAttribute(): string
     {
-        return $this->start_year . '/' . ($this->start_year + 1);
-    }
+        $startYear = (int) $this->start_year;
+        $endYearShort = mb_substr((string) ($startYear + 1), -2);
 
-    public static function getCurrentSemester()
-    {
-        $activeSemester = self::where('is_active', true)->first();
-
-        if ($activeSemester) {
-            return $activeSemester;
-        }
-
-        return null;
+        return $startYear . '/' . $endYearShort;
     }
 
     public function semesterConsultations(): HasMany

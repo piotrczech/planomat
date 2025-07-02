@@ -13,7 +13,7 @@
             <div
                 wire:ignore
                 x-data="{
-                    semesters: {{ json_encode($semesters->map(fn($s) => ['id' => $s->id, 'name' => $s->name . ' (' . $s->academic_year . ')'])) }},
+                    semesters: {{ json_encode($semesters->map(fn($s) => ['id' => $s->id, 'name' => sprintf('%s %d/%s', $s->season->label(), $s->start_year, Str::of($s->start_year + 1)->substr(-2))])) }},
                     initialConsultationId: '{{ $activeSemesterForConsultationsId }}',
                     initialDesiderataId: '{{ $activeSemesterForDesiderataId }}',
                     init() {

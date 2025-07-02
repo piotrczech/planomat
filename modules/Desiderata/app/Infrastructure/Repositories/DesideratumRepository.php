@@ -160,9 +160,10 @@ class DesideratumRepository implements DesideratumRepositoryInterface
         return $desideratum;
     }
 
-    public function getLastUpdateDate(int $userId): ?string
+    public function getLastUpdateDate(int $userId, int $semesterId): ?string
     {
         return Desideratum::where('scientific_worker_id', $userId)
+            ->where('semester_id', $semesterId)
             ->latest('updated_at')
             ->value('updated_at')
             ?->toDateTimeString();
@@ -187,5 +188,60 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             })
             ->orderBy('name')
             ->get();
+    }
+
+    public function findLatestByScientificWorkerBeforeSemester(int $workerId, int $currentSemesterId): ?UpdateOrCreateDesideratumDto
+    {
+        $desideratum = Desideratum::where('scientific_worker_id', $workerId)
+            ->where('semester_id', '<', $currentSemesterId)
+            ->with(['coursePreferences', 'unavailableTimeSlots'])
+            ->orderByDesc('semester_id')
+            ->first();
+
+        if (!$desideratum) {
+            return null;
+        }
+
+        $coursePreferencesByType = $desideratum->coursePreferences->groupBy('type');
+
+        $wantedCourseIds = $coursePreferencesByType->get(CoursePreferenceTypeEnum::WANTED->value, collect())
+            ->pluck('course_id')
+            ->toArray();
+
+        $unwantedCourseIds = $coursePreferencesByType->get(CoursePreferenceTypeEnum::UNWANTED->value, collect())
+            ->pluck('course_id')
+            ->toArray();
+
+        $proficientCourseIds = Course::whereNotIn('id', array_merge($wantedCourseIds, $unwantedCourseIds))
+            ->pluck('id')
+            ->toArray();
+
+        $unavailableTimeSlots = [];
+
+        foreach ($desideratum->unavailableTimeSlots as $slot) {
+            $dayValue = $slot->day->value;
+
+            if (!isset($unavailableTimeSlots[$dayValue])) {
+                $unavailableTimeSlots[$dayValue] = [];
+            }
+            $unavailableTimeSlots[$dayValue][] = $slot->time_slot_id;
+        }
+
+        return UpdateOrCreateDesideratumDto::from([
+            'wantStationary' => $desideratum->want_stationary,
+            'wantNonStationary' => $desideratum->want_non_stationary,
+            'agreeToOvertime' => $desideratum->agree_to_overtime,
+            'masterThesesCount' => $desideratum->master_theses_count,
+            'bachelorThesesCount' => $desideratum->bachelor_theses_count,
+            'maxHoursPerDay' => $desideratum->max_hours_per_day,
+            'maxConsecutiveHours' => $desideratum->max_consecutive_hours,
+            'additionalNotes' => $desideratum->additional_notes,
+
+            'wantedCourseIds' => $wantedCourseIds,
+            'proficientCourseIds' => $proficientCourseIds,
+            'unwantedCourseIds' => $unwantedCourseIds,
+
+            'unavailableTimeSlots' => $unavailableTimeSlots,
+        ]);
     }
 }

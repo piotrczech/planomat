@@ -26,14 +26,11 @@
 @endphp
 
 <div class="page-content">
-    @if(!$desideratum->exists)
-        <div class="no-submission-notice">
-            Pracownik nie złożył dezyderaty w tym semestrze.
-        </div>
-    @endif
+    <small>
+        {{ $worker->name }}{{ !$desideratum->exists ? ' (pracownik nie uzupełnił dokumentu):' : ':' }}
+    </small>
 
     <table style="font-size: 9px;">
-        <small>{{ $worker->name }}:</small>
         <thead>
         <tr>
             <th style="width: 10%; background-color: #f0f0f0; text-align:center;">Godzina</th>

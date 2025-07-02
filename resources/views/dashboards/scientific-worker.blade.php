@@ -9,9 +9,7 @@
                     {{ __('dashboard.Welcome message') }}
                 </flux:text>
                 <flux:text class="text-lg text-neutral-600 dark:text-neutral-400">
-                    @if ($currentSemester)
-                        {{ __('dashboard.Current semester') }} {{ $currentSemester->name }} {{ $currentSemester->start_year }}
-                    @else
+                    @if (!$desiderataSemester || !$consultationSemester)
                         {{ __('dashboard.No semester found please contact administrator. Functionality is not available.') }}
                     @endif
                 </flux:text>
@@ -24,15 +22,10 @@
                     {{ __('dashboard.Available Modules') }}
                 </flux:heading>
                 
-                @if($currentSemester)
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    @if($desiderataSemester)
                         <livewire:desiderata::dashboard.desiderata-card />
-                        
-                        <livewire:consultation::dashboard.consultations-card />
-                    </div>
-                @else
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        {{-- Wyłączone karty modułów --}}
+                    @else
                         <div class="relative">
                             <div class="opacity-30 pointer-events-none">
                                 <livewire:desiderata::dashboard.desiderata-card />
@@ -46,7 +39,11 @@
                                 </div>
                             </div>
                         </div>
-                        
+                    @endif
+                    
+                    @if($consultationSemester)
+                        <livewire:consultation::dashboard.consultations-card />
+                    @else
                         <div class="relative">
                             <div class="opacity-30 pointer-events-none">
                                 <livewire:consultation::dashboard.consultations-card />
@@ -60,8 +57,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div> 
     </flux:main>

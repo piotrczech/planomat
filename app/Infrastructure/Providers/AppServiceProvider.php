@@ -8,16 +8,21 @@ use App\Domain\Interfaces\ActivityLogRepositoryInterface;
 use App\Domain\Interfaces\CourseRepositoryInterface;
 use App\Domain\Interfaces\SemesterRepositoryInterface;
 use App\Domain\Interfaces\SettingRepositoryInterface;
+use App\Domain\Interfaces\TimeSlotRepositoryInterface;
 use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Infrastructure\Repositories\ActivityLogRepository;
 use App\Infrastructure\Repositories\CourseRepository;
 use App\Infrastructure\Repositories\SemesterRepository;
 use App\Infrastructure\Repositories\SettingRepository;
+use App\Infrastructure\Repositories\TimeSlotRepository;
 use App\Infrastructure\Repositories\UserRepository;
 use App\Presentation\View\Composers\CurrentSemesterComposer;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use SocialiteProviders\Manager\SocialiteWasCalled;
+use SocialiteProviders\Keycloak\Provider as KeycloakSocialiteProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +52,11 @@ class AppServiceProvider extends ServiceProvider
             SettingRepositoryInterface::class,
             SettingRepository::class,
         );
+
+        $this->app->bind(
+            TimeSlotRepositoryInterface::class,
+            TimeSlotRepository::class,
+        );
     }
 
     public function boot(): void
@@ -54,5 +64,12 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('App\\Presentation\\View\\Components\\UserLayout', 'user-layout');
 
         View::composer(['components.layouts.app.header', 'dashboards.*'], CurrentSemesterComposer::class);
+
+        Event::listen(
+            SocialiteWasCalled::class,
+            static function (SocialiteWasCalled $event): void {
+                $event->extendSocialite('keycloak', KeycloakSocialiteProvider::class);
+            },
+        );
     }
 }

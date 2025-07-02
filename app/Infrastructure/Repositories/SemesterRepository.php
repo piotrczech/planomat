@@ -92,29 +92,4 @@ final class SemesterRepository implements SemesterRepositoryInterface
             ->where('season', $season)
             ->first();
     }
-
-    public function findCurrentSemester(): ?Semester
-    {
-        return Semester::getCurrentSemester();
-    }
-
-    public function setActiveSemester(int $id): bool
-    {
-        $semester = $this->findById($id);
-
-        if (!$semester) {
-            return false;
-        }
-
-        Semester::where('is_active', true)->update(['is_active' => false]);
-
-        $semester->update(['is_active' => true]);
-
-        return true;
-    }
-
-    public function getActiveSemester(): ?Semester
-    {
-        return Semester::where('is_active', true)->first();
-    }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
-use App\Application\UseCases\Semester\GetCurrentSemesterDatesUseCase;
-use Illuminate\Validation\Rule;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Modules\Consultation\Domain\Dto\CreateNewPartTimeConsultationDto;
 use Exception;
@@ -32,45 +32,14 @@ class NewPartTimeConsultationComponent extends Component
 
     public string $startSessionDate = '';
 
-    protected function rules(): array
-    {
-        return [
-            'consultationDate' => [
-                'required',
-                'date',
-                Rule::unique('part_time_consultations', 'consultation_date')->where(function ($query) {
-                    return $query->where('scientific_worker_id', auth()->id())
-                        ->where(function ($q): void {
-                            $q->where(function ($sub): void {
-                                $sub->where('start_time', '<', $this->consultationEndTime)
-                                    ->where('end_time', '>', $this->consultationStartTime);
-                            });
-                        });
-                }),
-            ],
-            'consultationStartTime' => 'required|date_format:H:i',
-            'consultationEndTime' => 'required|date_format:H:i|after:consultationStartTime',
-            'consultationLocationBuilding' => 'required|string|max:255',
-            'consultationLocationRoom' => 'nullable|string|max:255',
-        ];
-    }
-
-    protected function messages()
-    {
-        return [
-            'consultationDate.unique' => __('consultation::consultation.timeslot_taken'),
-            'consultationEndTime.after' => __('consultation::consultation.end_time_after_start_time'),
-        ];
-    }
-
     public function fetchPartTimeDates(): void
     {
-        $useCase = App::make(GetCurrentSemesterDatesUseCase::class);
-        $dates = $useCase->execute();
+        $useCase = App::make(GetActiveConsultationSemesterUseCase::class);
+        $semester = $useCase->execute();
 
-        if ($dates) {
-            $this->startSemesterDate = $dates['semester_start_date'];
-            $this->startSessionDate = $dates['session_start_date'];
+        if ($semester) {
+            $this->startSemesterDate = $semester->semester_start_date->toDateString();
+            $this->startSessionDate = $semester->session_start_date->toDateString();
         } else {
             $this->startSemesterDate = '';
             $this->startSessionDate = '';
@@ -91,10 +60,16 @@ class NewPartTimeConsultationComponent extends Component
 
     public function addConsultation(): void
     {
-        $validatedData = $this->validate();
+        $data = [
+            'consultationDate' => $this->consultationDate,
+            'consultationStartTime' => $this->consultationStartTime,
+            'consultationEndTime' => $this->consultationEndTime,
+            'consultationLocationBuilding' => $this->consultationLocationBuilding,
+            'consultationLocationRoom' => $this->consultationLocationRoom,
+        ];
 
         try {
-            $requestData = CreateNewPartTimeConsultationDto::from($validatedData);
+            $requestData = CreateNewPartTimeConsultationDto::validateAndCreate($data);
 
             $useCase = App::make(CreateNewPartTimeConsultationUseCase::class);
             $useCase->execute($requestData);
@@ -102,6 +77,8 @@ class NewPartTimeConsultationComponent extends Component
             $this->successMessage = __('consultation::consultation.Successfully created part-time consultation');
             $this->dispatch('consultationSaved');
             $this->resetForm();
+        } catch (ValidationException $e) {
+            $this->setErrorBag($e->validator->getMessageBag());
         } catch (Exception $e) {
             $this->errorMessage = __('consultation::consultation.Error: :message', ['message' => $e->getMessage()]);
         }

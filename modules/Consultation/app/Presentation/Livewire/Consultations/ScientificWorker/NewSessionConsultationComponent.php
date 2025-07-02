@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
-use App\Application\UseCases\Semester\GetCurrentSemesterDatesUseCase;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Livewire\Component;
 use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Exception;
@@ -43,12 +43,12 @@ class NewSessionConsultationComponent extends Component
 
     public function fetchSessionDates(): void
     {
-        $useCase = App::make(GetCurrentSemesterDatesUseCase::class);
-        $dates = $useCase->execute();
+        $useCase = App::make(GetActiveConsultationSemesterUseCase::class);
+        $semester = $useCase->execute();
 
-        if ($dates) {
-            $this->startSessionDate = $dates['session_start_date'];
-            $this->endSessionDate = $dates['end_date'];
+        if ($semester) {
+            $this->startSessionDate = $semester->session_start_date->toDateString();
+            $this->endSessionDate = $semester->end_date->toDateString();
         } else {
             $this->startSessionDate = '';
             $this->endSessionDate = '';

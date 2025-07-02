@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
-use App\Domain\Interfaces\SemesterRepositoryInterface;
 
 final class GetPartTimeConsultationsUseCase
 {
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
-        private readonly SemesterRepositoryInterface $semesterRepository,
+        private readonly GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase,
     ) {
     }
 
     public function execute(): array
     {
         $scientificWorkerId = Auth::id();
-        $currentSemester = $this->semesterRepository->findCurrentSemester();
+        $currentSemester = $this->getActiveConsultationSemesterUseCase->execute();
 
         if (!$currentSemester) {
             return [];

@@ -6,6 +6,7 @@ return [
     'My Desiderata' => 'Moje dezyderaty',
     'Stage: Teaching preferences' => 'Etap: Preferencje dydaktyczne',
     'Desiderata Form' => 'Formularz dezyderat',
+    'Desiderata Form Semester' => 'Formularz dezyderat na semestr :semester :academicYear',
     'My Desiderata Description' => 'Dezyderaty to formularz, w którym można wskazać preferencje dotyczące prowadzenia zajęć w nadchodzącym semestrze – m.in. preferowane kursy, godziny. Formularz składa się z dwóch części: preferencji dydaktycznych oraz dostępności.',
     'Dezyderaty' => 'Dezyderaty',
     'Please complete your teaching preferences for the upcoming semester' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',
@@ -108,4 +109,6 @@ return [
     'Additional notes cannot exceed 1000 characters' => 'Dodatkowe uwagi nie mogą przekraczać 250 znaków',
     'Additional notes cannot contain line breaks' => 'Dodatkowe uwagi nie mogą zawierać znaków nowej linii (enter)',
     'All courses are either wanted or unwanted' => 'Rozdysponowano wszystkie kursy',
+    'You do not have desiderata for the current semester yet. We have pre-filled the form with data from your last submission – please verify and save.' => 'Dla wybranego semestru nie został złożony jeszcze przez Państwa dezyderat - natomiast domyślne wartości w formularzu zostały wypełnione na podstawie ostatniego złożonego przez Państwa dezyderatu.',
+    'Attention' => 'Uwaga!',
 ];

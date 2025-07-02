@@ -9,7 +9,18 @@
         successMessage: '',
     }"
     x-init="
-        new TomSelect('#consultation-weekday', { create: false, searchField: [], controlInput: null });
+        const weekdaySelect = new TomSelect('#consultation-weekday', {
+            create: false,
+            searchField: [],
+            controlInput: null,
+            onChange(value) {
+                selectedWeekday = value;
+                $wire.consultationWeekday = value;
+            },
+        });
+        
+        $wire.consultationWeekday = '{{ $consultationWeekday }}';
+        
         new TomSelect('#consultation-week-type', { create: false, searchField: [], controlInput: null });
         
         $wire.on('consultationSaved', (data) => {
@@ -132,17 +143,18 @@
                 >
                     <flux:input
                         x-data
-                        x-init="flatpickr($refs.input, {
+                        x-init="const fp = flatpickr($refs.input, {
                             enableTime: true,
                             noCalendar: true,
                             dateFormat: 'H:i',
                             time_24hr: true,
                             minTime: '7:30',
                             maxTime: '19:30',
-                            onChange: function(selectedDates, dateStr, instance) {
+                            onChange(selectedDates, dateStr) {
                                 $wire.consultationStartTime = dateStr;
                             }
-                        });"
+                        });
+                        $watch('$wire.consultationStartTime', v => { if (!v) fp.clear(); });"
                         x-ref="input"
                         id="consultation-start-time"
                         class="w-full"
@@ -171,17 +183,18 @@
                 >
                     <flux:input
                         x-data
-                        x-init="flatpickr($refs.input, {
+                        x-init="const fp = flatpickr($refs.input, {
                             enableTime: true,
                             noCalendar: true,
                             dateFormat: 'H:i',
                             time_24hr: true,
                             minTime: '8:30',
                             maxTime: '20:30',
-                            onChange: function(selectedDates, dateStr, instance) {
+                            onChange(selectedDates, dateStr) {
                                 $wire.consultationEndTime = dateStr;
                             }
-                        });"
+                        });
+                        $watch('$wire.consultationEndTime', v => { if (!v) fp.clear(); });"
                         x-ref="input"
                         id="consultation-end-time"
                         class="w-full"

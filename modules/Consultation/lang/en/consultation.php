@@ -186,4 +186,7 @@ return [
     'No current semester found.' => 'No current semester found.',
     'timeslot_taken' => 'The selected time slot is already taken.',
     'end_time_after_start_time' => 'The consultation end time must be after the start time.',
+
+    'in_session_winter' => 'winter',
+    'in_session_summer' => 'summer',
 ];

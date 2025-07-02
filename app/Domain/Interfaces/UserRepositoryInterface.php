@@ -25,4 +25,6 @@ interface UserRepositoryInterface
     public function update(UpdateUserDto $userData): bool;
 
     public function delete(int $userId): bool;
+
+    public function findByEmail(string $email): ?User;
 }

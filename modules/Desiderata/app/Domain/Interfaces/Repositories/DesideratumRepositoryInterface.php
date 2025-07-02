@@ -17,9 +17,11 @@ interface DesideratumRepositoryInterface
 
     public function updateOrCreate(UpdateOrCreateDesideratumDto $dto, User $user, int $semesterId): Desideratum;
 
-    public function getLastUpdateDate(int $userId): ?string;
+    public function getLastUpdateDate(int $userId, int $semesterId): ?string;
 
     public function getAllDesiderataForPdfExport(int $semesterId): Collection;
 
     public function getScientificWorkersWithoutDesiderata(int $semesterId): Collection;
+
+    public function findLatestByScientificWorkerBeforeSemester(int $workerId, int $currentSemesterId): ?UpdateOrCreateDesideratumDto;
 }

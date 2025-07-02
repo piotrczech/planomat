@@ -27,8 +27,28 @@
             </div>
         </div>
 
-        {{-- Alert o istniejących dezyderatach --}}
-        @if($hasExistingDesiderata ?? false)
+        @if(!($hasExistingDesiderata ?? false) && ($hasDefaultPrevDesiderata ?? false))
+            <div
+                x-data="{ showNoDesideratumAlert: true }"
+                x-show="showNoDesideratumAlert"
+                x-collapse
+            >
+                <div x-show="showNoDesideratumAlert" x-transition>
+                    <flux:callout
+                        variant="warning"
+                        icon="exclamation-triangle"
+                        class="mb-6"
+                    >
+                        <flux:callout.heading>{{ __('desiderata::desiderata.Attention') }}</flux:callout.heading>
+                        <flux:callout.text>{{ __('desiderata::desiderata.You do not have desiderata for the current semester yet. We have pre-filled the form with data from your last submission – please verify and save.') }}</flux:callout.text>
+
+                        <x-slot name="controls">
+                            <flux:button icon="x-mark" variant="ghost" x-on:click="showNoDesideratumAlert = false" />
+                        </x-slot>
+                    </flux:callout>
+                </div>
+            </div>
+        @elseif($hasExistingDesiderata ?? false)
             <div
                 x-data="{ showExistingDesideratumAlert: true }"
                 x-show="showExistingDesideratumAlert"
@@ -54,7 +74,10 @@
         <div class="flex items-start justify-between mb-6">
             <div class="mr-6">
                 <flux:heading class="mb-2 !text-3xl">
-                    {{ __('desiderata::desiderata.Desiderata Form') }}
+                    {{ __('desiderata::desiderata.Desiderata Form Semester', [
+                        'semester' => strtolower($currentSemester->season->label()),
+                        'academicYear' => $currentSemester->academic_year
+                    ]) }}
                 </flux:heading>
 
                 <flux:text>

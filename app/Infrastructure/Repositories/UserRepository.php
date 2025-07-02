@@ -79,4 +79,9 @@ final class UserRepository implements UserRepositoryInterface
 
         return $user->delete();
     }
+
+    public function findByEmail(string $email): ?User
+    {
+        return User::where('email', $email)->first();
+    }
 }

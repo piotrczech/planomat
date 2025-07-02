@@ -6,6 +6,7 @@ return [
     'My Desiderata' => 'My Desiderata',
     'Stage: Teaching preferences' => 'Stage: Teaching preferences',
     'Desiderata Form' => 'Desiderata Form',
+    'Desiderata Form Semester' => 'Desiderata Form for the :semester semester :academicYear',
     'My Desiderata Description' => 'Desiderata is a list of your teaching preferences for the upcoming semester. Please complete your preferences for courses, hours, and additional factors. The form is divided into two stages: the first concerns teaching preferences, the second concerns availability.',
     'Dezyderaty' => 'Desiderata',
     'Please complete your teaching preferences for the upcoming semester' => 'Please complete your teaching preferences for the upcoming semester',

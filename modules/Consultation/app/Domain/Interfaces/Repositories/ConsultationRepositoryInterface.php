@@ -41,11 +41,11 @@ interface ConsultationRepositoryInterface
 
     public function deletePartTimeConsultation(int $consultationId): bool;
 
-    public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId): ?string;
+    public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId, int $semesterId): ?string;
 
-    public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId): ?string;
+    public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId, int $semesterId): ?string;
 
-    public function getLastUpdateDateForPartTimeConsultation(int $scientificWorkerId): ?string;
+    public function getLastUpdateDateForPartTimeConsultation(int $scientificWorkerId, int $semesterId): ?string;
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string;
 

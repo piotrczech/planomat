@@ -4,13 +4,30 @@
             {{ __('dashboard.Quick Actions') }}
         </flux:heading>
 
-        @php $selectId = 'semester-select-' . uniqid(); @endphp
-        <div class="w-full sm:w-auto sm:min-w-[280px]" wire:ignore>
-            <select 
-                id="{{ $selectId }}" 
-                placeholder="{{ __('admin_settings.Select a semester') }}"
-                class="w-full"
-            ></select>
+        <div
+            class="w-full sm:w-auto sm:min-w-[280px]"
+            wire:ignore
+            x-data="{
+                semesters: {{ $this->semestersForTomSelect }},
+                initialSelectedId: '{{ $selectedSemesterId }}',
+                init() {
+                    const select = new TomSelect(this.$refs.semesterSelect, {
+                        options: this.semesters,
+                        valueField: 'id',
+                        labelField: 'name',
+                        searchField: 'name',
+                        placeholder: '{{ __('admin_settings.Select a semester') }}',
+                        onChange: (value) => {
+                            $wire.set('selectedSemesterId', value);
+                        }
+                    });
+                    if (this.initialSelectedId) {
+                        select.setValue(this.initialSelectedId, true);
+                    }
+                }
+            }"
+        >
+            <select x-ref="semesterSelect" class="w-full"></select>
         </div>
     </div>
 
@@ -32,78 +49,4 @@
             <span class="text-sm font-semibold text-center text-neutral-700 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">{{ __('dashboard.Go to Settings') }}</span>
         </a>
     </div>
-</div>
-
-@script
-<script>
-document.addEventListener('livewire:initialized', () => {
-    const semesters = {!! $this->semestersForTomSelect !!};
-    const selectId = '{{ $selectId }}';
-    const selectElement = document.getElementById(selectId);
-    const initialValue = @this.selectedSemesterId || (semesters.length > 0 ? semesters[0].id : null);
-    
-    if (!window.TomSelect || !selectElement) {
-        return;
-    }
-
-    if (selectElement.tomselect) {
-        if (initialValue) {
-            selectElement.tomselect.setValue(initialValue, true);
-            selectElement.tomselect.sync();
-            selectElement.tomselect.refreshItems();
-        }
-        return;
-    }
-    
-    try {
-        const select = new TomSelect(selectElement, {
-            options: semesters.map(s => ({ value: s.id, ...s })),
-            create: false,
-            valueField: 'id',
-            labelField: 'name',
-            searchField: ['name'],
-            placeholder: '{{ __('admin_settings.Select a semester') }}',
-            allowEmptyOption: false,
-            sortField: {
-                field: 'id',
-                direction: 'desc'
-            },
-            render: {
-                option: function(data, escape) {
-                    return `
-                        <div class="flex flex-col py-2 px-3 rounded-md mx-1 cursor-pointer transition-all duration-200">
-                            <span class="font-semibold">${escape(data.name)}</span>
-                            <span class="text-xs opacity-70">${escape(data.dates)}</span>
-                        </div>
-                    `;
-                },
-                item: function(data, escape) {
-                    return `<div class="font-medium">${escape(data.name)}</div>`;
-                }
-            }
-        });
-
-        if (initialValue) {
-            select.setValue(initialValue, true);
-            select.sync();
-            select.refreshItems();
-        }
-
-        select.on('change', (value) => {
-            @this.set('selectedSemesterId', parseInt(value));
-        });
-
-        Livewire.on('semester-changed', (event) => {
-            if (event.semesterId && select.getValue() != event.semesterId) {
-                select.setValue(event.semesterId, true);
-                select.sync();
-                select.refreshItems();
-            }
-        });
-        
-    } catch (error) {
-        console.error('TomSelect initialization failed:', error);
-    }
-});
-</script>
-@endscript 
+</div> 

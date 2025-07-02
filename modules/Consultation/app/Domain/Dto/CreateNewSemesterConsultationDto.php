@@ -13,7 +13,7 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
 use Illuminate\Support\Facades\Auth;
-use App\Infrastructure\Models\Semester;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
 
 final class CreateNewSemesterConsultationDto extends Data
@@ -56,7 +56,14 @@ final class CreateNewSemesterConsultationDto extends Data
                     }
 
                     $userId = Auth::id();
-                    $semesterId = Semester::getCurrentSemester()->id;
+                    /** @var \App\Infrastructure\Models\Semester|null $semester */
+                    $semester = app(GetActiveConsultationSemesterUseCase::class)->execute();
+
+                    if (!$semester) {
+                        return;
+                    }
+
+                    $semesterId = $semester->id;
 
                     $query = SemesterConsultation::where('scientific_worker_id', $userId)
                         ->where('semester_id', $semesterId)

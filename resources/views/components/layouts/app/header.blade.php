@@ -30,23 +30,23 @@
 
                 <flux:navbar.item 
                     icon="ticket" 
-                    :href="$currentSemester ? route('desiderata.scientific-worker.my-desiderata') : null"
-                    :class="!$currentSemester ? 'opacity-50 cursor-not-allowed flex' : ''"
-                    :title="!$currentSemester ? __('app.functionality_disabled_no_semester') : null"
+                    :href="$activeDesiderataSemester ? route('desiderata.scientific-worker.my-desiderata') : null"
+                    :class="!$activeDesiderataSemester ? 'opacity-50 cursor-not-allowed flex' : ''"
+                    :title="!$activeDesiderataSemester ? __('app.functionality_disabled_no_semester') : null"
                     :current="request()->routeIs('desiderata.scientific-worker.my-desiderata')"
                     wire:navigate
                 >
                     {{ __('app.My Desiderata') }}
-                    @if(!$currentSemester)
+                    @if(!$activeDesiderataSemester)
                         <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500 inline-flex" />
                     @endif
                 </flux:navbar.item>
 
                 <flux:navbar.item
                     icon="megaphone"
-                    :href="$currentSemester ? route('consultations.scientific-worker.my-semester-consultation') : null"
-                    :class="!$currentSemester ? 'opacity-50 cursor-not-allowed flex' : ''"
-                    :title="!$currentSemester ? __('app.functionality_disabled_no_semester') : null"
+                    :href="$activeConsultationSemester ? route('consultations.scientific-worker.my-semester-consultation') : null"
+                    :class="!$activeConsultationSemester ? 'opacity-50 cursor-not-allowed flex' : ''"
+                    :title="!$activeConsultationSemester ? __('app.functionality_disabled_no_semester') : null"
                     :current="
                         request()->routeIs('consultations.scientific-worker.my-semester-consultation')
                         || request()->routeIs('consultations.scientific-worker.my-session-consultation')
@@ -55,7 +55,7 @@
                     wire:navigate
                 >
                     {{ __('app.My Consultation') }}
-                    @if(!$currentSemester)
+                    @if(!$activeConsultationSemester)
                         <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500 inline-flex" />
                     @endif
                 </flux:navbar.item>
@@ -136,20 +136,20 @@
                     
                     <flux:navlist.item 
                         icon="ticket"
-                        :href="$currentSemester ? route('desiderata.scientific-worker.my-desiderata') : null"
-                        :class="!$currentSemester ? 'opacity-50 cursor-not-allowed' : ''"
+                        :href="$activeDesiderataSemester ? route('desiderata.scientific-worker.my-desiderata') : null"
+                        :class="!$activeDesiderataSemester ? 'opacity-50 cursor-not-allowed' : ''"
                         :current="request()->routeIs('desiderata.scientific-worker.my-desiderata')"
                     >
                         {{ __('app.My Desiderata') }}
-                        @if(!$currentSemester)
+                        @if(!$activeDesiderataSemester)
                             <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500" />
                         @endif
                     </flux:navlist.item>
 
                     <flux:navlist.item
                         icon="megaphone"
-                        :href="$currentSemester ? route('consultations.scientific-worker.my-semester-consultation') : null"
-                        :class="!$currentSemester ? 'opacity-50 cursor-not-allowed' : ''"
+                        :href="$activeConsultationSemester ? route('consultations.scientific-worker.my-semester-consultation') : null"
+                        :class="!$activeConsultationSemester ? 'opacity-50 cursor-not-allowed' : ''"
                         :current="
                             request()->routeIs('consultations.scientific-worker.my-semester-consultation')
                             || request()->routeIs('consultations.scientific-worker.my-session-consultation')
@@ -158,7 +158,7 @@
                         wire:navigate
                     >
                         {{ __('app.My Consultation') }}
-                        @if(!$currentSemester)
+                        @if(!$activeConsultationSemester)
                             <flux:icon name="lock-closed" variant="mini" class="ml-1 text-red-500" />
                         @endif
                     </flux:navlist.item>

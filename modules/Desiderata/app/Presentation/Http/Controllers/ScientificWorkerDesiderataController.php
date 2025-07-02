@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Http\Controllers;
 
-use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use App\Presentation\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
@@ -15,9 +15,9 @@ class ScientificWorkerDesiderataController extends Controller
     public function index(
         DesideratumRepositoryInterface $repository,
         GetLastUpdateDateForDesideratumUseCase $getLastUpdatedDate,
-        GetCurrentSemesterUseCase $getCurrentSemesterUseCase,
+        GetActiveDesiderataSemesterUseCase $getActiveDesideratumSemesterUseCase,
     ) {
-        $currentSemester = $getCurrentSemesterUseCase->execute();
+        $currentSemester = $getActiveDesideratumSemesterUseCase->execute();
 
         if (!$currentSemester) {
             abort(404, 'No active semester found.');
@@ -28,12 +28,25 @@ class ScientificWorkerDesiderataController extends Controller
             $currentSemester->id,
         );
 
+        $hasExistingDesiderata = $existingDesideratum !== null;
+
+        $defaultPreviousDesideratum = null;
+
+        if (!$hasExistingDesiderata) {
+            $defaultPreviousDesideratum = $repository->findLatestByScientificWorkerBeforeSemester(
+                Auth::id(),
+                $currentSemester->id,
+            );
+        }
+
         $lastUpdateDate = $getLastUpdatedDate->execute();
 
         return view('desiderata::desideratum.scientific-worker.my-desiderata-view', [
             'currentSemesterId' => $currentSemester->id,
+            'currentSemester' => $currentSemester,
             'existingDesideratum' => $existingDesideratum,
-            'hasExistingDesiderata' => $existingDesideratum !== null,
+            'hasExistingDesiderata' => $hasExistingDesiderata,
+            'hasDefaultPrevDesiderata' => $defaultPreviousDesideratum !== null,
             'lastUpdateDate' => $lastUpdateDate,
         ]);
     }

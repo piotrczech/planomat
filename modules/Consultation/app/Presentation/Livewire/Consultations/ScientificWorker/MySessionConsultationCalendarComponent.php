@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
-use App\Application\UseCases\Semester\GetCurrentSemesterDatesUseCase;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Carbon\Carbon;
 use Livewire\Component;
 use Exception;
@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetSessionConsultationsUseCase;
 use Livewire\Attributes\On;
 use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSessionConsultationUseCase;
+use App\Domain\Enums\SemesterSeasonEnum;
 
 class MySessionConsultationCalendarComponent extends Component
 {
@@ -33,14 +34,29 @@ class MySessionConsultationCalendarComponent extends Component
 
     public bool $calendarEnabled = false;
 
+    public string $title = '';
+
     public function mount(): void
     {
-        $semesterDatesUseCase = App::make(GetCurrentSemesterDatesUseCase::class);
-        $dates = $semesterDatesUseCase->execute();
+        $semesterDatesUseCase = App::make(GetActiveConsultationSemesterUseCase::class);
+        $semester = $semesterDatesUseCase->execute();
 
-        if ($dates && isset($dates['session_start_date'], $dates['end_date'])) {
-            $this->sessionStart = Carbon::parse($dates['session_start_date']);
-            $this->sessionEnd = Carbon::parse($dates['end_date']);
+        if ($semester) {
+            $seasonName = $semester->season === SemesterSeasonEnum::WINTER
+                ? __('consultation::consultation.in_session_winter')
+                : __('consultation::consultation.in_session_summer');
+
+            $this->title = __('consultation::consultation.my_session_consultations_title', [
+                'season' => $seasonName,
+                'academic_year' => $semester->academic_year,
+            ]);
+        } else {
+            $this->title = __('consultation::consultation.My Session Consultation');
+        }
+
+        if ($semester && isset($semester->session_start_date, $semester->end_date)) {
+            $this->sessionStart = Carbon::parse($semester->session_start_date);
+            $this->sessionEnd = Carbon::parse($semester->end_date);
             $this->calendarEnabled = true;
         } else {
             $this->errorMessage = __('consultation::consultation.No current semester dates found. Calendar functionality may be limited.');
@@ -51,7 +67,16 @@ class MySessionConsultationCalendarComponent extends Component
 
         if ($this->calendarEnabled) {
             $this->generateAvailableMonths();
-            $this->currentMonth = $this->sessionStart->copy()->startOfMonth();
+
+            $now = Carbon::today();
+
+            if ($now->between($this->sessionStart, $this->sessionEnd)) {
+                $this->currentMonth = $now->copy()->startOfMonth();
+            } elseif ($now->lt($this->sessionStart)) {
+                $this->currentMonth = $this->sessionStart->copy()->startOfMonth();
+            } else {
+                $this->currentMonth = $this->sessionEnd->copy()->startOfMonth();
+            }
         } else {
             $this->currentMonth = Carbon::now()->startOfMonth();
         }

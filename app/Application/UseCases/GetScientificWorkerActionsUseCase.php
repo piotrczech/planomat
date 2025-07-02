@@ -4,51 +4,63 @@ declare(strict_types=1);
 
 namespace App\Application\UseCases;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use App\Domain\Dto\ScientificWorkerActionStatusDto;
-use App\Domain\Interfaces\SemesterRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
-use Carbon\Carbon;
 
 final class GetScientificWorkerActionsUseCase
 {
     public function __construct(
-        private readonly SemesterRepositoryInterface $semesterRepository,
         private readonly DesideratumRepositoryInterface $desideratumRepository,
         private readonly ConsultationRepositoryInterface $consultationRepository,
+        private readonly GetActiveDesiderataSemesterUseCase $getActiveDesiderataSemesterUseCase,
+        private readonly GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase,
     ) {
     }
 
     public function execute(): ScientificWorkerActionStatusDto
     {
         $user = Auth::user();
-        $currentSemester = $this->semesterRepository->findCurrentSemester();
 
-        if (!$user || !$currentSemester) {
+        if (!$user) {
             return new ScientificWorkerActionStatusDto;
         }
 
         $now = Carbon::now();
+        $desiderataSemester = $this->getActiveDesiderataSemesterUseCase->execute();
+        $consultationSemester = $this->getActiveConsultationSemesterUseCase->execute();
 
-        // Desiderata Logic
-        $hasDesiderata = $this->desideratumRepository->getDesideratumForUserAndSemester($user->id, $currentSemester->id) !== null;
-        $desiderataDueDate = $currentSemester->end_date;
-        $showDesiderata = !$hasDesiderata && $now->isBefore($desiderataDueDate);
-        $desiderataDueDays = $now->diffInDays($desiderataDueDate, false);
+        $showDesiderata = false;
+        $desiderataDueDays = 0;
 
-        // Semester Consultations Logic
-        $hasSemesterConsultations = !empty($this->consultationRepository->getSemesterConsultations($user->id, $currentSemester->id));
-        $semesterConsultationsDueDate = $currentSemester->session_start_date;
-        $showSemesterConsultations = !$hasSemesterConsultations && $now->isBefore($semesterConsultationsDueDate);
-        $semesterActiveForDays = $currentSemester->semester_start_date->diffInDays($now);
+        if ($desiderataSemester) {
+            $hasDesiderata = $this->desideratumRepository->getDesideratumForUserAndSemester($user->id, $desiderataSemester->id) !== null;
+            $desiderataDueDate = $desiderataSemester->end_date;
+            $showDesiderata = !$hasDesiderata && $now->isBefore($desiderataDueDate);
+            $desiderataDueDays = $now->diffInDays($desiderataDueDate, false);
+        }
 
-        // Session Consultations Logic
-        $hasSessionConsultations = !empty($this->consultationRepository->getSessionConsultations($user->id, $currentSemester->id));
-        $sessionConsultationsStartDate = $currentSemester->session_start_date->copy()->subWeeks(2);
-        $sessionConsultationsEndDate = $currentSemester->end_date;
-        $showSessionConsultations = !$hasSessionConsultations && $now->between($sessionConsultationsStartDate, $sessionConsultationsEndDate);
-        $sessionConsultationsDueDays = $now->diffInDays($sessionConsultationsEndDate, false);
+        $showSemesterConsultations = false;
+        $semesterActiveForDays = 0;
+        $showSessionConsultations = false;
+        $sessionConsultationsDueDays = 0;
+
+        if ($consultationSemester) {
+            $hasSemesterConsultations = !empty($this->consultationRepository->getSemesterConsultations($user->id, $consultationSemester->id));
+            $semesterConsultationsDueDate = $consultationSemester->session_start_date;
+            $showSemesterConsultations = !$hasSemesterConsultations && $now->isBefore($semesterConsultationsDueDate);
+            $semesterActiveForDays = $consultationSemester->semester_start_date->diffInDays($now);
+
+            $hasSessionConsultations = !empty($this->consultationRepository->getSessionConsultations($user->id, $consultationSemester->id));
+            $sessionConsultationsStartDate = $consultationSemester->session_start_date->copy()->subWeeks(2);
+            $sessionConsultationsEndDate = $consultationSemester->end_date;
+            $showSessionConsultations = !$hasSessionConsultations && $now->between($sessionConsultationsStartDate, $sessionConsultationsEndDate);
+            $sessionConsultationsDueDays = $now->diffInDays($sessionConsultationsEndDate, false);
+        }
 
         $anyActionsAvailable = $showDesiderata || $showSemesterConsultations || $showSessionConsultations;
 

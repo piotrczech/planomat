@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Domain\Dto;
 
-use App\Infrastructure\Models\Semester;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Modules\Consultation\Infrastructure\Models\PartTimeConsultation;
@@ -108,7 +108,8 @@ final class CreateNewPartTimeConsultationDto extends Data
                 function ($attribute, $value, $fail): void {
                     $consultationDate = Carbon::parse($value);
 
-                    $semester = Semester::getCurrentSemester();
+                    /** @var \App\Infrastructure\Models\Semester|null $semester */
+                    $semester = app(GetActiveConsultationSemesterUseCase::class)->execute();
 
                     if (!$semester) {
                         return;

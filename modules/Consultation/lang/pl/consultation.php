@@ -12,7 +12,7 @@ return [
     'Please manage your consultation schedule for students' => 'Zarządzaj swoim harmonogramem konsultacji dla studentów',
     'Last updated' => 'Ostatnia aktualizacja',
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
-    'Total consultation time in your schedule' => 'Łączny czas konsultacji w harmonogramie',
+    'Total consultation time in your schedule' => 'Łącznie konsultacji w harmonogramie',
     'Total consultation time' => 'Łączny czas konsultacji',
     'hours' => 'godz.',
     'minutes' => 'min',
@@ -174,4 +174,13 @@ return [
     'No current semester found.' => 'Nie znaleziono bieżącego semestru.',
     'timeslot_taken' => 'Wybrany termin jest już zajęty.',
     'end_time_after_start_time' => 'Godzina zakończenia konsultacji musi być późniejsza niż godzina rozpoczęcia.',
+
+    'my_semester_consultations_title' => 'Moje konsultacje w semestrze :season :academic_year',
+    'my_session_consultations_title' => 'Moje konsultacje w sesji :season :academic_year',
+    'my_part_time_consultations_title' => 'Moje konsultacje zaoczne w semestrze :season :academic_year',
+    'in_semester_winter' => 'zimowym',
+    'in_semester_summer' => 'letnim',
+    'in_session_winter' => 'zimowej',
+    'in_session_summer' => 'letniej',
+    'no_semester_or_dates_configured' => 'Aktywny semestr nie został odnaleziony lub nie ma poprawnie skonfigurowanych dat.',
 ];

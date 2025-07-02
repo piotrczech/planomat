@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,6 +12,7 @@ final class GetLastUpdateDateForSemesterConsultationUseCase
 {
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
+        private readonly GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase,
     ) {
     }
 
@@ -22,8 +24,15 @@ final class GetLastUpdateDateForSemesterConsultationUseCase
             return null;
         }
 
+        $activeSemester = $this->getActiveConsultationSemesterUseCase->execute();
+
+        if (!$activeSemester) {
+            return null;
+        }
+
         return $this->consultationRepository->getLastUpdateDateForSemesterConsultation(
             $scientificWorkerId,
+            $activeSemester->id,
         );
     }
 }

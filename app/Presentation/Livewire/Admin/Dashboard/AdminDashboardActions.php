@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Presentation\Livewire\Admin\Dashboard;
 
 use App\Application\UseCases\Semester\GetAllSemestersUseCase;
-use App\Application\UseCases\Semester\SetActiveSemesterUseCase;
-use App\Domain\Interfaces\SemesterRepositoryInterface;
 use Livewire\Component;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
+use Illuminate\Support\Str;
 
 class AdminDashboardActions extends Component
 {
@@ -19,7 +18,6 @@ class AdminDashboardActions extends Component
 
     public function mount(
         GetAllSemestersUseCase $getAllSemestersUseCase,
-        SemesterRepositoryInterface $semesterRepository,
     ): void {
         $this->semesters = $getAllSemestersUseCase->execute();
 
@@ -29,16 +27,8 @@ class AdminDashboardActions extends Component
             return;
         }
 
-        $activeSemester = $semesterRepository->getActiveSemester();
-
-        if ($activeSemester && $this->semesters->contains('id', $activeSemester->id)) {
-            $this->selectedSemesterId = $activeSemester->id;
-        } else {
-            $firstSemester = $this->semesters->first();
-            $this->selectedSemesterId = $firstSemester->id;
-
-            $setActiveSemesterUseCase = app(SetActiveSemesterUseCase::class);
-            $setActiveSemesterUseCase->execute($firstSemester->id);
+        if ($this->semesters->isNotEmpty()) {
+            $this->selectedSemesterId = $this->semesters->first()->id;
         }
     }
 
@@ -49,29 +39,14 @@ class AdminDashboardActions extends Component
             return [
                 'id' => $semester->id,
                 'name' => sprintf(
-                    '%d/%d (%s)',
-                    $semester->start_year,
-                    $semester->start_year + 1,
+                    '%s %d/%s',
                     $semester->season->label(),
+                    $semester->start_year,
+                    Str::of($semester->start_year + 1)->substr(-2),
                 ),
                 'dates' => $semester->semester_start_date->format('d.m.Y') . ' - ' . $semester->end_date->format('d.m.Y'),
             ];
         })->toJson();
-    }
-
-    public function updatedSelectedSemesterId($value): void
-    {
-        if (!$value) {
-            return;
-        }
-
-        // Sprawdź czy semestr o tym ID istnieje w kolekcji
-        if (!$this->semesters->contains('id', (int) $value)) {
-            return;
-        }
-
-        $setActiveSemesterUseCase = app(SetActiveSemesterUseCase::class);
-        $setActiveSemesterUseCase->execute((int) $value);
     }
 
     public function openDesiderataExportModal(): void

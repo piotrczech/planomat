@@ -15,9 +15,9 @@ use Exception;
 
 class NewSemesterConsultationComponent extends Component
 {
-    public string $consultationWeekday;
+    public string $consultationWeekday = WeekdayEnum::MONDAY->value;
 
-    public string $dailyConsultationWeekType;
+    public string $dailyConsultationWeekType = WeekTypeEnum::ALL->value;
 
     public string $consultationStartTime;
 

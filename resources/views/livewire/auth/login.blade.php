@@ -82,7 +82,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     <form wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
         <flux:input wire:model="email" :label="__('app.Email address')" type="email" required autofocus autocomplete="email"
-            placeholder="email@example.com" />
+            placeholder="email@pwr.edu.pl" />
 
         <!-- Password -->
         <div class="relative">
@@ -97,4 +97,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
             <flux:button variant="primary" type="submit" class="w-full">{{ __('app.Log in') }}</flux:button>
         </div>
     </form>
+
+    <a href="{{ route('usos.login') }}"
+       class="inline-flex items-center justify-center gap-2 w-full rounded-md border border-neutral-300 dark:border-neutral-600 px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-200 shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <flux:icon name="key" class="h-5 w-5" />
+        {{ __('app.Log in via USOS') }}
+    </a>
 </div>

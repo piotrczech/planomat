@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Middleware;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use App\Domain\Enums\RoleEnum;
-use App\Infrastructure\Models\Semester;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class RequireCurrentSemesterMiddleware
 {
+    public function __construct(
+        private readonly GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase,
+        private readonly GetActiveDesiderataSemesterUseCase $getActiveDesiderataSemesterUseCase,
+    ) {
+    }
+
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
@@ -24,9 +31,10 @@ final class RequireCurrentSemesterMiddleware
             return $next($request);
         }
 
-        $currentSemester = Semester::getCurrentSemester();
+        $consultationSemester = $this->getActiveConsultationSemesterUseCase->execute();
+        $desiderataSemester = $this->getActiveDesiderataSemesterUseCase->execute();
 
-        if (!$currentSemester) {
+        if (!$consultationSemester || !$desiderataSemester) {
             if ($request->expectsJson()) {
                 abort(403, __('auth.no_current_semester_functionality_unavailable'));
             }

@@ -52,10 +52,10 @@
             class="mb-0"
             id="form-heading"
         >
-            {{ __('consultation::consultation.My semester consultation') }}
+            {{ $title }}
         </flux:heading>
 
-        <div class="flex justify-end mb-2 md:mb-0">
+        <div class="flex justify-end mb-2 ml-2 md:mb-0">
             <flux:badge size="sm" color="indigo" class="text-right">
                 {{ __('consultation::consultation.Total consultation time in your schedule') }}:
                 {{ $consultationSummaryTime }}
@@ -233,7 +233,8 @@
                                         }
                                     }
 
-                                    $column = (int)$weekday + 2;
+                                    $weekdayIndex = array_search($weekday, \App\Domain\Enums\WeekdayEnum::values(includeWeekend: false));
+                                    $column = ($weekdayIndex !== false ? $weekdayIndex : 0) + 2;
                                 @endphp
 
                                 @foreach ($groups as $group)

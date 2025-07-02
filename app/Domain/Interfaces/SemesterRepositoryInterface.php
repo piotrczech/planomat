@@ -27,10 +27,4 @@ interface SemesterRepositoryInterface
     public function delete(int $id): bool;
 
     public function findByYearAndSeason(int $startYear, string $season): ?Semester;
-
-    public function findCurrentSemester(): ?Semester;
-
-    public function setActiveSemester(int $id): bool;
-
-    public function getActiveSemester(): ?Semester;
 }

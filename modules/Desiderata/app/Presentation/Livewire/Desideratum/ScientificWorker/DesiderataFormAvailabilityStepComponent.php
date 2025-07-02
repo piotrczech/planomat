@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Presentation\Livewire\Desideratum\ScientificWorker;
 
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
+use App\Application\UseCases\TimeSlot\GetAllTimeSlotsUseCase;
 use App\Domain\Enums\WeekdayEnum;
-use App\Infrastructure\Models\Semester;
 use Illuminate\Support\Facades\Auth;
 use Modules\Desiderata\Application\UseCases\ScientificWorker\UpdateOrCreateDesideratumUseCase;
 use Modules\Desiderata\Domain\Dto\DesiderataFormAvailabilityDto;
@@ -65,16 +66,12 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
 
     private function initTimeSlots(): void
     {
-        // TODO
-        $timeSlots = [
-            ['id' => 1, 'range' => '7:30-9:00'],
-            ['id' => 2, 'range' => '9:15-11:00'],
-            ['id' => 3, 'range' => '11:15-13:00'],
-            ['id' => 4, 'range' => '13:15-15:00'],
-            ['id' => 5, 'range' => '15:15-16:55'],
-            ['id' => 6, 'range' => '17:05-18:45'],
-            ['id' => 7, 'range' => '18:55-20:35'],
-        ];
+        $timeSlots = app(GetAllTimeSlotsUseCase::class)
+            ->execute()
+            ->map(fn ($slot) => [
+                'id' => $slot->id,
+                'range' => $slot->formatted_time_range,
+            ]);
 
         foreach (WeekdayEnum::cases() as $day) {
             $this->unavailableTimeSlots[$day->value] = [];
@@ -92,9 +89,16 @@ class DesiderataFormAvailabilityStepComponent extends StepComponent
     private function loadExistingDataFromDatabase(DesideratumRepositoryInterface $repository): void
     {
         $currentUserId = Auth::id();
-        $semesterId = Semester::getCurrentSemester()->id;
+        $semesterId = app(GetActiveDesiderataSemesterUseCase::class)->execute()->id;
 
         $existingDesideratum = $repository->findByScientificWorkerAndSemester($currentUserId, $semesterId);
+
+        if (!$existingDesideratum) {
+            $existingDesideratum = $repository->findLatestByScientificWorkerBeforeSemester(
+                $currentUserId,
+                $semesterId,
+            );
+        }
 
         if ($existingDesideratum) {
             $this->additionalNotes = $existingDesideratum->additionalNotes ?? '';

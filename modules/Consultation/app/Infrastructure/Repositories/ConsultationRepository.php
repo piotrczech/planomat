@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Infrastructure\Repositories;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use App\Domain\Enums\RoleEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,19 +18,30 @@ use Modules\Consultation\Infrastructure\Models\PartTimeConsultation;
 use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
 use Modules\Consultation\Infrastructure\Models\SessionConsultation;
 use App\Domain\Enums\WeekdayEnum;
-use App\Infrastructure\Models\Semester;
 use App\Infrastructure\Models\User;
 
 final class ConsultationRepository implements ConsultationRepositoryInterface
 {
+    private GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase;
+
+    public function __construct(GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase)
+    {
+        $this->getActiveConsultationSemesterUseCase = $getActiveConsultationSemesterUseCase;
+    }
+
     public function createNewSemesterConsultation(CreateNewSemesterConsultationDto $dto): int
     {
         $scientificWorkerId = Auth::id();
-        $currentSemesterId = Semester::getCurrentSemester()->id;
+        $currentSemester = $this->getActiveConsultationSemesterUseCase->execute();
+
+        if (!$currentSemester) {
+            // Or throw an exception
+            return 0;
+        }
 
         $consultation = SemesterConsultation::create([
             'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => $currentSemesterId,
+            'semester_id' => $currentSemester->id,
             'day' => $dto->consultationWeekday,
             'week_type' => $dto->dailyConsultationWeekType,
             'start_time' => $dto->consultationStartTime,
@@ -75,11 +87,15 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
     public function createNewSessionConsultation(CreateNewSessionConsultationDto $dto): int
     {
         $scientificWorkerId = Auth::id();
-        $currentSemesterId = Semester::getCurrentSemester()->id;
+        $currentSemester = $this->getActiveConsultationSemesterUseCase->execute();
+
+        if (!$currentSemester) {
+            return 0;
+        }
 
         $consultation = SessionConsultation::create([
             'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => $currentSemesterId,
+            'semester_id' => $currentSemester->id,
             'consultation_date' => $dto->consultationDate,
             'start_time' => $dto->consultationStartTime,
             'end_time' => $dto->consultationEndTime,
@@ -125,11 +141,15 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
     public function createNewPartTimeConsultation(CreateNewPartTimeConsultationDto $dto): int
     {
         $scientificWorkerId = Auth::id();
-        $currentSemesterId = Semester::getCurrentSemester()->id;
+        $currentSemester = $this->getActiveConsultationSemesterUseCase->execute();
+
+        if (!$currentSemester) {
+            return 0;
+        }
 
         $consultation = PartTimeConsultation::create([
             'scientific_worker_id' => $scientificWorkerId,
-            'semester_id' => $currentSemesterId,
+            'semester_id' => $currentSemester->id,
             'consultation_date' => $dto->consultationDate,
             'start_time' => $dto->consultationStartTime,
             'end_time' => $dto->consultationEndTime,
@@ -172,27 +192,30 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return (bool) $consultation->delete();
     }
 
-    public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId): ?string
+    public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId, int $semesterId): ?string
     {
         $latestConsultation = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
+            ->where('semester_id', $semesterId)
             ->orderByDesc('updated_at')
             ->first();
 
         return $latestConsultation?->updated_at?->toDateString();
     }
 
-    public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId): ?string
+    public function getLastUpdateDateForSessionConsultation(int $scientificWorkerId, int $semesterId): ?string
     {
         $latestConsultation = SessionConsultation::where('scientific_worker_id', $scientificWorkerId)
+            ->where('semester_id', $semesterId)
             ->orderByDesc('updated_at')
             ->first();
 
         return $latestConsultation?->updated_at?->toDateString();
     }
 
-    public function getLastUpdateDateForPartTimeConsultation(int $scientificWorkerId): ?string
+    public function getLastUpdateDateForPartTimeConsultation(int $scientificWorkerId, int $semesterId): ?string
     {
         $latestConsultation = PartTimeConsultation::where('scientific_worker_id', $scientificWorkerId)
+            ->where('semester_id', $semesterId)
             ->orderByDesc('updated_at')
             ->first();
 
@@ -201,16 +224,22 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string
     {
-        $consultations = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
-            ->whereNotIn('day', [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])
-            ->get();
+        $activeSemester = $this->getActiveConsultationSemesterUseCase->execute();
+
+        if (!$activeSemester) {
+            return null;
+        }
 
         $totalDuration = 0;
 
-        foreach ($consultations as $consultation) {
+        $semesterConsultations = SemesterConsultation::where('scientific_worker_id', $scientificWorkerId)
+            ->where('semester_id', $activeSemester->id)
+            ->whereNotIn('day', [WeekdayEnum::SATURDAY->value, WeekdayEnum::SUNDAY->value])
+            ->get();
+
+        foreach ($semesterConsultations as $consultation) {
             $startTime = Carbon::parse($consultation->start_time);
             $endTime = Carbon::parse($consultation->end_time);
-
             $totalDuration += $startTime->diffInMinutes($endTime);
         }
 

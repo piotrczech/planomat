@@ -7,14 +7,12 @@
 
 <div class="page-content">
     <div class="employee-header">
-        Preferencje dydaktyczne: {{ $worker->name }}
-    </div>
+        {{ $worker->name }}
 
-    @if(!$desideratum->exists)
-        <div class="no-submission-notice">
-            Pracownik nie złożył dezyderaty w tym semestrze.
-        </div>
-    @endif
+        @if(!$desideratum->exists)
+            (pracownik nie uzupełnił dokumentu)
+        @endif
+    </div>
 
     <div class="section-title">Preferencje ogólne</div>
     <table>
@@ -48,7 +46,9 @@
         <tr>
             <td style="width: 40%;">Kursy, które <strong>mogę</strong> prowadzić:</td>
             <td style="width: 60%;">
-                @if($couldCourses->isNotEmpty())
+                @if(!$desideratum->exists)
+                    {{ $allCourses->map(fn($course) => $course->name)->join(', ') }}
+                @elseif($couldCourses->isNotEmpty())
                     {{ $couldCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
                 @else
                     Brak wskazanych.
@@ -58,7 +58,9 @@
         <tr>
             <td>Kursy, które <strong>chciałbym</strong> prowadzić:</td>
             <td style="width: 60%;">
-                @if($wantedCourses->isNotEmpty())
+                @if(!$desideratum->exists)
+
+                @elseif($wantedCourses->isNotEmpty())
                     {{ $wantedCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
                 @else
                     Brak wskazanych.
@@ -68,7 +70,9 @@
         <tr>
             <td>Kursy, których <strong>nie chciałbym</strong> prowadzić:</td>
             <td style="width: 60%;">
-                @if($unwantedCourses->isNotEmpty())
+                @if(!$desideratum->exists)
+
+                @elseif($unwantedCourses->isNotEmpty())
                     {{ $unwantedCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
                 @else
                     Brak wskazanych.
@@ -101,10 +105,12 @@
         </tr>
     </table>
 
-    @if($desideratum->additional_notes)
-        <div class="section-title">Dodatkowe uwagi</div>
-        <div class="notes-box" style="max-height: 100px; overflow: hidden;">
+    <div class="section-title">Dodatkowe uwagi</div>
+    <div class="notes-box" style="max-height: 100px; overflow: hidden;">
+        @if($desideratum->additional_notes)
             {!! nl2br(str_replace(["\r", "\n"], ' ', e($desideratum->additional_notes))) !!}
-        </div>
-    @endif
+        @else
+            <span style="color: #777;">brak</span>
+        @endif
+    </div>
 </div> 

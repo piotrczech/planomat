@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Dashboard;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use App\Domain\Enums\RoleEnum;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class ConsultationsCard extends Component
 {
-    public array $consultations = [];
+    public $semester;
 
-    public function mount(): void
+    public function mount(GetActiveConsultationSemesterUseCase $useCase): void
     {
+        $this->semester = $useCase->execute();
     }
 
     public function redirectToForm()

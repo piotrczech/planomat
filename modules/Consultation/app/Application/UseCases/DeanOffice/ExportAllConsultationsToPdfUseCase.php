@@ -11,6 +11,7 @@ use Modules\Consultation\Domain\Enums\ConsultationType;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
+use App\Domain\Interfaces\SemesterRepositoryInterface;
 
 final class ExportAllConsultationsToPdfUseCase
 {
@@ -18,6 +19,7 @@ final class ExportAllConsultationsToPdfUseCase
         private readonly ConsultationRepositoryInterface $consultationRepository,
         private readonly PdfGeneratorInterface $pdfGenerator,
         private readonly ConsultationReportService $reportService,
+        private readonly SemesterRepositoryInterface $semesterRepository,
     ) {
     }
 
@@ -33,13 +35,16 @@ final class ExportAllConsultationsToPdfUseCase
 
         $processedData = $this->reportService->prepareAllConsultationsReportData($scientificWorkers, $consultationType);
 
+        $semester = $this->semesterRepository->findOrFail($semesterId);
+
         $dataForPdf = [
             'processedWorkers' => $processedData,
             'reportDate' => Carbon::now()->translatedFormat('d F Y H:i'),
             'consultationType' => $consultationType,
+            'semester' => $semester,
         ];
 
-        $filename = 'raport_konsultacji_' . $type . '_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+        $filename = 'raport_konsultacji_' . mb_strtolower($semester->season->label()) . '_' . str_replace('/', '_', $semester->academic_year) . '__' . Carbon::now()->format('Y-m-d') . '.pdf';
 
         return $this->pdfGenerator->generateFromView(
             view: 'consultation::pdf.all_consultations',

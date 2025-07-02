@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Consultation\Application\UseCases\ScientificWorker;
 
 use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
-use App\Application\UseCases\Semester\GetCurrentSemesterUseCase;
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use App\Domain\Dto\StoreActivityLogDto;
 use App\Domain\Enums\ActivityLogActionEnum;
 use App\Domain\Enums\ActivityLogModuleEnum;
@@ -17,7 +17,7 @@ final class CreateNewPartTimeConsultationUseCase
 {
     public function __construct(
         private readonly ConsultationRepositoryInterface $consultationRepository,
-        private readonly GetCurrentSemesterUseCase $getCurrentSemesterUseCase,
+        private readonly GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase,
         private readonly CreateActivityLogUseCase $createActivityLogUseCase,
     ) {
     }
@@ -25,7 +25,7 @@ final class CreateNewPartTimeConsultationUseCase
     public function execute(CreateNewPartTimeConsultationDto $dto): int
     {
         $scientificWorkerId = Auth::id();
-        $currentSemester = $this->getCurrentSemesterUseCase->execute();
+        $currentSemester = $this->getActiveConsultationSemesterUseCase->execute();
 
         if (!$currentSemester) {
             return 0;

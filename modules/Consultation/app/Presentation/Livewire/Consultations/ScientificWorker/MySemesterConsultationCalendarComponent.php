@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Presentation\Livewire\Consultations\ScientificWorker;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
+use App\Domain\Enums\SemesterSeasonEnum;
 use Livewire\Component;
 use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetSemesterConsultationsUseCase;
@@ -22,8 +24,22 @@ class MySemesterConsultationCalendarComponent extends Component
 
     public ?string $errorMessage = null;
 
-    public function mount(): void
+    public string $title = '';
+
+    public function mount(GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase): void
     {
+        $semester = $getActiveConsultationSemesterUseCase->execute();
+
+        if ($semester) {
+            $seasonName = $semester->season === SemesterSeasonEnum::WINTER ? __('consultation::consultation.in_semester_winter') : __('consultation::consultation.in_semester_summer');
+            $this->title = __('consultation::consultation.my_semester_consultations_title', [
+                'season' => $seasonName,
+                'academic_year' => $semester->academic_year,
+            ]);
+        } else {
+            $this->title = __('consultation::consultation.My Semester Consultation');
+        }
+
         $this->loadInitialData(
             App::make(GetSemesterConsultationsUseCase::class),
             App::make(GetConsultationSummaryTimeUseCase::class),
