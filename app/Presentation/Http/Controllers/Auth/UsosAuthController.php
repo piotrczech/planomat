@@ -101,13 +101,7 @@ final readonly class UsosAuthController
 
             Auth::logout();
 
-            $redirectAfterLogout = route('login', ['error' => rawurlencode($message)]);
-
-            /** @var \SocialiteProviders\Keycloak\Provider $provider */
-            $provider = Socialite::driver('keycloak');
-            $logoutUrl = $provider->getLogoutUrl($redirectAfterLogout, config('services.keycloak.client_id'));
-
-            return redirect($logoutUrl);
+            return redirect()->route('login', ['error' => rawurlencode($message)]);
         }
     }
 }
