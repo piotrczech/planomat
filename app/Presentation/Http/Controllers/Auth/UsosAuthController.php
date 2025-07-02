@@ -40,16 +40,18 @@ final readonly class UsosAuthController
             /** @var \SocialiteProviders\Keycloak\Provider $provider */
             $provider = Socialite::driver('keycloak');
             $redirect = $provider->scopes($scopes)->redirect();
+
+            Log::debug('USOS redirect completed');
+
+            return $redirect;
         } catch (Throwable $e) {
             Log::error('USOS redirect error', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
+            return redirect()->route('login')->with('error', 'Nie można połączyć się z usługą USOS. Spróbuj ponownie później.');
         }
-
-        Log::debug('USOS redirect completed');
-
-        return $redirect;
     }
 
     public function callback(LoginViaUsosUseCase $useCase): RedirectResponse
