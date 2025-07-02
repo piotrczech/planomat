@@ -8,4 +8,5 @@ return [
     Modules\Consultation\Infrastructure\Providers\ConsultationServiceProvider::class,
     Modules\Desiderata\Infrastructure\Providers\DesiderataServiceProvider::class,
     Lab404\Impersonate\ImpersonateServiceProvider::class,
+    Laravel\Socialite\SocialiteServiceProvider::class,
 ];

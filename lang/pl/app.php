@@ -84,4 +84,6 @@ return [
 
     'functionality_disabled_no_semester' => 'Funkcjonalność niedostępna - brak aktualnego semestru',
     'Log in via USOS' => 'Zaloguj się przez USOS',
+
+    'auth.not_registered' => 'Przepraszamy, ale to konto nie jest zarejestrowane w systemie PlanoMAT. Skontaktuj się z administratorem.',
 ];

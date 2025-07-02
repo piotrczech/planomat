@@ -77,4 +77,8 @@ return [
 
     'impersonating_message' => 'You are currently impersonating <strong>:name</strong>.',
     'leave_impersonation' => 'Leave impersonation',
+
+    'Log in via USOS' => 'Log in via USOS',
+
+    'auth.not_registered' => 'Your account is not registered in Planomat. Please contact the administrator.',
 ];

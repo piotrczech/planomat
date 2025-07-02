@@ -6,7 +6,9 @@ namespace App\Presentation\Http\Controllers\Auth;
 
 use App\Application\UseCases\Auth\LoginViaUsosUseCase;
 use App\Domain\Dto\ExternalAuthUserDto;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -33,7 +35,11 @@ final readonly class UsosAuthController
         Log::debug('Starting USOS redirect');
 
         try {
-            $redirect = Socialite::driver('keycloak')->redirect();
+            $scopes = ['openid', 'profile', 'email', 'offline_access'];
+
+            /** @var \SocialiteProviders\Keycloak\Provider $provider */
+            $provider = Socialite::driver('keycloak');
+            $redirect = $provider->scopes($scopes)->redirect();
         } catch (Throwable $e) {
             Log::error('USOS redirect error', [
                 'message' => $e->getMessage(),
@@ -69,6 +75,14 @@ final readonly class UsosAuthController
             'raw' => $socialUser->user,
         ]);
 
+        Log::debug('USOS tokens', [
+            'token' => $socialUser->token ?? null,
+            'refresh_token' => $socialUser->refreshToken ?? null,
+            'expires_in' => $socialUser->expiresIn ?? null,
+            'approved_scopes' => property_exists($socialUser, 'approvedScopes') ? $socialUser->approvedScopes : null,
+            'access_token_response' => property_exists($socialUser, 'accessTokenResponseBody') ? $socialUser->accessTokenResponseBody : null,
+        ]);
+
         $dto = new ExternalAuthUserDto(
             id: (string) $socialUser->getId(),
             email: (string) $socialUser->getEmail(),
@@ -78,8 +92,26 @@ final readonly class UsosAuthController
 
         Log::debug('USOS DTO', $dto->toArray());
 
-        $useCase->execute($dto);
+        try {
+            $useCase->execute($dto);
+            session(['logged_via_usos' => true]);
 
-        return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('dashboard'));
+        } catch (AuthenticationException $e) {
+            $message = $e->getMessage();
+            Log::error('USOS callback error during login', [
+                'message' => $message,
+            ]);
+
+            Auth::logout();
+
+            $redirectAfterLogout = route('login', ['error' => rawurlencode($message)]);
+
+            /** @var \SocialiteProviders\Keycloak\Provider $provider */
+            $provider = Socialite::driver('keycloak');
+            $logoutUrl = $provider->getLogoutUrl($redirectAfterLogout, config('services.keycloak.client_id'));
+
+            return redirect($logoutUrl);
+        }
     }
 }

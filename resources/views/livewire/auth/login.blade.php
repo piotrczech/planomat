@@ -79,6 +79,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
+    @php($errorMsg = session('error') ?? request()->query('error'))
+
+    @if($errorMsg)
+        <flux:callout variant="danger" icon="exclamation-triangle" class="mb-4 text-center">
+            <flux:callout.text>{{ urldecode($errorMsg) }}</flux:callout.text>
+        </flux:callout>
+    @endif
+
     <form wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
         <flux:input wire:model="email" :label="__('app.Email address')" type="email" required autofocus autocomplete="email"

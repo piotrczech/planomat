@@ -29,7 +29,7 @@ final readonly class LoginViaUsosUseCase
         if (!$user) {
             Log::warning('USOS login failed – email not found', ['email' => $dto->email]);
 
-            throw new AuthenticationException('Brak konta powiązanego z adresem email. Skontaktuj się z administratorem.');
+            throw new AuthenticationException(__('app.auth.not_registered'));
         }
 
         if ($user->usos_id !== $dto->id) {
