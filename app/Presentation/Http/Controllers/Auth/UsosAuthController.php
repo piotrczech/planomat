@@ -47,9 +47,7 @@ final readonly class UsosAuthController
             ]);
         }
 
-        Log::debug('USOS redirect completed', [
-            'redirect' => $redirect,
-        ]);
+        Log::debug('USOS redirect completed');
 
         return $redirect;
     }
