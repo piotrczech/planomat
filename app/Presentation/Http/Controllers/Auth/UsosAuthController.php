@@ -35,11 +35,7 @@ final readonly class UsosAuthController
         Log::debug('Starting USOS redirect');
 
         try {
-            $scopes = ['openid', 'profile', 'email', 'offline_access'];
-
-            /** @var \SocialiteProviders\Keycloak\Provider $provider */
-            $provider = Socialite::driver('keycloak');
-            $redirect = $provider->scopes($scopes)->redirect();
+            $redirect = Socialite::driver('keycloak')->redirect();
 
             Log::debug('USOS redirect completed');
 
