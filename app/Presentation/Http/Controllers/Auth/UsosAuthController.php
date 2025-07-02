@@ -46,7 +46,7 @@ final readonly class UsosAuthController
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('login')->with('error', 'Nie można połączyć się z usługą USOS. Spróbuj ponownie później.');
+            return redirect()->route('login', ['error' => rawurlencode('Nie można połączyć się z usługą USOS. Spróbuj ponownie później.')]);
         }
     }
 
