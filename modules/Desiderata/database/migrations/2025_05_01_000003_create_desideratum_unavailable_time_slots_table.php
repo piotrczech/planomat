@@ -19,7 +19,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->enum('day', WeekdayEnum::values());
+            $table->enum('day', WeekdayEnum::values(true));
             $table->smallInteger('time_slot_id')
                 ->constrained('time_slots')
                 ->cascadeOnUpdate()
