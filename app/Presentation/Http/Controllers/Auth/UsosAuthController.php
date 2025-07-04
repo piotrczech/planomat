@@ -48,21 +48,12 @@ final readonly class UsosAuthController
 
     public function callback(LoginViaUsosUseCase $useCase): RedirectResponse
     {
-        if (request()->query('logout')) {
-            return redirect()->route('login');
-        }
-
         try {
             Log::debug('USOS callback - request query', request()->query());
 
             $socialUser = Socialite::driver('keycloak')->user();
         } catch (Throwable $e) {
-            Log::error('USOS callback error during Socialite user fetch', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            abort(500, 'Błąd podczas pobierania danych z USOS. Szczegóły w logach.');
+            return redirect()->route('login');
         }
 
         $dto = new ExternalAuthUserDto(
