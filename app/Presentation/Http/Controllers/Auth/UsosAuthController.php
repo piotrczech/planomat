@@ -70,15 +70,9 @@ final readonly class UsosAuthController
 
             return redirect()->intended(route('dashboard'));
         } catch (AuthenticationException $e) {
-            $message = $e->getMessage();
-
-            Log::error('USOS callback error during login', [
-                'message' => $message,
-            ]);
-
             Auth::logout();
 
-            return redirect()->route('login', ['error' => rawurlencode($message)]);
+            return redirect()->route('account-pending');
         }
     }
 }
