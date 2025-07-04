@@ -86,4 +86,10 @@ return [
     'Log in via USOS' => 'Zaloguj się przez USOS',
 
     'auth.not_registered' => 'Przepraszamy, ale to konto nie jest zarejestrowane w systemie PlanoMAT. Skontaktuj się z administratorem.',
+    'Log out' => 'Wyloguj',
+
+    'account_pending' => [
+        'title' => 'Konto nie jest częścią systemu PlanoMAT',
+        'description' => 'Państwa konto zostało pomyślnie uwierzytelnione w systemie USOS, jednak administrator planoMAT nie wprowadził go do systemu. Jeśli uważają Państwo, że powinno być możliwe logowanie, prosimy o kontakt z dziekanatem.',
+    ],
 ];

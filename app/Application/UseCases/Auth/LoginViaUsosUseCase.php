@@ -22,7 +22,7 @@ final readonly class LoginViaUsosUseCase
      */
     public function execute(ExternalAuthUserDto $dto): User
     {
-        Log::debug('USOS login attempt', ['email' => $dto->email, 'usos_id' => $dto->id]);
+        session(['logged_via_usos' => true]);
 
         $user = $this->users->findByEmail($dto->email);
 
@@ -45,8 +45,6 @@ final readonly class LoginViaUsosUseCase
         }
 
         Auth::login($user);
-
-        Log::info('USOS login successful', ['user_id' => $user->id]);
 
         return $user;
     }

@@ -43,5 +43,6 @@ return [
         'redirect' => env('USOS_REDIRECT_URI'),
         'base_url' => env('USOS_BASE_URL'),
         'realms' => env('USOS_REALM'),
+        'end_session' => env('USOS_END_SESSION'),
     ],
 ];

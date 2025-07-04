@@ -32,12 +32,8 @@ final readonly class UsosAuthController
             }
         }
 
-        Log::debug('Starting USOS redirect');
-
         try {
             $redirect = Socialite::driver('keycloak')->redirect();
-
-            Log::debug('USOS redirect completed');
 
             return $redirect;
         } catch (Throwable $e) {
@@ -52,6 +48,10 @@ final readonly class UsosAuthController
 
     public function callback(LoginViaUsosUseCase $useCase): RedirectResponse
     {
+        if (request()->query('logout')) {
+            return redirect()->route('login');
+        }
+
         try {
             Log::debug('USOS callback - request query', request()->query());
 
@@ -65,20 +65,6 @@ final readonly class UsosAuthController
             abort(500, 'Błąd podczas pobierania danych z USOS. Szczegóły w logach.');
         }
 
-        Log::debug('USOS/Keycloak raw user', [
-            'id' => $socialUser->getId(),
-            'email' => $socialUser->getEmail(),
-            'raw' => $socialUser->user,
-        ]);
-
-        Log::debug('USOS tokens', [
-            'token' => $socialUser->token ?? null,
-            'refresh_token' => $socialUser->refreshToken ?? null,
-            'expires_in' => $socialUser->expiresIn ?? null,
-            'approved_scopes' => property_exists($socialUser, 'approvedScopes') ? $socialUser->approvedScopes : null,
-            'access_token_response' => property_exists($socialUser, 'accessTokenResponseBody') ? $socialUser->accessTokenResponseBody : null,
-        ]);
-
         $dto = new ExternalAuthUserDto(
             id: (string) $socialUser->getId(),
             email: (string) $socialUser->getEmail(),
@@ -86,15 +72,15 @@ final readonly class UsosAuthController
             lastName: (string) ($socialUser->user['family_name'] ?? ''),
         );
 
-        Log::debug('USOS DTO', $dto->toArray());
+        Log::debug('Logged via USOS', $dto->toArray());
 
         try {
             $useCase->execute($dto);
-            session(['logged_via_usos' => true]);
 
             return redirect()->intended(route('dashboard'));
         } catch (AuthenticationException $e) {
             $message = $e->getMessage();
+
             Log::error('USOS callback error during login', [
                 'message' => $message,
             ]);
