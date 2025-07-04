@@ -12,7 +12,7 @@ final class AccountPendingController
 {
     public function __invoke(): Response|View
     {
-        $pending = Session::get('logged_via_usos_no_account');
+        $pending = Session::get('logged_via_usos_no_account', false);
 
         if (!$pending) {
             return redirect()->route('usos.login');

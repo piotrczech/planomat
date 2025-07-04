@@ -71,6 +71,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
+
+    public function mount(): void
+    {
+        if (Session::get('logged_via_usos_no_account', false)) {
+            $this->redirectIntended(default: route('account.pending', absolute: false), navigate: true);
+        }
+    }
 }; ?>
 
 <div class="flex flex-col gap-6">
