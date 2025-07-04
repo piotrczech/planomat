@@ -36,7 +36,7 @@ final class AccountPendingController
             $user = $this->users->findByEmail($dto->email);
 
             if (!$user) {
-                return view('auth.account-pending');
+                return view('account.pending');
             }
 
             return redirect()->route('dashboard');

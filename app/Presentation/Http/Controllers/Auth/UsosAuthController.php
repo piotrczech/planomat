@@ -72,7 +72,7 @@ final readonly class UsosAuthController
         } catch (AuthenticationException $e) {
             Auth::logout();
 
-            return redirect()->route('auth.account-pending');
+            return redirect()->route('account.pending');
         }
     }
 }
