@@ -70,6 +70,11 @@ final readonly class UsosAuthController
 
             return redirect()->intended(route('dashboard'));
         } catch (AuthenticationException $e) {
+            session([
+                'pending_external_user' => $dto->toArray(),
+                'logged_via_usos' => true,
+            ]);
+
             Auth::logout();
 
             return redirect()->route('account.pending');
