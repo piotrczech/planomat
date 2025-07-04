@@ -12,12 +12,12 @@ final class AccountPendingController
 {
     public function __invoke(): Response|View
     {
-        $pending = Session::get('pending_external_user');
+        $pending = Session::get('logged_via_usos_no_account');
 
         if (!$pending) {
             return redirect()->route('usos.login');
         }
 
-        return view('account.pending', ['pendingUser' => $pending]);
+        return view('auth.account-pending');
     }
 }

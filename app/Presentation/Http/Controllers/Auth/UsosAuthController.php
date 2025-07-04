@@ -21,6 +21,8 @@ final readonly class UsosAuthController
 
         $required = ['client_id', 'client_secret', 'base_url', 'realms', 'redirect'];
 
+        session()->flush();
+
         foreach ($required as $key) {
             if (empty($config[$key])) {
                 Log::error('Brak konfiguracji Keycloak', [
@@ -71,7 +73,7 @@ final readonly class UsosAuthController
             return redirect()->intended(route('dashboard'));
         } catch (AuthenticationException $e) {
             session([
-                'pending_external_user' => $dto->toArray(),
+                'logged_via_usos_no_account' => true,
                 'logged_via_usos' => true,
             ]);
 

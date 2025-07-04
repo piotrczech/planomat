@@ -18,6 +18,8 @@ class Logout
         Session::invalidate();
         Session::regenerateToken();
 
+        session()->flush();
+
         if ($loggedViaUsos) {
             /**
              * @var \SocialiteProviders\Keycloak\Provider $provider
