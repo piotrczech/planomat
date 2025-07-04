@@ -8,6 +8,7 @@ use App\Domain\Dto\ExternalAuthUserDto;
 use App\Domain\Interfaces\UserRepositoryInterface;
 use Exception;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -21,11 +22,16 @@ final class AccountPendingController
     {
         try {
             $socialUser = Socialite::driver('keycloak')->user();
+            Log::info('Social user', $socialUser->getEmail(), $socialUser);
 
             if (!$socialUser) {
                 return redirect()->route('login');
             }
+        } catch (Exception $e) {
+            return redirect()->route('login');
+        }
 
+        try {
             $dto = new ExternalAuthUserDto(
                 id: (string) $socialUser->getId(),
                 email: (string) $socialUser->getEmail(),
@@ -41,7 +47,7 @@ final class AccountPendingController
 
             return redirect()->route('dashboard');
         } catch (Exception $e) {
-            return redirect()->route('login');
+            return view('account.pending');
         }
     }
 }
