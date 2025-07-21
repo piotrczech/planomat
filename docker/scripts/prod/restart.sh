@@ -1,0 +1,1 @@
+docker compose -f docker-compose.prod.yml build --no-cache app queue-worker schedule-worker nginx && docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps app queue-worker schedule-worker nginx
