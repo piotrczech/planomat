@@ -21,6 +21,9 @@ use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryIn
 use Modules\Consultation\Infrastructure\Repositories\ConsultationRepository;
 use Modules\Consultation\Domain\Interfaces\Services\PdfGeneratorInterface;
 use Modules\Consultation\Infrastructure\Services\DomPdfGenerator;
+use Illuminate\Console\Scheduling\Schedule;
+use Modules\Consultation\Presentation\Console\SendSemesterConsultationRemindersCommand;
+use Modules\Consultation\Presentation\Console\SendSessionConsultationRemindersCommand;
 
 class ConsultationServiceProvider extends ServiceProvider
 {
@@ -61,7 +64,10 @@ class ConsultationServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            SendSemesterConsultationRemindersCommand::class,
+            SendSessionConsultationRemindersCommand::class,
+        ]);
     }
 
     /**
@@ -69,10 +75,11 @@ class ConsultationServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        $this->app->booted(function (): void {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command(SendSemesterConsultationRemindersCommand::class)->mondays()->at('09:00');
+            $schedule->command(SendSessionConsultationRemindersCommand::class)->mondays()->at('09:15');
+        });
     }
 
     /**

@@ -24,6 +24,19 @@ services:
         volumes:
             - storage:/var/www/html/storage:rw
             - public:/var/www/html/public:rw
+    schedule-worker:
+        build:
+            context: .
+            dockerfile: docker/app/production/Dockerfile
+        restart: unless-stopped
+        command: php artisan schedule:work
+        environment:
+            IS_WORKER: "true"
+        depends_on:
+            - db
+        volumes:
+            - storage:/var/www/html/storage:rw
+            - public:/var/www/html/public:rw
     nginx:
         image: nginx:1-alpine
         ports:

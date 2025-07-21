@@ -17,12 +17,14 @@ use App\Infrastructure\Repositories\SettingRepository;
 use App\Infrastructure\Repositories\TimeSlotRepository;
 use App\Infrastructure\Repositories\UserRepository;
 use App\Presentation\View\Composers\CurrentSemesterComposer;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
-use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\Keycloak\Provider as KeycloakSocialiteProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -71,5 +73,13 @@ class AppServiceProvider extends ServiceProvider
                 $event->extendSocialite('keycloak', KeycloakSocialiteProvider::class);
             },
         );
+
+        RateLimiter::for('weekly-summary-emails', function (object $job) {
+            return Limit::perMinute(10);
+        });
+
+        RateLimiter::for('reminder-emails', function (object $job) {
+            return Limit::perMinutes(10, 5);
+        });
     }
 }

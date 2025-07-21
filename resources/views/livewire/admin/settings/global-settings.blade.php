@@ -67,6 +67,107 @@
                 </div>
             </div>
 
+            <flux:separator variant="subtle" class="my-8" />
+            
+            <div class="mb-6">
+                <flux:heading size="lg" level="2" class="mb-2">{{ __('admin_settings.Email Notifications') }}</flux:heading>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Semester Consultations -->
+                <div class="space-y-4">
+                    <flux:heading size="md" level="3">{{ __('admin_settings.Semester consultations') }}</flux:heading>
+                    
+                    <div>
+                        <flux:checkbox 
+                            wire:model.live="notificationsSemesterConsultationsEnabled"
+                            label="{{ __('admin_settings.Enable notifications for missing semester consultations') }}"
+                        />
+                    </div>
+                    
+                    <div x-show="$wire.notificationsSemesterConsultationsEnabled">
+                        <flux:field>
+                            <flux:label>{{ __('admin_settings.Send notification after X days from semester start') }}</flux:label>
+                            <flux:input 
+                                type="number" 
+                                wire:model="notificationsSemesterConsultationsDaysAfter"
+                                min="1" 
+                                max="20"
+                            />
+                            @error('notificationsSemesterConsultationsWeeksAfter') 
+                                <flux:error>{{ $message }}</flux:error> 
+                            @enderror
+                        </flux:field>
+                    </div>
+                </div>
+
+                <!-- Desiderata -->
+                <div class="space-y-4">
+                    <flux:heading size="md" level="3">{{ __('admin_settings.Desiderata') }}</flux:heading>
+                    
+                    <div>
+                        <flux:checkbox 
+                            wire:model.live="notificationsDesiderataEnabled"
+                            label="{{ __('admin_settings.Enable notifications for missing desiderata') }}"
+                        />
+                    </div>
+                    
+                    <div x-show="$wire.notificationsDesiderataEnabled">
+                        <flux:field>
+                            <flux:label>{{ __('admin_settings.Send notification after X days from semester start') }}</flux:label>
+                            <flux:input 
+                                type="number" 
+                                wire:model="notificationsDesiderataDaysAfter"
+                                min="1" 
+                                max="20"
+                            />
+                            @error('notificationsDesiderataWeeksAfter') 
+                                <flux:error>{{ $message }}</flux:error> 
+                            @enderror
+                        </flux:field>
+                    </div>
+                </div>
+
+                <!-- Session Consultations -->
+                <div class="space-y-4">
+                    <flux:heading size="md" level="3">{{ __('admin_settings.Session consultations') }}</flux:heading>
+                    
+                    <div>
+                        <flux:checkbox 
+                            wire:model.live="notificationsSessionConsultationsEnabled"
+                            label="{{ __('admin_settings.Enable notifications for missing session consultations') }}"
+                        />
+                    </div>
+                    
+                    <div x-show="$wire.notificationsSessionConsultationsEnabled">
+                        <flux:field>
+                            <flux:label>{{ __('admin_settings.Send notification after X days from session start') }}</flux:label>
+                            <flux:input 
+                                type="number" 
+                                wire:model="notificationsSessionConsultationsDaysAfter"
+                                min="1" 
+                                max="20"
+                            />
+                            @error('notificationsSessionConsultationsWeeksAfter') 
+                                <flux:error>{{ $message }}</flux:error> 
+                            @enderror
+                        </flux:field>
+                    </div>
+                </div>
+
+                <!-- Weekly Summary -->
+                <div class="space-y-4">
+                    <flux:heading size="md" level="3">{{ __('admin_settings.Weekly summary') }}</flux:heading>
+                    
+                    <div>
+                        <flux:checkbox 
+                            wire:model="notificationsWeeklySemesterSummaryEnabled"
+                            label="{{ __('admin_settings.Enable weekly summary emails for administrators') }}"
+                        />
+                    </div>
+                </div>
+            </div>
+
             <div class="flex justify-end">
                 <flux:button
                     type="submit"

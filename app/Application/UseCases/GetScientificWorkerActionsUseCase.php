@@ -52,14 +52,20 @@ final class GetScientificWorkerActionsUseCase
         if ($consultationSemester) {
             $hasSemesterConsultations = !empty($this->consultationRepository->getSemesterConsultations($user->id, $consultationSemester->id));
             $semesterConsultationsDueDate = $consultationSemester->session_start_date;
-            $showSemesterConsultations = !$hasSemesterConsultations && $now->isBefore($semesterConsultationsDueDate);
+            $showSemesterConsultations =
+                !$hasSemesterConsultations
+                && $now->greaterThanOrEqualTo($consultationSemester->semester_start_date)
+                && $now->lessThan($semesterConsultationsDueDate);
             $semesterActiveForDays = $consultationSemester->semester_start_date->diffInDays($now);
 
-            $hasSessionConsultations = !empty($this->consultationRepository->getSessionConsultations($user->id, $consultationSemester->id));
-            $sessionConsultationsStartDate = $consultationSemester->session_start_date->copy()->subWeeks(2);
-            $sessionConsultationsEndDate = $consultationSemester->end_date;
-            $showSessionConsultations = !$hasSessionConsultations && $now->between($sessionConsultationsStartDate, $sessionConsultationsEndDate);
-            $sessionConsultationsDueDays = $now->diffInDays($sessionConsultationsEndDate, false);
+            $sessionConsultations = $this->consultationRepository->getSessionConsultations($user->id, $consultationSemester->id);
+            $hasSessionConsultations = !empty($sessionConsultations);
+            $sessionConsultationsDueDate = $consultationSemester->end_date;
+            $showSessionConsultations =
+                !$hasSessionConsultations
+                && $now->greaterThanOrEqualTo($consultationSemester->session_start_date)
+                && $now->lessThanOrEqualTo($sessionConsultationsDueDate);
+            $sessionConsultationsDueDays = $now->diffInDays($sessionConsultationsDueDate, false);
         }
 
         $anyActionsAvailable = $showDesiderata || $showSemesterConsultations || $showSessionConsultations;

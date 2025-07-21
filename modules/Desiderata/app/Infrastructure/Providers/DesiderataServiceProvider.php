@@ -22,6 +22,8 @@ use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use Modules\Desiderata\Infrastructure\Repositories\DesideratumRepository;
 use App\Application\UseCases\ActivityLog\CreateActivityLogUseCase;
 use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
+use Illuminate\Console\Scheduling\Schedule;
+use Modules\Desiderata\Presentation\Console\SendDesiderataRemindersCommand;
 
 class DesiderataServiceProvider extends ServiceProvider
 {
@@ -74,7 +76,9 @@ class DesiderataServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            SendDesiderataRemindersCommand::class,
+        ]);
     }
 
     /**
@@ -82,10 +86,10 @@ class DesiderataServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        $this->app->booted(function (): void {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command(SendDesiderataRemindersCommand::class)->mondays()->at('08:00');
+        });
     }
 
     /**

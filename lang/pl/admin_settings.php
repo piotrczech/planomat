@@ -236,4 +236,23 @@ return [
     'Save' => 'Zapisz',
     'Manage Global Settings Description' => 'Zarządzaj kluczowymi ustawieniami aplikacji, takimi jak aktywne semestry.',
     'Saving...' => 'Zapisywanie...',
+
+    // Email Notifications
+    'Email Notifications' => 'Powiadomienia Email',
+    'Configure automatic email notifications for users' => 'Konfiguruj automatyczne powiadomienia email dla użytkowników',
+    'Semester consultations' => 'Konsultacje semestralne',
+    'Enable notifications for missing semester consultations' => 'Włącz powiadomienia o brakujących konsultacjach semestralnych',
+    'Send notification after X weeks from semester start' => 'Wyślij powiadomienie po X tygodniach od rozpoczęcia semestru',
+    'Desiderata' => 'Dezyderaty',
+    'Enable notifications for missing desiderata' => 'Włącz powiadomienia o brakujących dezyderatach',
+    'Session consultations' => 'Konsultacje w sesji',
+    'Enable notifications for missing session consultations' => 'Włącz powiadomienia o brakujących konsultacjach w sesji',
+    'Send notification after X weeks from session start' => 'Wyślij powiadomienie po X tygodniach od rozpoczęcia sesji',
+    'Weekly summary' => 'Tygodniowe podsumowanie',
+    'Enable weekly summary emails for administrators' => 'Włącz cotygodniowe emaile z podsumowaniem dla administratorów',
+
+    'Send notification after X days from semester start' => 'Wyślij powiadomienie po X dniach od rozpoczęcia semestru',
+    'Send notification after X days from session start' => 'Wyślij powiadomienie po X dniach od rozpoczęcia sesji',
+    'Send notification after X days from desiderata start' => 'Wyślij powiadomienie po X dniach od rozpoczęcia dezyderat',
+    'Send notification after X days from weekly summary start' => 'Wyślij powiadomienie po X dniach od rozpoczęcia tygodniowego podsumowania',
 ];
