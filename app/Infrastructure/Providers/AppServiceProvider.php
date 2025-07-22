@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Providers;
 
+use App\Domain\Enums\RoleEnum;
 use App\Domain\Interfaces\ActivityLogRepositoryInterface;
 use App\Domain\Interfaces\CourseRepositoryInterface;
 use App\Domain\Interfaces\SemesterRepositoryInterface;
 use App\Domain\Interfaces\SettingRepositoryInterface;
 use App\Domain\Interfaces\TimeSlotRepositoryInterface;
 use App\Domain\Interfaces\UserRepositoryInterface;
+use App\Infrastructure\Models\User;
 use App\Infrastructure\Repositories\ActivityLogRepository;
 use App\Infrastructure\Repositories\CourseRepository;
 use App\Infrastructure\Repositories\SemesterRepository;
@@ -20,6 +22,7 @@ use App\Presentation\View\Composers\CurrentSemesterComposer;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -73,6 +76,10 @@ class AppServiceProvider extends ServiceProvider
                 $event->extendSocialite('keycloak', KeycloakSocialiteProvider::class);
             },
         );
+
+        Gate::define('viewPulse', function (User $user) {
+            return $user->hasRole(RoleEnum::ADMINISTRATOR);
+        });
 
         RateLimiter::for('weekly-summary-emails', function (object $job) {
             return Limit::perMinute(10);

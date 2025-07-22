@@ -225,6 +225,7 @@ return [
     ],
 
     'Users' => 'Użytkownicy',
+    'Laravel Pulse' => 'Monitor systemu',
     'Manage users' => 'Zarządzaj użytkownikami',
     'Create new user' => 'Stwórz nowego użytkownika',
     'User created successfully' => 'Użytkownik stworzony pomyślnie',

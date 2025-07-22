@@ -25,7 +25,15 @@
                         {{ __('admin_settings.users.Users') }}
                     </flux:navlist.item>
 
-                    
+                    @if(Gate::check('viewPulse'))
+                        <flux:navlist.item 
+                            icon="chart-bar" 
+                            href="/pulse" 
+                        >
+                            {{ __('admin_settings.Laravel Pulse') }}
+                        </flux:navlist.item>
+                    @endif
+
                     {{-- Application Settings --}}
                     <flux:navlist.item 
                         icon="cog-8-tooth" 
