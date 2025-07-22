@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function (): void {
                 Route::get('courses', 'manageCourses')->name('courses');
                 Route::get('semesters', 'manageSemesters')->name('semesters');
                 Route::get('users', 'manageUsers')->name('users');
+                Route::get('dean-office', 'manageDeanOffice')->name('dean-office');
                 Route::get('global', 'manageGlobalSettings')->name('global');
             });
         });

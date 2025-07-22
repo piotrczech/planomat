@@ -1,5 +1,4 @@
 <div>
-    {{-- Początek kontenera dla zarządzania semestrami --}}
     <div class="mb-6 flex justify-between items-center">
         <div class="w-1/3">
             <flux:input
@@ -101,5 +100,4 @@
             key="delete-semester-modal-{{ $deletingSemesterId }}"
         />
     @endif
-    {{-- Koniec kontenera dla zarządzania semestrami --}}
 </div> 

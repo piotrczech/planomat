@@ -192,6 +192,8 @@ return [
             'id_integer' => 'ID użytkownika musi być liczbą całkowitą.',
             'id_exists' => 'Użytkownik o podanym ID nie istnieje.',
         ],
+        'Manage Dean Office Users' => 'Zarządzaj kontami pracowników dziekanatu',
+        'Manage Dean Office Users Page Description' => 'Dodawaj, edytuj i usuwaj konta dla pracowników dziekanatu. Proszę pamiętać, że oprócz tej grupy tej grupy użytkowników w systemie również istnieją administratorzy (aktualnie dostępni do modyfikacji tylko z poziomu bazy danych).',
     ],
     'activity_log' => [
         'Activity Log' => 'Log aktywności',
@@ -226,6 +228,7 @@ return [
 
     'Users' => 'Użytkownicy',
     'Laravel Pulse' => 'Monitor systemu',
+    'Dean Office' => 'Dziekanat',
     'Manage users' => 'Zarządzaj użytkownikami',
     'Create new user' => 'Stwórz nowego użytkownika',
     'User created successfully' => 'Użytkownik stworzony pomyślnie',

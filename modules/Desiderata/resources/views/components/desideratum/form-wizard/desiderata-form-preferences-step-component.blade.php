@@ -216,7 +216,6 @@
                         aria-labelledby="course-preferences-legend"
                         multiple
                     >
-                        {{-- Opcje będą ładowane przez TomSelect --}}
                     </select>
                 </div>
                 
@@ -240,7 +239,6 @@
                         aria-labelledby="course-preferences-legend"
                         multiple
                     >
-                        {{-- Opcje będą ładowane przez TomSelect --}}
                     </select>
                 </div>
 

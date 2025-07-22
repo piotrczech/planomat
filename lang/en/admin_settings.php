@@ -57,6 +57,8 @@ return [
     'users' => [
         'Manage Users' => 'Manage Users',
         'Manage Users Page Description' => 'Add, edit, and delete system users and manage their roles.',
+        'Manage Dean Office Users' => 'Manage dean office users',
+        'Manage Dean Office Users Page Description' => 'Add, edit, and delete dean office worker accounts. Please note that besides this user group, there are also administrators in the system.',
         'Search users by name or email' => 'Search users by name or email...',
         'filter_by_role_all' => 'All Roles',
         'Add User' => 'Add User',

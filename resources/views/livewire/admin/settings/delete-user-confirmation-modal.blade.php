@@ -52,9 +52,7 @@
                 </div>
             </div>
 
-            {{-- Stopka Modala --}}
             <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
-                {{-- Użycie standardowych przycisków HTML ze stylami Tailwind, jeśli flux:button nadal jest problematyczny --}}
                 <button wire:click="confirmDeletion" type="button" wire:loading.attr="disabled"
                         class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50">
                     {{ __('admin_settings.users.modal_delete.Delete User') }}

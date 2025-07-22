@@ -81,6 +81,10 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole(RoleEnum::ADMINISTRATOR);
         });
 
+        Gate::define('manageDeanOffice', function (User $user) {
+            return $user->hasRole(RoleEnum::ADMINISTRATOR);
+        });
+
         RateLimiter::for('weekly-summary-emails', function (object $job) {
             return Limit::perMinute(10);
         });

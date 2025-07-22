@@ -35,8 +35,11 @@ class UserManager extends Component
 
     public string $userSearch = '';
 
-    public function mount(): void
+    public RoleEnum $filterRole;
+
+    public function mount(RoleEnum $filterRole = RoleEnum::SCIENTIFIC_WORKER): void
     {
+        $this->filterRole = $filterRole;
     }
 
     public function updatedUserSearch(): void
@@ -153,7 +156,7 @@ class UserManager extends Component
 
     public function render(ListUsersUseCase $listUsersUseCase): View
     {
-        $users = $listUsersUseCase->execute($this->userSearch, $this->perPage, RoleEnum::SCIENTIFIC_WORKER);
+        $users = $listUsersUseCase->execute($this->userSearch, $this->perPage, $this->filterRole);
 
         return view('livewire.admin.settings.user-manager', [
             'users' => $users,

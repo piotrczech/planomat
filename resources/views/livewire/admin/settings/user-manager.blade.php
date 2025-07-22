@@ -44,7 +44,7 @@
                                 {{ $user->email }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                @if (auth()->check() && (auth()->user()->hasRole(\App\Domain\Enums\RoleEnum::ADMINISTRATOR) || auth()->user()->hasRole(\App\Domain\Enums\RoleEnum::DEAN_OFFICE_WORKER)) && !$user->hasRole(\App\Domain\Enums\RoleEnum::ADMINISTRATOR) && $user->id !== auth()->id())
+                                @if (auth()->check() && (auth()->user()->hasRole(\App\Domain\Enums\RoleEnum::ADMINISTRATOR) || auth()->user()->hasRole(\App\Domain\Enums\RoleEnum::DEAN_OFFICE_WORKER)) && !$user->hasRole(\App\Domain\Enums\RoleEnum::ADMINISTRATOR) && $user->id !== auth()->id() && $filterRole !== \App\Domain\Enums\RoleEnum::DEAN_OFFICE_WORKER)
                                     <flux:button
                                         wire:click="impersonateUser({{ $user->id }})"
                                         size="sm"
@@ -76,13 +76,12 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="px-6 py-12 text-center"> {{-- Zmieniono colspan z 4 na 3 --}}
+                            <td colspan="3" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
                                     <flux:icon name="users" class="w-12 h-12 mx-auto text-neutral-400 dark:text-neutral-500 mb-4" />
                                     <flux:text class="text-sm text-neutral-500 dark:text-neutral-400">
                                         {{ __('admin_settings.users.No users found') }}
                                     </flux:text>
-                                    {{-- Komunikat o zmianie filtra/wyszukiwania może być teraz mniej relewantny, ale zostawiam --}}
                                     @if(empty($userSearch))
                                     <flux:text size="xs" class="text-neutral-400 dark:text-neutral-600 mt-1">
                                         {{ __('admin_settings.users.Try changing filter or search term') }}
@@ -127,16 +126,18 @@
     @if ($showCreateUserModal)
         <livewire:admin.settings.user-form-modal
             :user-id="0" 
-            :is-visible="true" {{-- Zawsze true, bo renderowany warunkowo --}}
+            :is-visible="true"
             :is-editing="false"
-            key="user-form-modal-create-{{ Str::random(5) }}" {{-- Dynamiczny klucz przy każdym pokazaniu --}}
+            :user-role="$filterRole"
+            key="user-form-modal-create-{{ Str::random(5) }}"
         />
     @elseif ($showEditUserModal && $editingUserId)
         <livewire:admin.settings.user-form-modal
             :user-id="$editingUserId"
-            :is-visible="true" {{-- Zawsze true, bo renderowany warunkowo --}}
+            :is-visible="true"
             :is-editing="true"
-            key="user-form-modal-edit-{{ $editingUserId }}-{{ Str::random(5) }}" {{-- Dynamiczny klucz przy każdym pokazaniu --}}
+            :user-role="$filterRole"
+            key="user-form-modal-edit-{{ $editingUserId }}-{{ Str::random(5) }}"
         />
     @endif
 
@@ -146,7 +147,6 @@
         key="delete-user-modal-{{ $deletingUserId }}"
     />
 
-    {{-- Script for page refresh on impersonation. Consider a more robust solution if needed. --}}
     <script>
         document.addEventListener('livewire:init', () => {
             Livewire.on('refreshPageForImpersonation', (event) => {

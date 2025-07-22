@@ -32,14 +32,17 @@ class UserFormModal extends Component
 
     public bool $isVisible = false;
 
-    public function mount(GetUserUseCase $getUserUseCase): void
+    public RoleEnum $userRole;
+
+    public function mount(RoleEnum $userRole, GetUserUseCase $getUserUseCase): void
     {
-        $this->role = RoleEnum::SCIENTIFIC_WORKER->value;
+        $this->userRole = $userRole;
+        $this->role = $userRole->value;
 
         if ($this->isEditing && $this->userId && $this->userId !== 0) {
             $user = $getUserUseCase->execute($this->userId);
 
-            if ($user && $user->role === RoleEnum::SCIENTIFIC_WORKER) {
+            if ($user && $user->role === $userRole) {
                 $this->name = $user->name;
                 $this->email = $user->email;
             } else {
@@ -60,7 +63,7 @@ class UserFormModal extends Component
         CreateUserUseCase $createUserUseCase,
         UpdateUserUseCase $updateUserUseCase,
     ): void {
-        $roleEnum = RoleEnum::SCIENTIFIC_WORKER->value;
+        $roleEnum = $this->userRole->value;
 
         if ($this->isEditing && $this->userId) {
             $updateData = [
@@ -117,7 +120,7 @@ class UserFormModal extends Component
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
-        $this->role = RoleEnum::SCIENTIFIC_WORKER->value;
+        $this->role = $this->userRole->value;
         $this->isEditing = false;
         $this->resetErrorBag();
     }

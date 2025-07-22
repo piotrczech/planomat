@@ -6,7 +6,7 @@
     <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         {{-- Background overlay --}}
         <div class="fixed inset-0 transition-opacity bg-gray-700/75 dark:bg-neutral-800/75" aria-hidden="true"
-             @click="$wire.closeModal()" {{-- Wywołujemy metodę closeModal komponentu UserFormModal --}}
+             @click="$wire.closeModal()"
              x-show="show" 
              x-transition:enter="ease-out duration-300"
              x-transition:enter-start="opacity-0"
@@ -30,7 +30,6 @@
              x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
              x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
             <form wire:submit.prevent="saveUser" id="user-form">
-                {{-- Nagłówek Modala --}}
                 <div class="flex items-center justify-between pb-3 border-b border-neutral-200 dark:border-neutral-700">
                     <flux:heading level="3" id="user-modal-title" class="text-lg font-medium leading-6 text-neutral-900 dark:text-neutral-100">
                         {{ $isEditing ? __('admin_settings.users.modal.Edit User') : __('admin_settings.users.modal.Add User') }}
@@ -41,7 +40,6 @@
                     </button>
                 </div>
 
-                {{-- Ciało Modala --}}
                 <div class="mt-4 space-y-6">
                     {{-- Name --}}
                     <div>
@@ -79,7 +77,6 @@
                     </div>
                 </div>
 
-                {{-- Stopka Modala --}}
                 <div class="mt-6 sm:flex sm:flex-row-reverse pt-4 border-t border-neutral-200 dark:border-neutral-700">
                     <flux:button type="submit" form="user-form" variant="primary" class="w-full sm:ml-3 sm:w-auto" wire:loading.attr="disabled">
                         {{ $isEditing ? __('admin_settings.users.modal.Save Changes') : __('admin_settings.users.modal.Create User') }}

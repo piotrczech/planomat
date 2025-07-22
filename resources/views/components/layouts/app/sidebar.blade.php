@@ -25,6 +25,18 @@
                         {{ __('admin_settings.users.Users') }}
                     </flux:navlist.item>
 
+                    @if(Gate::check('manageDeanOffice'))
+                        <flux:navlist.item 
+                            icon="academic-cap"
+                            :href="route('admin.settings.general.dean-office')" 
+                            :current="request()->routeIs('admin.settings.general.dean-office')" 
+                            wire:navigate
+                            class="text-sm"
+                        >
+                            {{ __('admin_settings.Dean Office') }}
+                        </flux:navlist.item>
+                    @endif
+
                     @if(Gate::check('viewPulse'))
                         <flux:navlist.item 
                             icon="chart-bar" 
@@ -38,7 +50,7 @@
                     <flux:navlist.item 
                         icon="cog-8-tooth" 
                         :href="route('admin.settings.index')" 
-                        :current="(request()->routeIs('admin.settings.index') || request()->routeIs('admin.settings.general.*')) && !request()->routeIs('admin.settings.general.users')" 
+                        :current="(request()->routeIs('admin.settings.index') || request()->routeIs('admin.settings.general.*')) && !request()->routeIs('admin.settings.general.users')  && !request()->routeIs('admin.settings.general.dean-office')" 
                         wire:navigate
                     >
                         {{ __('admin_settings.Application Settings') }}
