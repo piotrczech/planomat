@@ -7,21 +7,27 @@
         showErrorAlert: false,
         errorMessage: '',
         successMessage: '',
+        weekdaySelect: null,
+        weekTypeSelect: null
     }"
     x-init="
-        const weekdaySelect = new TomSelect('#consultation-weekday', {
-            create: false,
-            searchField: [],
-            controlInput: null,
-            onChange(value) {
-                selectedWeekday = value;
-                $wire.consultationWeekday = value;
-            },
-        });
-        
+        if (!weekdaySelect) {
+            weekdaySelect = new TomSelect('#consultation-weekday', {
+                create: false,
+                searchField: [],
+                controlInput: null,
+                onChange(value) {
+                    selectedWeekday = value;
+                    $wire.consultationWeekday = value;
+                },
+            });
+        }
+
+        if (!weekTypeSelect) {
+            weekTypeSelect = new TomSelect('#consultation-week-type', { create: false, searchField: [], controlInput: null });
+        }
+
         $wire.consultationWeekday = '{{ $consultationWeekday }}';
-        
-        new TomSelect('#consultation-week-type', { create: false, searchField: [], controlInput: null });
         
         $wire.on('consultationSaved', (data) => {
             showSuccessAlert = true;

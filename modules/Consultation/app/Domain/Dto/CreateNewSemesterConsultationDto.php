@@ -38,8 +38,9 @@ final class CreateNewSemesterConsultationDto extends Data
         #[StringType]
         #[Min(2)]
         public string $consultationLocationBuilding,
+        #[Required]
         #[StringType]
-        public ?string $consultationLocationRoom = null,
+        public ?string $consultationLocationRoom,
     ) {
     }
 

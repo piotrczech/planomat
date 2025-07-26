@@ -36,15 +36,8 @@ final class ImpersonateUserUseCase
             return false;
         }
 
-        Log::info('[ImpersonateUserUseCase] Attempting impersonation.', [
-            'admin_user_id' => $adminUser->id,
-            'admin_user_role' => $adminUser->role->value,
-            'user_to_impersonate_id' => $userToImpersonate->id,
-            'user_to_impersonate_role' => $userToImpersonate->role->value,
-        ]);
-
         if ($adminUser->is($userToImpersonate)) {
-            Log::info('[ImpersonateUserUseCase] Admin user tried to impersonate self.');
+            Log::warning('[ImpersonateUserUseCase] Admin user tried to impersonate self.');
 
             return false;
         }
@@ -52,13 +45,8 @@ final class ImpersonateUserUseCase
         $canAdminImpersonate = $adminUser->canImpersonate();
         $canTargetBeImpersonated = $userToImpersonate->canBeImpersonated();
 
-        Log::info('[ImpersonateUserUseCase] Permission checks.', [
-            'admin_can_impersonate' => $canAdminImpersonate,
-            'target_can_be_impersonated' => $canTargetBeImpersonated,
-        ]);
-
         if (!$canAdminImpersonate || !$canTargetBeImpersonated) {
-            Log::warning('[ImpersonateUserUseCase] Impersonation check failed.', [
+            Log::warning('[ImpersonateUserUseCase] Impersonation permission check failed.', [
                 'admin_can_impersonate' => $canAdminImpersonate,
                 'target_can_be_impersonated' => $canTargetBeImpersonated,
             ]);
@@ -67,13 +55,15 @@ final class ImpersonateUserUseCase
         }
 
         if ($this->impersonateManager->isImpersonating()) {
-            Log::info('[ImpersonateUserUseCase] Previous impersonation found, leaving it.');
+            Log::warning('[ImpersonateUserUseCase] Previous impersonation found, leaving it.');
             $this->impersonateManager->leave();
         }
 
-        Log::info('[ImpersonateUserUseCase] Taking impersonation...');
         $this->impersonateManager->take($adminUser, $userToImpersonate);
-        Log::info('[ImpersonateUserUseCase] Impersonation successful.');
+        Log::info('[ImpersonateUserUseCase] Impersonation successful.', [
+            'admin_user_id' => $adminUser->id,
+            'impersonated_user_id' => $userToImpersonate->id,
+        ]);
 
         return true;
     }
@@ -90,15 +80,19 @@ final class ImpersonateUserUseCase
         $currentUser = Auth::user();
 
         if ($currentUser && method_exists($currentUser, 'leaveImpersonation') && $this->impersonateManager->isImpersonating()) {
-            Log::info('[ImpersonateUserUseCase] Leaving impersonation via User model method.');
+            Log::info('[ImpersonateUserUseCase] Leaved impersonation.', [
+                'admin_user_id' => $currentUser->id,
+            ]);
             $currentUser->leaveImpersonation();
 
             return true;
         }
 
         if ($this->impersonateManager->isImpersonating()) {
-            Log::info('[ImpersonateUserUseCase] Leaving impersonation via ImpersonateManager directly (fallback).');
             $this->impersonateManager->leave();
+            Log::info('[ImpersonateUserUseCase] Leaved impersonation.', [
+                'admin_user_id' => $currentUser->id,
+            ]);
 
             return true;
         }
