@@ -24,8 +24,9 @@
         .header { text-align: center; border-bottom: 1px solid #e8e5ef; padding-bottom: 20px; margin-bottom: 25px; }
         .header h1 { font-size: 24px; color: #2f3943; font-weight: 600; }
         .header .plano-mat { color: #a89b56; font-weight: 700; }
-        .summary-tiles { display: flex; gap: 20px; margin-bottom: 30px; justify-content: space-around; }
-        .tile { flex: 1; padding: 20px; border-radius: 8px; text-align: center; background-color: #a89b56; color: white; }
+        .summary-tiles { margin-bottom: 30px; width: 100%; }
+        .summary-tiles table { width: 100%; border-collapse: separate; border-spacing: 20px 0; }
+        .tile { padding: 20px; border-radius: 8px; text-align: center; background-color: #a89b56; color: white; width: 50%; }
         .tile .label { font-size: 16px; margin-bottom: 8px; opacity: 0.9; }
         .tile .count { font-size: 32px; font-weight: bold; }
         .content-section h2 { font-size: 20px; color: #2f3943; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #e8e5ef; padding-bottom: 10px;}
@@ -64,41 +65,52 @@
         @endif
 
         <div class="summary-tiles">
-            <div class="tile">
-                <div class="label">{{ __('notifications.consultation_changes') }}</div>
-                <div class="count">{{ $summaryDto->generalActivity['consultation_changes'] }}</div>
-            </div>
-            <div class="tile">
-                <div class="label">{{ __('notifications.desiderata_changes') }}</div>
-                <div class="count">{{ $summaryDto->generalActivity['desiderata_changes'] }}</div>
-            </div>
+            <table>
+                <tr>
+                    <td class="tile">
+                        <div class="label">{{ __('notifications.consultation_changes') }}</div>
+                        <div class="count">{{ $summaryDto->generalActivity['consultation_changes'] }}</div>
+                    </td>
+                    <td class="tile">
+                        <div class="label">{{ __('notifications.desiderata_changes') }}</div>
+                        <div class="count">{{ $summaryDto->generalActivity['desiderata_changes'] }}</div>
+                    </td>
+                </tr>
+            </table>
         </div>
 
-        <div class="content-section">
-            <h2>{{ __('notifications.users_who_changed_consultations') }}</h2>
-            <ul class="user-list {{ count($summaryDto->consultationsActivity) > 10 ? 'multi-column' : '' }}">
-                @forelse($summaryDto->consultationsActivity as $activity)
-                    <li>{{ $activity }}</li>
-                @empty
-                    <li>{{ __('notifications.no_consultation_activity') }}</li>
-                @endforelse
-            </ul>
-        </div>
+        @if($summaryDto->generalActivity['consultation_changes'] > 0)
+            <div class="content-section">
+                <h2>{{ __('notifications.users_who_changed_consultations') }}</h2>
+                <ul class="user-list {{ count($summaryDto->consultationsActivity) > 10 ? 'multi-column' : '' }}">
+                    @forelse($summaryDto->consultationsActivity as $activity)
+                        <li>{{ $activity }}</li>
+                    @empty
+                        <li>{{ __('notifications.no_consultation_activity') }}</li>
+                    @endforelse
+                </ul>
+            </div>
+        @endif
 
-        <div class="content-section">
-            <h2>{{ __('notifications.users_who_changed_desiderata') }}</h2>
-            <ul class="user-list {{ count($summaryDto->desiderataActivity) > 10 ? 'multi-column' : '' }}">
-                @forelse($summaryDto->desiderataActivity as $activity)
-                    <li>{{ $activity }}</li>
-                @empty
-                    <li>{{ __('notifications.no_desiderata_activity') }}</li>
-                @endforelse
-            </ul>
-        </div>
+        @if($summaryDto->generalActivity['desiderata_changes'] > 0)
+            <div class="content-section">
+                <h2>{{ __('notifications.users_who_changed_desiderata') }}</h2>
+                <ul class="user-list {{ count($summaryDto->desiderataActivity) > 10 ? 'multi-column' : '' }}">
+                    @forelse($summaryDto->desiderataActivity as $activity)
+                        <li>{{ $activity }}</li>
+                    @empty
+                        <li>{{ __('notifications.no_desiderata_activity') }}</li>
+                    @endforelse
+                </ul>
+            </div>
+        @endif
 
         <div class="footer">
             <p><a href="{{ config('app.url') }}">{{ __('notifications.go_to_app') }}</a></p>
-            <p>{{ __('notifications.automated_notification') }}</p>
+            <p>
+                {{ __('notifications.automated_notification') }}<br>
+                {{ __('notifications.only_from_pwr') }}
+            </p>
         </div>
     </div>
 </body>
