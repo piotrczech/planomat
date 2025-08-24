@@ -40,8 +40,12 @@ final readonly class LoginViaUsosUseCase
             Log::info('USOS ID updated for user', ['user_id' => $user->id, 'usos_id' => $dto->id]);
         }
 
-        if (!$user->name) {
-            $user->forceFill(['name' => $dto->fullName() ?: $user->email])->save();
+        if (!$user->first_name && !$user->last_name) {
+            $user->forceFill([
+                'first_name' => $dto->firstName,
+                'last_name' => $dto->lastName,
+                'academic_title' => $dto->academicTitle,
+            ])->save();
         }
 
         Auth::login($user);

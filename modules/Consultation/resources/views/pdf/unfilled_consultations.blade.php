@@ -92,7 +92,7 @@
                 @foreach($unfilledWorkers as $index => $worker)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ $worker->name }}</td>
+                        <td>{{ $worker->fullName() }}</td>
                     </tr>
                 @endforeach
             </tbody>

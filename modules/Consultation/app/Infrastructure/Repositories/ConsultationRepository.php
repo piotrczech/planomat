@@ -262,7 +262,8 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
                     'semesterConsultations' => fn ($q) => $q->where('semester_id', $semesterId)->orderBy('day')->orderBy('start_time'),
                     'partTimeConsultations' => fn ($q) => $q->where('semester_id', $semesterId)->orderBy('consultation_date')->orderBy('start_time'),
                 ])
-                ->orderBy('name')
+                ->orderBy('last_name')
+                ->orderBy('first_name')
                 ->get();
         }
 
@@ -287,7 +288,8 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
                     }
                 },
             ])
-            ->orderBy('name')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
             ->get();
     }
 
@@ -308,7 +310,8 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             ->whereDoesntHave($consultationRelation, function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })
-            ->orderBy('name')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
             ->get();
     }
 }

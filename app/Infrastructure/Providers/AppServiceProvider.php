@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Domain\Interfaces\AcademicTitleRepositoryInterface;
+use App\Infrastructure\Repositories\AcademicTitleRepository;
 use SocialiteProviders\Keycloak\Provider as KeycloakSocialiteProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
@@ -61,6 +63,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             TimeSlotRepositoryInterface::class,
             TimeSlotRepository::class,
+        );
+
+        $this->app->bind(
+            AcademicTitleRepositoryInterface::class,
+            AcademicTitleRepository::class,
         );
     }
 

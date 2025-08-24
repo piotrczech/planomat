@@ -49,12 +49,12 @@ final readonly class GenerateWeeklySummaryUseCase
         $consultationsActivity = $consultationActivities
             ->unique('user_id')
             ->map(fn ($activity) => $activity->user)
-            ->map(fn ($user) => "{$user->name} ({$user->email})");
+            ->map(fn ($user) => $user->fullName() . ' (' . $user->email . ')');
 
         $desiderataActivity = $desiderataActivities
             ->unique('user_id')
             ->map(fn ($activity) => $activity->user)
-            ->map(fn ($user) => "{$user->name} ({$user->email})");
+            ->map(fn ($user) => $user->fullName() . ' (' . $user->email . ')');
 
         $isConsultationSemesterActive = $this->getActiveConsultationSemesterUseCase->execute() !== null;
         $isDesiderataSemesterActive = $this->getActiveDesiderataSemesterUseCase->execute() !== null;

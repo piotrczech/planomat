@@ -8,7 +8,7 @@
         @impersonating($guard = null) {{-- $guard = null sprawdzi domyślny guard 'web' --}}
             <div class="bg-orange-500 dark:bg-orange-600 text-white py-2 px-4 text-center text-sm shadow-md z-50 relative">
                 <span>
-                    {!! __('app.impersonating_message', ['name' => auth()->user()->name]) !!}
+                    {!! __('app.impersonating_message', ['name' => auth()->user()->fullName()]) !!}
                 </span>
                 <a href="{{ route('impersonate.leave') }}" class="font-semibold underline hover:text-orange-100 dark:hover:text-orange-200 ml-2">
                     {{ __('app.leave_impersonation') }}
@@ -95,7 +95,7 @@
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                    <span class="truncate font-semibold">{{ auth()->user()->fullName() }}</span>
                                     <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>

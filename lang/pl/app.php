@@ -86,6 +86,7 @@ return [
     'Log in via USOS' => 'Zaloguj się przez USOS',
 
     'auth.not_registered' => 'Przepraszamy, ale to konto nie jest zarejestrowane w systemie PlanoMAT. Skontaktuj się z administratorem.',
+    'auth.failed' => 'Nieprawidłowy email lub hasło. Spróbuj ponownie.',
     'Log out' => 'Wyloguj',
 
     'account_pending' => [

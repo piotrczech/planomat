@@ -22,14 +22,17 @@ final class UserRepository implements UserRepositoryInterface
         return User::query()
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search): void {
-                    $q->where('name', 'like', "%{$search}%")
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('academic_title', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->when($filterRole, function ($query, $filterRole) {
                 return $query->where('role', $filterRole);
             })
-            ->orderBy('name')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
             ->paginate($perPage);
     }
 
@@ -41,7 +44,9 @@ final class UserRepository implements UserRepositoryInterface
     public function create(StoreUserDto $userData): User
     {
         return User::create([
-            'name' => $userData->name,
+            'academic_title' => $userData->academic_title,
+            'first_name' => $userData->first_name,
+            'last_name' => $userData->last_name,
             'email' => $userData->email,
             'password' => Hash::make($userData->password),
             'role' => $userData->role,
@@ -57,7 +62,9 @@ final class UserRepository implements UserRepositoryInterface
         }
 
         $attributes = [
-            'name' => $userData->name,
+            'academic_title' => $userData->academic_title,
+            'first_name' => $userData->first_name,
+            'last_name' => $userData->last_name,
             'email' => $userData->email,
             'role' => $userData->role,
         ];

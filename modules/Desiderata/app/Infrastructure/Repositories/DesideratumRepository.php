@@ -176,7 +176,8 @@ class DesideratumRepository implements DesideratumRepositoryInterface
                 $query->where('semester_id', $semesterId)
                     ->with(['unavailableTimeSlots', 'coursePreferences.course']);
             }])
-            ->orderBy('name')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
             ->get();
     }
 
@@ -186,7 +187,8 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             ->whereDoesntHave('desiderata', function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })
-            ->orderBy('name')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
             ->get();
     }
 

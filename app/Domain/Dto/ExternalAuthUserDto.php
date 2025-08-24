@@ -13,11 +13,16 @@ final class ExternalAuthUserDto extends Data
         public readonly string $email,
         public readonly string $firstName,
         public readonly string $lastName,
+        public readonly string $academicTitle,
     ) {
     }
 
     public function fullName(): string
     {
+        if (!empty($this->academicTitle)) {
+            return mb_trim("{$this->academicTitle} {$this->firstName} {$this->lastName}");
+        }
+
         return mb_trim("{$this->firstName} {$this->lastName}");
     }
 }

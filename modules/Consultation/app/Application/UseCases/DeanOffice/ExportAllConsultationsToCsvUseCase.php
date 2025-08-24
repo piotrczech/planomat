@@ -55,7 +55,7 @@ final class ExportAllConsultationsToCsvUseCase
                 if ($consultationType === ConsultationType::Semester) {
                     foreach ($worker->semesterConsultations ?? [] as $c) {
                         fputcsv($file, [
-                            $worker->name,
+                            $worker->fullName(),
                             'Semestralne',
                             $c->day->label(),
                             $c->week_type->label(),
@@ -68,7 +68,7 @@ final class ExportAllConsultationsToCsvUseCase
 
                     foreach ($worker->partTimeConsultations ?? [] as $c) {
                         fputcsv($file, [
-                            $worker->name,
+                            $worker->fullName(),
                             'Zaoczne',
                             $c->consultation_date->format('Y-m-d'),
                             '-',
@@ -81,7 +81,7 @@ final class ExportAllConsultationsToCsvUseCase
                 } elseif ($consultationType === ConsultationType::Session) {
                     foreach ($worker->sessionConsultations ?? [] as $c) {
                         fputcsv($file, [
-                            $worker->name,
+                            $worker->fullName(),
                             $c->consultation_date->format('Y-m-d'),
                             $c->start_time->format('H:i'),
                             $c->end_time->format('H:i'),

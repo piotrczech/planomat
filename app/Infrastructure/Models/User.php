@@ -7,6 +7,7 @@ namespace App\Infrastructure\Models;
 use App\Domain\Enums\RoleEnum;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,7 +25,9 @@ class User extends Authenticatable
     use HasFactory, Impersonate, Notifiable, SoftDeletes;
 
     protected $fillable = [
-        'name',
+        'academic_title',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'role',
@@ -52,10 +55,34 @@ class User extends Authenticatable
 
     public function initials(): string
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+        $parts = array_filter([$this->first_name, $this->last_name]);
+
+        return collect($parts)
+            ->map(fn (string $namePart) => Str::of($namePart)->substr(0, 1))
             ->implode('');
+    }
+
+    public function academicTitle(): BelongsTo
+    {
+        return $this->belongsTo(AcademicTitle::class, 'academic_title', 'title');
+    }
+
+    public function fullName(bool $withTitle = true): string
+    {
+        $name = mb_trim(implode(' ', array_filter([$this->first_name, $this->last_name])));
+
+        if (!$withTitle) {
+            return $name;
+        }
+
+        $title = $this->academic_title;
+
+        return $title ? mb_trim($title . ' ' . $name) : $name;
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->fullName();
     }
 
     public function hasRole(RoleEnum $role): bool

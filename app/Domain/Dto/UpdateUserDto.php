@@ -13,6 +13,7 @@ use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Confirmed;
 use Spatie\LaravelData\Attributes\Validation\Sometimes;
 use Spatie\LaravelData\Attributes\Validation\Rule;
+use Spatie\LaravelData\Attributes\Validation\Exists;
 use Illuminate\Validation\Rule as IlluminateRule;
 use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Optional;
@@ -26,7 +27,16 @@ final class UpdateUserDto extends Data
         #[Required]
         #[StringType]
         #[Rule('max:255')]
-        public readonly string $name,
+        public readonly string $first_name,
+        #[Required]
+        #[StringType]
+        #[Rule('max:255')]
+        public readonly string $last_name,
+        #[Sometimes]
+        #[StringType]
+        #[Rule('max:255')]
+        #[Exists('academic_titles', 'title')]
+        public readonly ?string $academic_title,
         #[Required]
         #[StringType]
         #[Email]
@@ -50,7 +60,9 @@ final class UpdateUserDto extends Data
 
         return [
             'id' => ['required', 'integer', 'exists:users,id'],
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'academic_title' => ['nullable', 'string', 'max:255', 'exists:academic_titles,title'],
             'email' => [
                 'required',
                 'string',
@@ -69,9 +81,14 @@ final class UpdateUserDto extends Data
             'id.required' => __('admin_settings.users.validation.id_required'),
             'id.integer' => __('admin_settings.users.validation.id_integer'),
             'id.exists' => __('admin_settings.users.validation.id_exists'),
-            'name.required' => __('admin_settings.users.validation.name_required'),
-            'name.string' => __('admin_settings.users.validation.name_string'),
-            'name.max' => __('admin_settings.users.validation.name_max'),
+            'first_name.required' => __('admin_settings.users.validation.first_name_required'),
+            'first_name.string' => __('admin_settings.users.validation.first_name_string'),
+            'first_name.max' => __('admin_settings.users.validation.first_name_max'),
+            'last_name.required' => __('admin_settings.users.validation.last_name_required'),
+            'last_name.string' => __('admin_settings.users.validation.last_name_string'),
+            'last_name.max' => __('admin_settings.users.validation.last_name_max'),
+            'academic_title.string' => __('admin_settings.users.validation.academic_title_string'),
+            'academic_title.max' => __('admin_settings.users.validation.academic_title_max'),
             'email.required' => __('admin_settings.users.validation.email_required'),
             'email.string' => __('admin_settings.users.validation.email_string'),
             'email.email' => __('admin_settings.users.validation.email_email'),

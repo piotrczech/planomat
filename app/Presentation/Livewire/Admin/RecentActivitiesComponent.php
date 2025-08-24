@@ -26,7 +26,7 @@ class RecentActivitiesComponent extends Component
 
     public function formatActivityMessage(ActivityLog $activity): string
     {
-        $userName = $activity->user->name ?? __('dashboard.Unknown User');
+        $userName = $activity->user?->fullName() ?? __('dashboard.Unknown User');
 
         if (app()->getLocale() !== 'pl') {
             $action = __('activity_log.action.' . $activity->action);

@@ -13,12 +13,17 @@ use App\Domain\Enums\RoleEnum;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Exception;
+use App\Application\UseCases\AcademicTitle\ListAcademicTitlesUseCase;
 
 class UserFormModal extends Component
 {
     public ?int $userId = null;
 
-    public string $name = '';
+    public string $academic_title = '';
+
+    public string $first_name = '';
+
+    public string $last_name = '';
 
     public string $email = '';
 
@@ -43,7 +48,9 @@ class UserFormModal extends Component
             $user = $getUserUseCase->execute($this->userId);
 
             if ($user && $user->role === $userRole) {
-                $this->name = $user->name;
+                $this->academic_title = $user->academic_title ?? '';
+                $this->first_name = $user->first_name ?? '';
+                $this->last_name = $user->last_name ?? '';
                 $this->email = $user->email;
             } else {
                 $this->dispatch('notify', title: 'Error', message: 'User not found or cannot be edited.', type: 'error');
@@ -68,7 +75,9 @@ class UserFormModal extends Component
         if ($this->isEditing && $this->userId) {
             $updateData = [
                 'id' => $this->userId,
-                'name' => $this->name,
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'academic_title' => $this->academic_title ?: null,
                 'email' => $this->email,
                 'role' => $roleEnum,
             ];
@@ -88,7 +97,9 @@ class UserFormModal extends Component
             }
         } else {
             $dto = StoreUserDto::validateAndCreate([
-                'name' => $this->name,
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'academic_title' => $this->academic_title ?: null,
                 'email' => $this->email,
                 'password' => $this->password,
                 'password_confirmation' => $this->password_confirmation,
@@ -116,7 +127,9 @@ class UserFormModal extends Component
     private function resetForm(): void
     {
         $this->userId = null;
-        $this->name = '';
+        $this->first_name = '';
+        $this->last_name = '';
+        $this->academic_title = '';
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
@@ -125,8 +138,10 @@ class UserFormModal extends Component
         $this->resetErrorBag();
     }
 
-    public function render(): View
+    public function render(ListAcademicTitlesUseCase $listAcademicTitlesUseCase): View
     {
-        return view('livewire.admin.settings.user-form-modal');
+        $academicTitles = $listAcademicTitlesUseCase->execute();
+
+        return view('livewire.admin.settings.user-form-modal', compact('academicTitles'));
     }
 }

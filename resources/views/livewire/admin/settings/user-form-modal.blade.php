@@ -41,12 +41,37 @@
                 </div>
 
                 <div class="mt-4 space-y-6">
-                    {{-- Name --}}
+                    {{-- Academic Title --}}
                     <div>
-                        <flux:label for="name">{{ __('admin_settings.users.form.Name') }}</flux:label>
-                        <flux:input wire:model.defer="name" id="name" type="text" class="mt-1 block w-full" />
-                        @error('name') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
-                        @error('data.name') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                        <flux:select
+                            wire:model.defer="academic_title"
+                            label="{{ __('admin_settings.users.form.Academic Title') }}"
+                            id="academic_title">
+                            <option value="">{{ __('admin_settings.please_select') }}</option>
+                            @foreach ($academicTitles as $title)
+                                <option value="{{ $title }}">{{ $title }}</option>
+                            @endforeach
+                        </flux:select>
+                        @error('academic_title') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                        @error('data.academic_title') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {{-- First Name --}}
+                        <div>
+                            <flux:label for="first_name">{{ __('admin_settings.users.form.First Name') }}</flux:label>
+                            <flux:input wire:model.defer="first_name" id="first_name" type="text" class="mt-1 block w-full" />
+                            @error('first_name') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                            @error('data.first_name') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                        </div>
+
+                        {{-- Last Name --}}
+                        <div>
+                            <flux:label for="last_name">{{ __('admin_settings.users.form.Last Name') }}</flux:label>
+                            <flux:input wire:model.defer="last_name" id="last_name" type="text" class="mt-1 block w-full" />
+                            @error('last_name') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                            @error('data.last_name') <flux:text class="text-red-500 dark:text-red-400 mt-1 text-sm">{{ $message }}</flux:text> @enderror
+                        </div>
                     </div>
 
                     {{-- Email --}}

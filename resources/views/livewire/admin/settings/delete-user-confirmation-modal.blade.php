@@ -42,7 +42,7 @@
                         <p class="text-sm text-neutral-500 dark:text-neutral-400">
                             {{ __('admin_settings.users.modal_delete.Are you sure') }}
                             @if ($userToDelete)
-                                <strong class="font-semibold text-neutral-700 dark:text-neutral-200">{{ $userToDelete->name }} ({{ $userToDelete->email }})</strong>?
+                                <strong class="font-semibold text-neutral-700 dark:text-neutral-200">{{ $userToDelete->fullName() }} ({{ $userToDelete->email }})</strong>?
                             @else
                                 {{ __('admin_settings.users.modal_delete.this user') }}?
                             @endif

@@ -24,7 +24,13 @@
                 <thead class="bg-neutral-50 dark:bg-neutral-700/50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
-                            {{ __('admin_settings.users.table.Name') }}
+                            {{ __('admin_settings.users.table.Title') }}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                            {{ __('admin_settings.users.table.First Name') }}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
+                            {{ __('admin_settings.users.table.Last Name') }}
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider">
                             {{ __('admin_settings.users.table.Email') }}
@@ -37,8 +43,14 @@
                 <tbody class="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
                     @forelse ($users as $user)
                         <tr wire:key="user-{{ $user->id }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                                {{ $user->name }}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-neutral-100">
+                                {{ $user->academic_title ?? '-' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-neutral-100">
+                                {{ $user->first_name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-neutral-100">
+                                {{ $user->last_name }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
                                 {{ $user->email }}
@@ -76,7 +88,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="px-6 py-12 text-center">
+                            <td colspan="5" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
                                     <flux:icon name="users" class="w-12 h-12 mx-auto text-neutral-400 dark:text-neutral-500 mb-4" />
                                     <flux:text class="text-sm text-neutral-500 dark:text-neutral-400">
