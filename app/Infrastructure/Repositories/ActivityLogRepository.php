@@ -28,4 +28,9 @@ final class ActivityLogRepository implements ActivityLogRepositoryInterface
             'action' => $data->action,
         ]);
     }
+
+    public function deleteOlderThanDays(int $days = 14): int
+    {
+        return ActivityLog::where('created_at', '<', Carbon::now()->subDays($days))->delete();
+    }
 }

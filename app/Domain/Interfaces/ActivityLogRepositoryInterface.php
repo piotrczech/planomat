@@ -13,4 +13,6 @@ interface ActivityLogRepositoryInterface
     public function getByDays(int $days = 14): Collection;
 
     public function create(StoreActivityLogDto $data): ActivityLog;
+
+    public function deleteOlderThanDays(int $days = 14): int;
 }
