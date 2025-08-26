@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Presentation\Http\Middleware\AcceptedUserMiddleware;
 use App\Presentation\Http\Middleware\AdminDeanMiddleware;
 use App\Presentation\Http\Middleware\AdminOnlyMiddleware;
 use App\Presentation\Http\Middleware\RequireCurrentSemesterMiddleware;
@@ -25,7 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.dean' => AdminDeanMiddleware::class,
             'admin.only' => AdminOnlyMiddleware::class,
             'require.semester' => RequireCurrentSemesterMiddleware::class,
-            'accepted' => AcceptedUserMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
