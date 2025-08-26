@@ -30,6 +30,8 @@ use App\Domain\Interfaces\AcademicTitleRepositoryInterface;
 use App\Infrastructure\Repositories\AcademicTitleRepository;
 use SocialiteProviders\Keycloak\Provider as KeycloakSocialiteProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use App\Domain\Interfaces\Services\PdfGeneratorInterface;
+use App\Infrastructure\Services\DomPdfGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -68,6 +70,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             AcademicTitleRepositoryInterface::class,
             AcademicTitleRepository::class,
+        );
+
+        $this->app->bind(
+            PdfGeneratorInterface::class,
+            DomPdfGenerator::class,
         );
     }
 

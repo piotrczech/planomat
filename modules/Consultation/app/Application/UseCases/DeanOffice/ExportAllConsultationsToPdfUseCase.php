@@ -6,7 +6,7 @@ namespace Modules\Consultation\Application\UseCases\DeanOffice;
 
 use Modules\Consultation\Application\Services\ConsultationReportService;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
-use Modules\Consultation\Domain\Interfaces\Services\PdfGeneratorInterface;
+use App\Domain\Interfaces\Services\PdfGeneratorInterface;
 use Modules\Consultation\Domain\Enums\ConsultationType;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;

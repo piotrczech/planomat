@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Application\UseCases\DeanOffice;
 
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
-use Modules\Consultation\Domain\Interfaces\Services\PdfGeneratorInterface;
+use App\Domain\Interfaces\Services\PdfGeneratorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 

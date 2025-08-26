@@ -172,13 +172,47 @@ class DesideratumRepository implements DesideratumRepositoryInterface
     public function getAllDesiderataForPdfExport(int $semesterId): Collection
     {
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->with(['desiderata' => function ($query) use ($semesterId): void {
-                $query->where('semester_id', $semesterId)
-                    ->with(['unavailableTimeSlots', 'coursePreferences.course']);
-            }])
+            ->select(['id', 'first_name', 'last_name', 'academic_title'])
+            ->with([
+                'desiderata' => function ($query) use ($semesterId): void {
+                    $query->where('semester_id', $semesterId)
+                        ->select([
+                            'id', 'scientific_worker_id', 'semester_id',
+                            'want_stationary', 'want_non_stationary', 'agree_to_overtime',
+                            'master_theses_count', 'bachelor_theses_count',
+                            'max_hours_per_day', 'max_consecutive_hours', 'additional_notes',
+                        ]);
+                },
+                'desiderata.unavailableTimeSlots:desideratum_id,day,time_slot_id',
+                'desiderata.coursePreferences:desideratum_id,course_id,type',
+                'desiderata.coursePreferences.course:id,name',
+            ])
             ->orderBy('last_name')
             ->orderBy('first_name')
             ->get();
+    }
+
+    public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback): void
+    {
+        User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->select(['id', 'first_name', 'last_name', 'academic_title']) // Faktyczne kolumny
+            ->with([
+                'desiderata' => function ($query) use ($semesterId): void {
+                    $query->where('semester_id', $semesterId)
+                        ->select([
+                            'id', 'scientific_worker_id', 'semester_id',
+                            'want_stationary', 'want_non_stationary', 'agree_to_overtime',
+                            'master_theses_count', 'bachelor_theses_count',
+                            'max_hours_per_day', 'max_consecutive_hours', 'additional_notes',
+                        ]);
+                },
+                'desiderata.unavailableTimeSlots:desideratum_id,day,time_slot_id',
+                'desiderata.coursePreferences:desideratum_id,course_id,type',
+                'desiderata.coursePreferences.course:id,name',
+            ])
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->chunk($chunkSize, $callback);
     }
 
     public function getScientificWorkersWithoutDesiderata(int $semesterId): Collection

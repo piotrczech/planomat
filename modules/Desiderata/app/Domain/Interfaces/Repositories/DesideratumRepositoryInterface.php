@@ -21,6 +21,8 @@ interface DesideratumRepositoryInterface
 
     public function getAllDesiderataForPdfExport(int $semesterId): Collection;
 
+    public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback): void;
+
     public function getScientificWorkersWithoutDesiderata(int $semesterId): Collection;
 
     public function findLatestByScientificWorkerBeforeSemester(int $workerId, int $currentSemesterId): ?UpdateOrCreateDesideratumDto;

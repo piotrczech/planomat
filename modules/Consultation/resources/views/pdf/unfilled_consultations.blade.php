@@ -85,7 +85,7 @@
             <thead>
                 <tr>
                     <th style="width:10%;">Lp.</th>
-                    <th style="width:90%;">Imię i Nazwisko</th>
+                    <th style="width:90%;">Imię i nazwisko</th>
                 </tr>
             </thead>
             <tbody>

@@ -123,6 +123,10 @@
                     $desideratum = new \Modules\Desiderata\Infrastructure\Models\Desideratum();
                     $desideratum->setRelation('scientificWorker', $worker);
                 }
+                
+                if ($loop->iteration % 10 === 0 && function_exists('gc_collect_cycles')) {
+                    gc_collect_cycles();
+                }
             @endphp
             @include('desiderata::pdf.partials.desiderata_preferences_page', [
                 'desideratum' => $desideratum,

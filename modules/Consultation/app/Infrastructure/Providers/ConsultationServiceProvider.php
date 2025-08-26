@@ -19,8 +19,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use Modules\Consultation\Infrastructure\Repositories\ConsultationRepository;
-use Modules\Consultation\Domain\Interfaces\Services\PdfGeneratorInterface;
-use Modules\Consultation\Infrastructure\Services\DomPdfGenerator;
 use Illuminate\Console\Scheduling\Schedule;
 use Modules\Consultation\Presentation\Console\SendSemesterConsultationRemindersCommand;
 use Modules\Consultation\Presentation\Console\SendSessionConsultationRemindersCommand;
@@ -56,7 +54,6 @@ class ConsultationServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
 
         $this->app->bind(ConsultationRepositoryInterface::class, ConsultationRepository::class);
-        $this->app->bind(PdfGeneratorInterface::class, DomPdfGenerator::class);
     }
 
     /**

@@ -100,7 +100,7 @@
             <td style="width: 60%;">{{ $desideratum->max_hours_per_day ?? '-' }}</td>
         </tr>
         <tr>
-            <td>Maksymalnie godzin pod rząd:</td>
+            <td>Maksymalnie godzin z rzędu:</td>
             <td style="width: 60%;">{{ $desideratum->max_consecutive_hours ?? '-' }}</td>
         </tr>
     </table>
