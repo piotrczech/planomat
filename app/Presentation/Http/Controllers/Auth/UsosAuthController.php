@@ -63,6 +63,7 @@ final readonly class UsosAuthController
             email: (string) $socialUser->getEmail(),
             firstName: (string) ($socialUser->user['given_name'] ?? ''),
             lastName: (string) ($socialUser->user['family_name'] ?? ''),
+            academicTitle: (string) ($socialUser->user['academic_title'] ?? ''),
         );
 
         Log::debug('Logged via USOS', $dto->toArray());
