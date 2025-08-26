@@ -25,18 +25,28 @@ final class ExportAllDesiderataToPdfUseCase
 
     public function execute(int $semesterId): Response
     {
-        $semester = $this->semesterRepository->findOrFail($semesterId);
-        $reportDate = Carbon::now()->translatedFormat('d F Y H:i');
-        $allCourses = $this->getAllCoursesUseCase->execute();
+        $previousMemoryLimit = ini_get('memory_limit');
+        $previousMaxExecutionTime = ini_get('max_execution_time');
 
-        $totalWorkers = User::where('role', RoleEnum::SCIENTIFIC_WORKER)->count();
+        @ini_set('memory_limit', '1024M');
+        @ini_set('max_execution_time', '-1');
 
-        if ($totalWorkers <= 20) {
-            return $this->generateStandardPdf($semesterId, $semester, $reportDate, $allCourses);
+        try {
+            $semester = $this->semesterRepository->findOrFail($semesterId);
+            $reportDate = Carbon::now()->translatedFormat('d F Y H:i');
+            $allCourses = $this->getAllCoursesUseCase->execute();
+
+            $totalWorkers = User::where('role', RoleEnum::SCIENTIFIC_WORKER)->count();
+
+            if ($totalWorkers <= 20) {
+                return $this->generateStandardPdf($semesterId, $semester, $reportDate, $allCourses);
+            }
+
+            return $this->generateChunkedPdf($semesterId, $semester, $reportDate, $allCourses);
+        } finally {
+            @ini_set('memory_limit', (string) $previousMemoryLimit);
+            @ini_set('max_execution_time', $previousMaxExecutionTime);
         }
-
-        return $this->generateChunkedPdf($semesterId, $semester, $reportDate, $allCourses);
-
     }
 
     private function generateStandardPdf(int $semesterId, object $semester, string $reportDate, \Illuminate\Support\Collection $allCourses): Response
