@@ -21,7 +21,7 @@ class CourseSeeder extends Seeder
         ];
 
         foreach ($courseNames as $courseName) {
-            Course::create([
+            Course::firstOrCreate([
                 'name' => $courseName,
             ]);
         }
