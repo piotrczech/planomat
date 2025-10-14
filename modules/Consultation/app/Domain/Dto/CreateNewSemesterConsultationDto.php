@@ -73,10 +73,23 @@ final class CreateNewSemesterConsultationDto extends Data
                                 ->where('end_time', '>', $startTime);
                         });
 
+                    $newWeekType = $context->fullPayload['dailyConsultationWeekType'];
+
                     $query->where('day', $value)
-                        ->where(function ($q): void {
-                            $q->where('week_type', WeekTypeEnum::ALL->value)
-                                ->orWhere('week_type', request()->input('dailyConsultationWeekType'));
+                        ->where(function ($q) use ($newWeekType): void {
+                            // Check for collisions with consultations of type 'all' (always collide)
+                            $q->where('week_type', WeekTypeEnum::ALL->value);
+
+                            // Check for collisions with consultations of the same type of week
+                            if ($newWeekType !== WeekTypeEnum::ALL->value) {
+                                $q->orWhere('week_type', $newWeekType);
+                            }
+
+                            // If the new consultation has type 'all', it collides with all types
+                            if ($newWeekType === WeekTypeEnum::ALL->value) {
+                                $q->orWhere('week_type', WeekTypeEnum::ODD->value)
+                                    ->orWhere('week_type', WeekTypeEnum::EVEN->value);
+                            }
                         });
 
                     if ($query->exists()) {
@@ -112,13 +125,13 @@ final class CreateNewSemesterConsultationDto extends Data
                         $fail(__('consultation::consultation.The consultation end time must be between 8:30 and 20:30'));
                     }
                 },
-                function ($attribute, $value, $fail): void {
-                    $startTimeValue = request()->input('consultationStartTime');
+                function ($attribute, $value, $fail) use ($context): void {
+                    $startTimeValue = $context->payload['consultationStartTime'] ?? null;
 
                     if ($startTimeValue) {
                         $startTime = Carbon::createFromFormat('H:i', $startTimeValue);
                         $endTime = Carbon::createFromFormat('H:i', $value);
-                        $durationInMinutes = $endTime->diffInMinutes($startTime);
+                        $durationInMinutes = abs($endTime->diffInMinutes($startTime));
 
                         if ($durationInMinutes < 60) {
                             $fail(__('consultation::consultation.The consultation must be at least 60 minutes long'));
@@ -129,6 +142,12 @@ final class CreateNewSemesterConsultationDto extends Data
                         }
                     }
                 },
+            ],
+            'consultationLocationRoom' => [
+                'required',
+                'string',
+                'min:1',
+                'max:100',
             ],
         ];
     }
@@ -147,7 +166,9 @@ final class CreateNewSemesterConsultationDto extends Data
             'consultationEndTime.after' => __('consultation::consultation.End time must be after start time'),
             'consultationLocationBuilding.required' => __('consultation::consultation.Location is required'),
             'consultationLocationBuilding.min' => __('consultation::consultation.Location must be at least 2 characters long'),
+            'consultationLocationRoom.required' => __('consultation::consultation.Consultation location room is required'),
             'consultationLocationRoom.min' => __('consultation::consultation.Room must be at least 1 character long'),
+            'consultationLocationRoom.max' => __('consultation::consultation.Room cannot be longer than 100 characters'),
         ];
     }
 }

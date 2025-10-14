@@ -25,6 +25,7 @@ final class DeletePartTimeConsultationUseCase
 
         $deleted = $this->consultationRepository->deletePartTimeConsultation(
             $consultationId,
+            $scientificWorkerId,
         );
 
         if ($deleted) {

@@ -15,6 +15,7 @@ use Spatie\LaravelData\Attributes\Validation\Regex;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateNewSessionConsultationDto extends Data
 {
@@ -42,7 +43,7 @@ final class CreateNewSessionConsultationDto extends Data
     ) {
     }
 
-    public static function rules(): array
+    public static function rules(ValidationContext $context): array
     {
         return [
             'consultationStartTime' => [
@@ -73,13 +74,13 @@ final class CreateNewSessionConsultationDto extends Data
                         $fail(__('consultation::consultation.The consultation end time must be between 8:30 and 20:30'));
                     }
                 },
-                function ($attribute, $value, $fail): void {
-                    $formData = request()->all();
+                function ($attribute, $value, $fail) use ($context): void {
+                    $startTimeValue = $context->payload['consultationStartTime'] ?? null;
 
-                    if (isset($formData['consultationStartTime'])) {
-                        $startTime = Carbon::createFromFormat('H:i', $formData['consultationStartTime']);
+                    if ($startTimeValue) {
+                        $startTime = Carbon::createFromFormat('H:i', $startTimeValue);
                         $endTime = Carbon::createFromFormat('H:i', $value);
-                        $durationInMinutes = $endTime->diffInMinutes($startTime);
+                        $durationInMinutes = abs($endTime->diffInMinutes($startTime));
 
                         if ($durationInMinutes < 60) {
                             $fail(__('consultation::consultation.The consultation must be at least 60 minutes long'));
@@ -122,16 +123,17 @@ final class CreateNewSessionConsultationDto extends Data
                         $fail(__('consultation::consultation.Date must be between session dates'));
                     }
                 },
-                function ($attribute, $value, $fail): void {
-                    $formData = request()->all();
+                function ($attribute, $value, $fail) use ($context): void {
+                    $startTime = $context->payload['consultationStartTime'] ?? null;
+                    $endTime = $context->payload['consultationEndTime'] ?? null;
 
-                    if (!isset($formData['consultationStartTime']) || !isset($formData['consultationEndTime'])) {
+                    if (!$startTime || !$endTime) {
                         return;
                     }
 
                     $date = Carbon::parse($value);
-                    $newConsultationStart = Carbon::parse($value . ' ' . $formData['consultationStartTime']);
-                    $newConsultationEnd = Carbon::parse($value . ' ' . $formData['consultationEndTime']);
+                    $newConsultationStart = Carbon::parse($value . ' ' . $startTime);
+                    $newConsultationEnd = Carbon::parse($value . ' ' . $endTime);
 
                     $overlappingConsultations = SessionConsultation::where('scientific_worker_id', Auth::id())
                         ->where('consultation_date', $date->format('Y-m-d'))

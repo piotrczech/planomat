@@ -74,13 +74,13 @@ final class CreateNewPartTimeConsultationDto extends Data
                         $fail(__('consultation::consultation.The consultation end time must be between 8:30 and 20:30'));
                     }
                 },
-                function ($attribute, $value, $fail): void {
-                    $formData = request()->all();
+                function ($attribute, $value, $fail) use ($context): void {
+                    $startTimeValue = $context->payload['consultationStartTime'] ?? null;
 
-                    if (isset($formData['consultationStartTime'])) {
-                        $startTime = Carbon::createFromFormat('H:i', $formData['consultationStartTime']);
+                    if ($startTimeValue) {
+                        $startTime = Carbon::createFromFormat('H:i', $startTimeValue);
                         $endTime = Carbon::createFromFormat('H:i', $value);
-                        $durationInMinutes = $endTime->diffInMinutes($startTime);
+                        $durationInMinutes = abs($endTime->diffInMinutes($startTime));
 
                         if ($durationInMinutes < 60) {
                             $fail(__('consultation::consultation.The consultation must be at least 60 minutes long'));
@@ -128,8 +128,8 @@ final class CreateNewPartTimeConsultationDto extends Data
                     }
                 },
                 function ($attribute, $value, $fail) use ($context): void {
-                    $startTime = $context->payload['consultationStartTime'];
-                    $endTime = $context->payload['consultationEndTime'];
+                    $startTime = $context->payload['consultationStartTime'] ?? null;
+                    $endTime = $context->payload['consultationEndTime'] ?? null;
 
                     if (!$startTime || !$endTime) {
                         return;
