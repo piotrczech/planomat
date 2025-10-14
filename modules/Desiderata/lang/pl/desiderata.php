@@ -5,8 +5,8 @@ declare(strict_types=1);
 return [
     'My Desiderata' => 'Moje dezyderaty',
     'Stage: Teaching preferences' => 'Etap: Preferencje dydaktyczne',
-    'Desiderata Form' => 'Formularz dezyderat',
-    'Desiderata Form Semester' => 'Formularz dezyderat na semestr :semester :academicYear',
+    'Desiderata Form' => 'Formularz dezyderatów',
+    'Desiderata Form Semester' => 'Formularz dezyderatów na semestr :semester :academicYear',
     'My Desiderata Description' => 'Dezyderaty to formularz, w którym można wskazać preferencje dotyczące prowadzenia zajęć w nadchodzącym semestrze – m.in. preferowane kursy, godziny. Formularz składa się z dwóch części: preferencji dydaktycznych oraz dostępności.',
     'Dezyderaty' => 'Dezyderaty',
     'Please complete your teaching preferences for the upcoming semester' => 'Uzupełnij swoje preferencje dydaktyczne na nadchodzący semestr',

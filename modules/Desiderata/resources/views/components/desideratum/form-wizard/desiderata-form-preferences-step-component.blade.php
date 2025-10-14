@@ -166,7 +166,7 @@
         </div>
     </div>
 
-    <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg mb-8">
+    <div class="bg-gray-50 dark:bg-neutral-800/50 md:p-6 rounded-lg mb-8">
         <flux:legend class="mb-4 text-lg font-semibold" id="course-preferences-legend">
             {{ __('desiderata::desiderata.Course preferences') }}
         </flux:legend>

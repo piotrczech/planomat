@@ -61,7 +61,7 @@ final class ExportAllDesiderataToPdfUseCase
                 'semester' => $semester,
                 'allCourses' => $allCourses,
             ],
-            filename: 'raport_dezyderat_' . mb_strtolower($semester->season->label()) . '_' . str_replace('/', '_', $semester->academic_year) . '__' . Carbon::now()->format('Y-m-d') . '.pdf',
+            filename: 'raport_dezyderatów_' . mb_strtolower($semester->season->label()) . '_' . str_replace('/', '_', $semester->academic_year) . '__' . Carbon::now()->format('Y-m-d') . '.pdf',
             orientation: 'landscape',
             paperSize: 'a4',
         );
@@ -92,7 +92,7 @@ final class ExportAllDesiderataToPdfUseCase
                 'semester' => $semester,
                 'allCourses' => $allCourses,
             ],
-            filename: 'raport_dezyderat_' . mb_strtolower($semester->season->label()) . '_' . str_replace('/', '_', $semester->academic_year) . '__' . Carbon::now()->format('Y-m-d') . '.pdf',
+            filename: 'raport_dezyderatów_' . mb_strtolower($semester->season->label()) . '_' . str_replace('/', '_', $semester->academic_year) . '__' . Carbon::now()->format('Y-m-d') . '.pdf',
             orientation: 'landscape',
             paperSize: 'a4',
         );

@@ -26,7 +26,7 @@ final class ExportUnfilledDesiderataToPdfUseCase
             'reportDate' => Carbon::now()->translatedFormat('d F Y H:i'),
         ];
 
-        $filename = 'raport_dezyderaty_nieuzupelnione_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
+        $filename = 'raport_dezyderatów_nieuzupelnione_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
 
         return $this->pdfGenerator->generateFromView(
             view: 'desiderata::pdf.unfilled_desiderata',
