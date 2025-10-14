@@ -20,14 +20,36 @@ final class ConsultationReportService
             // Logic for semester and part-time consultations
             if ($consultationType === ConsultationType::Semester) {
                 if (isset($worker->semesterConsultations)) {
-                    foreach ($worker->semesterConsultations as $c) {
-                        $schedule = $c->day->label();
+                    // Group consultations by day and location
+                    $groupedConsultations = $worker->semesterConsultations->groupBy(function ($c) {
+                        return $c->day->value . '|' . $c->location_building . '|' . ($c->location_room ?? '');
+                    });
 
-                        if ($c->week_type !== WeekTypeEnum::ALL) {
-                            $schedule .= ' ' . $c->week_type->shortLabel();
+                    foreach ($groupedConsultations as $groupKey => $consultations) {
+                        $parts = explode('|', $groupKey);
+                        $day = $consultations->first()->day->label();
+                        $location = e($parts[1]) . (!empty($parts[2]) ? ',&nbsp;' . e($parts[2]) : '');
+
+                        // Group by week type within the same day and location
+                        $weekTypeGroups = $consultations->groupBy('week_type');
+                        $scheduleParts = [];
+
+                        foreach ($weekTypeGroups as $weekTypeKey => $weekConsultations) {
+                            $timeRanges = $weekConsultations->map(function ($c) {
+                                return $c->start_time->format('H:i') . ' - ' . $c->end_time->format('H:i');
+                            })->implode('; ');
+
+                            $weekType = $weekConsultations->first()->week_type;
+                            $schedulePart = $timeRanges;
+
+                            if ($weekType !== WeekTypeEnum::ALL) {
+                                $schedulePart .= ' (' . $weekType->shortLabel() . ')';
+                            }
+
+                            $scheduleParts[] = $schedulePart;
                         }
-                        $schedule .= ', ' . $c->start_time->format('H:i') . ' - ' . $c->end_time->format('H:i');
-                        $location = e($c->location_building) . ($c->location_room ? ',&nbsp;' . e($c->location_room) : '');
+
+                        $schedule = $day . ', ' . implode('; ', $scheduleParts);
                         $allLines[] = ['schedule' => $schedule, 'location' => $location, 'is_html' => false];
                     }
                 }
@@ -55,9 +77,21 @@ final class ConsultationReportService
 
             // Logic for session consultations
             if ($consultationType === ConsultationType::Session && isset($worker->sessionConsultations)) {
-                foreach ($worker->sessionConsultations as $c) {
-                    $schedule = $c->consultation_date->format('d.m.Y') . ', ' . $c->start_time->format('H:i') . ' - ' . $c->end_time->format('H:i');
-                    $location = e($c->location_building) . ($c->location_room ? ',&nbsp;' . e($c->location_room) : '');
+                // Group session consultations by date and location
+                $groupedSessionConsultations = $worker->sessionConsultations->groupBy(function ($c) {
+                    return $c->consultation_date->format('Y-m-d') . '|' . $c->location_building . '|' . ($c->location_room ?? '');
+                });
+
+                foreach ($groupedSessionConsultations as $groupKey => $consultations) {
+                    $parts = explode('|', $groupKey);
+                    $date = $consultations->first()->consultation_date->format('d.m.Y');
+                    $location = e($parts[1]) . (!empty($parts[2]) ? ',&nbsp;' . e($parts[2]) : '');
+
+                    $timeRanges = $consultations->map(function ($c) {
+                        return $c->start_time->format('H:i') . ' - ' . $c->end_time->format('H:i');
+                    })->implode('; ');
+
+                    $schedule = $date . ', ' . $timeRanges;
                     $allLines[] = ['schedule' => $schedule, 'location' => $location, 'is_html' => false];
                 }
             }
