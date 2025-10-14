@@ -85,6 +85,7 @@ select:focus[data-flux-control] {
 }
 
 .ts-wrapper.multi .ts-control > div,
+.ts-control input,
 .ts-wrapper.multi .ts-control [data-value] {
     background-image: unset;
     text-shadow: none;

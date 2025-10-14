@@ -13,6 +13,8 @@ return [
 
     'Log in to your account' => 'Log in to your account',
     'Enter your email and password below to log in' => 'Enter your email and password below to log in',
+    'Login methods description' => 'The application offers two login methods: the main USOS system and alternative login using access credentials (email and password) obtained from the dean\'s office for employees without a USOS account.',
+    'Log in with email and password' => 'Log in with email and password',
     'Email address' => 'Email address',
     'Password' => 'Password',
     'Forgot your password?' => 'Forgot your password?',

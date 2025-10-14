@@ -13,6 +13,8 @@ return [
 
     'Log in to your account' => 'Zaloguj się na swoje konto',
     'Enter your email and password below to log in' => 'Wprowadź swój email i hasło, aby się zalogować',
+    'Login methods description' => 'Aplikacja oferuje dwa sposoby logowania: główny z wykorzystaniem konta USOS oraz alternatywne logowanie za pomocą danych dostępowych (email i hasło) uzyskanych z dziekanatu dla pracowników bez konta USOS.',
+    'Log in with email and password' => 'Zaloguj się przez email i hasło',
     'Email address' => 'Adres email',
     'Password' => 'Hasło',
     'Forgot your password?' => 'Zapomniałeś hasła?',
