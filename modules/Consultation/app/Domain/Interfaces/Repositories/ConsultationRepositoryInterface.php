@@ -35,11 +35,11 @@ interface ConsultationRepositoryInterface
     /**
      * Deletes
      */
-    public function deleteSemesterConsultation(int $consultationId): bool;
+    public function deleteSemesterConsultation(int $consultationId, int $scientificWorkerId): bool;
 
-    public function deleteSessionConsultation(int $consultationId): bool;
+    public function deleteSessionConsultation(int $consultationId, int $scientificWorkerId): bool;
 
-    public function deletePartTimeConsultation(int $consultationId): bool;
+    public function deletePartTimeConsultation(int $consultationId, int $scientificWorkerId): bool;
 
     public function getLastUpdateDateForSemesterConsultation(int $scientificWorkerId, int $semesterId): ?string;
 

@@ -33,7 +33,7 @@ class NewSemesterConsultationComponent extends Component
 
     public function mount(): void
     {
-        $this->resetForm();
+        $this->resetFormToDefaults();
     }
 
     public function render()
@@ -76,10 +76,15 @@ class NewSemesterConsultationComponent extends Component
         }
     }
 
-    private function resetForm(): void
+    private function resetFormToDefaults(): void
     {
         $this->consultationWeekday = WeekdayEnum::MONDAY->value;
         $this->dailyConsultationWeekType = WeekTypeEnum::ALL->value;
+        $this->resetForm();
+    }
+
+    private function resetForm(): void
+    {
         $this->consultationStartTime = '';
         $this->consultationEndTime = '';
         $this->consultationLocationBuilding = '';

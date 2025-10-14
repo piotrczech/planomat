@@ -89,7 +89,7 @@
         </div>
     @endif
 
-    <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg mb-8">
+    <div class="bg-gray-50 dark:bg-neutral-800/50 md:p-6 rounded-lg mb-8">
         <div class="mb-6">
             <flux:label for="consultation-dates" class="block mb-2 font-medium">
                 {{ __('consultation::consultation.Consultation date') }}

@@ -26,8 +26,6 @@
         if (!weekTypeSelect) {
             weekTypeSelect = new TomSelect('#consultation-week-type', { create: false, searchField: [], controlInput: null });
         }
-
-        $wire.consultationWeekday = '{{ $consultationWeekday }}';
         
         $wire.on('consultationSaved', (data) => {
             showSuccessAlert = true;
@@ -81,7 +79,7 @@
         </div>
     @endif
 
-    <div class="bg-gray-50 dark:bg-neutral-800/50 p-6 rounded-lg mb-8">
+    <div class="bg-gray-50 dark:bg-neutral-800/50 md:pt-6 rounded-lg mb-8">
         <div class="mb-6">
             <flux:label for="consultation-weekday" class="block mb-2 font-medium">
                 {{ __('consultation::consultation.Consultation weekday') }}

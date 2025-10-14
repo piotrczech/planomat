@@ -157,12 +157,13 @@ return [
     'Location is required' => 'Location is required',
     'Building is required' => 'Building is required',
     'Room is required' => 'Room is required',
+    'Consultation location room is required' => 'Consultation location room is required',
 
     // Consultation validation
     'The consultation start time must be between 7:30 and 19:30' => 'The consultation start time must be between 7:30 and 19:30',
     'The consultation end time must be between 8:30 and 20:30' => 'The consultation end time must be between 8:30 and 20:30',
+    'The consultation must be at least 60 minutes long' => 'The consultation must be at least 60 minutes long',
     'Consultation already exists for this day and week type' => 'Consultation already exists for this day and week type',
-    'Consultation must be at least 60 minutes long' => 'Consultation must be at least 60 minutes long',
     'End time must be after start time' => 'End time must be after start time',
 
     // Weekdays
@@ -189,4 +190,12 @@ return [
 
     'in_session_winter' => 'winter',
     'in_session_summer' => 'summer',
+
+    'Compare with colleague' => 'Compare',
+    'Hide comparison' => 'Hide comparison',
+    'Clear comparison' => 'Clear comparison',
+    'Select colleague to compare' => 'Select scientific worker to compare',
+    'Choose a colleague' => 'Choose',
+    'Your consultations' => 'Your consultations',
+    'Colleague consultations' => ':name consultations',
 ];

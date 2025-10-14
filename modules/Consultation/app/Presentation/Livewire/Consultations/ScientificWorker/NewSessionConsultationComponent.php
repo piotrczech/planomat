@@ -10,6 +10,7 @@ use Modules\Consultation\Domain\Dto\CreateNewSessionConsultationDto;
 use Exception;
 use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\CreateNewSessionConsultationUseCase;
+use Illuminate\Validation\ValidationException;
 
 class NewSessionConsultationComponent extends Component
 {
@@ -30,16 +31,6 @@ class NewSessionConsultationComponent extends Component
     public string $startSessionDate = '';
 
     public string $endSessionDate = '';
-
-    protected function rules()
-    {
-        return CreateNewSessionConsultationDto::rules();
-    }
-
-    protected function messages()
-    {
-        return CreateNewSessionConsultationDto::messages();
-    }
 
     public function fetchSessionDates(): void
     {
@@ -69,10 +60,16 @@ class NewSessionConsultationComponent extends Component
 
     public function addConsultation(): void
     {
-        $validatedData = $this->validate();
+        $data = [
+            'consultationDate' => $this->consultationDate,
+            'consultationStartTime' => $this->consultationStartTime,
+            'consultationEndTime' => $this->consultationEndTime,
+            'consultationLocationBuilding' => $this->consultationLocationBuilding,
+            'consultationLocationRoom' => $this->consultationLocationRoom,
+        ];
 
         try {
-            $requestData = CreateNewSessionConsultationDto::from($validatedData);
+            $requestData = CreateNewSessionConsultationDto::validateAndCreate($data);
 
             $useCase = App::make(CreateNewSessionConsultationUseCase::class);
             $useCase->execute($requestData);
@@ -80,6 +77,8 @@ class NewSessionConsultationComponent extends Component
             $this->successMessage = __('consultation::consultation.Successfully created consultation session');
             $this->dispatch('consultationSaved');
             $this->resetForm();
+        } catch (ValidationException $e) {
+            $this->setErrorBag($e->validator->getMessageBag());
         } catch (Exception $e) {
             $this->errorMessage = __('consultation::consultation.Error: :message', ['message' => $e->getMessage()]);
         }

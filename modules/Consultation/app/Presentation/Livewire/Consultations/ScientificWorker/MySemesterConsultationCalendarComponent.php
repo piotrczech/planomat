@@ -10,6 +10,8 @@ use Livewire\Component;
 use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetSemesterConsultationsUseCase;
 use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSemesterConsultationUseCase;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetOtherScientificWorkerConsultationsUseCase;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetScientificWorkersListUseCase;
 use Exception;
 use Livewire\Attributes\On;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetConsultationSummaryTimeUseCase;
@@ -18,6 +20,10 @@ class MySemesterConsultationCalendarComponent extends Component
 {
     public array $consultationEvents = [];
 
+    public array $otherWorkerConsultationEvents = [];
+
+    public array $scientificWorkers = [];
+
     public ?string $consultationSummaryTime = null;
 
     public ?string $successMessage = null;
@@ -25,6 +31,12 @@ class MySemesterConsultationCalendarComponent extends Component
     public ?string $errorMessage = null;
 
     public string $title = '';
+
+    public ?int $selectedWorkerId = null;
+
+    public ?string $selectedWorkerName = null;
+
+    public bool $showComparison = false;
 
     public function mount(GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase): void
     {
@@ -44,6 +56,8 @@ class MySemesterConsultationCalendarComponent extends Component
             App::make(GetSemesterConsultationsUseCase::class),
             App::make(GetConsultationSummaryTimeUseCase::class),
         );
+
+        $this->loadScientificWorkers();
     }
 
     #[On('consultationSaved')]
@@ -61,6 +75,69 @@ class MySemesterConsultationCalendarComponent extends Component
         }
 
         $this->consultationEvents = $groupedEvents;
+    }
+
+    private function loadScientificWorkers(): void
+    {
+        $useCase = App::make(GetScientificWorkersListUseCase::class);
+        $workers = $useCase->execute();
+
+        $this->scientificWorkers = $workers->map(function ($worker) {
+            return [
+                'id' => $worker->id,
+                'name' => $worker->fullName(),
+                'academic_title' => $worker->academic_title,
+            ];
+        })->toArray();
+    }
+
+    public function selectWorker($workerId): void
+    {
+        if (empty($workerId) || $workerId === '' || $workerId === null) {
+            $this->clearComparison();
+
+            return;
+        }
+
+        $this->selectedWorkerId = (int) $workerId;
+
+        $selectedWorker = collect($this->scientificWorkers)
+            ->firstWhere('id', $this->selectedWorkerId);
+        $this->selectedWorkerName = $selectedWorker['name'] ?? null;
+
+        $this->loadOtherWorkerConsultations();
+    }
+
+    private function loadOtherWorkerConsultations(): void
+    {
+        if (!$this->selectedWorkerId) {
+            return;
+        }
+
+        $useCase = App::make(GetOtherScientificWorkerConsultationsUseCase::class);
+        $events = $useCase->execute($this->selectedWorkerId);
+
+        $groupedEvents = [];
+
+        foreach ($events as $event) {
+            $groupedEvents[$event['weekday']][] = $event;
+        }
+
+        $this->otherWorkerConsultationEvents = $groupedEvents;
+        $this->showComparison = true;
+    }
+
+    public function toggleComparison(): void
+    {
+        $this->showComparison = !$this->showComparison;
+    }
+
+    public function clearComparison(): void
+    {
+        $this->selectedWorkerId = null;
+        $this->selectedWorkerName = null;
+        $this->otherWorkerConsultationEvents = [];
+        $this->showComparison = false;
     }
 
     public function removeConsultation(int $eventId): void

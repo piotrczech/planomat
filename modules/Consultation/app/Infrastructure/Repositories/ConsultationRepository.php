@@ -19,6 +19,7 @@ use Modules\Consultation\Infrastructure\Models\SemesterConsultation;
 use Modules\Consultation\Infrastructure\Models\SessionConsultation;
 use App\Domain\Enums\WeekdayEnum;
 use App\Infrastructure\Models\User;
+use Exception;
 
 final class ConsultationRepository implements ConsultationRepositoryInterface
 {
@@ -72,9 +73,14 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         })->toArray();
     }
 
-    public function deleteSemesterConsultation(int $consultationId): bool
+    public function deleteSemesterConsultation(int $consultationId, int $scientificWorkerId): bool
     {
+        if (empty($scientificWorkerId)) {
+            throw new Exception('Scientific worker ID is required');
+        }
+
         $consultation = SemesterConsultation::where('id', $consultationId)
+            ->where('scientific_worker_id', $scientificWorkerId)
             ->first();
 
         if (!$consultation) {
@@ -126,9 +132,14 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         })->toArray();
     }
 
-    public function deleteSessionConsultation(int $consultationId): bool
+    public function deleteSessionConsultation(int $consultationId, int $scientificWorkerId): bool
     {
+        if (empty($scientificWorkerId)) {
+            throw new Exception('Scientific worker ID is required');
+        }
+
         $consultation = SessionConsultation::where('id', $consultationId)
+            ->where('scientific_worker_id', $scientificWorkerId)
             ->first();
 
         if (!$consultation) {
@@ -180,9 +191,14 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         })->toArray();
     }
 
-    public function deletePartTimeConsultation(int $consultationId): bool
+    public function deletePartTimeConsultation(int $consultationId, int $scientificWorkerId): bool
     {
+        if (empty($scientificWorkerId)) {
+            throw new Exception('Scientific worker ID is required');
+        }
+
         $consultation = PartTimeConsultation::where('id', $consultationId)
+            ->where('scientific_worker_id', $scientificWorkerId)
             ->first();
 
         if (!$consultation) {
