@@ -32,6 +32,10 @@ use SocialiteProviders\Keycloak\Provider as KeycloakSocialiteProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use App\Domain\Interfaces\Services\PdfGeneratorInterface;
 use App\Infrastructure\Services\DomPdfGenerator;
+use Spatie\Health\Facades\Health;
+use Spatie\Health\Checks\Checks\DatabaseCheck;
+use Spatie\Health\Checks\Checks\QueueCheck;
+use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -106,5 +110,13 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('reminder-emails', function (object $job) {
             return Limit::perMinutes(10, 5);
         });
+
+        Health::checks([
+            DatabaseCheck::new(),
+            QueueCheck::new(),
+            UsedDiskSpaceCheck::new()
+                ->failWhenUsedSpaceIsAbovePercentage(90)
+                ->daily(),
+        ]);
     }
 }

@@ -21,6 +21,7 @@
         "nwidart/laravel-modules": "^12.0",
         "socialiteproviders/keycloak": "^5.3",
         "spatie/laravel-data": "^4.15",
+        "spatie/laravel-health": "^1.34",
         "spatie/laravel-livewire-wizard": "^2.4"
     },
     "require-dev": {

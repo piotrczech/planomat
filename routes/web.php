@@ -8,8 +8,19 @@ use App\Presentation\Http\Controllers\DashboardController;
 use App\Presentation\Http\Controllers\ScientificWorkerDashboardController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use Spatie\Health\Http\Controllers\HealthCheckJsonResultsController;
+use Spatie\Health\Http\Middleware\RequiresSecretToken;
 
 Route::impersonate();
+
+Route::get('/health', HealthCheckResultsController::class)
+    ->middleware(RequiresSecretToken::class)
+    ->name('health');
+
+Route::get('/health/json', HealthCheckJsonResultsController::class)
+    ->middleware(RequiresSecretToken::class)
+    ->name('health.json');
 
 Route::get('/', function () {
     return redirect()->route('login');

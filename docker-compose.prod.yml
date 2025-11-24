@@ -9,8 +9,16 @@ services:
         volumes:
             - storage:/var/www/html/storage:rw
             - public:/var/www/html/public:rw
+        environment:
+            - HEALTH_SECRET_TOKEN=${HEALTH_SECRET_TOKEN}
         depends_on:
             - db
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f -H \"X-Secret-Token: ${HEALTH_SECRET_TOKEN}\" http://localhost:${APP_PORT:-9000}/health/json || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 30s
     queue-worker:
         build:
             context: .
@@ -38,7 +46,10 @@ services:
             - storage:/var/www/html/storage:rw
             - public:/var/www/html/public:rw
     nginx:
-        image: nginx:1-alpine
+        build:
+            context: .
+            dockerfile: docker/nginx/production/Dockerfile
+        restart: unless-stopped
         ports:
             - 80:80
             - 443:443
@@ -48,8 +59,14 @@ services:
             - public:/var/www/html/public:ro
             - ${SSL_CERT_PATH}:/etc/nginx/ssl:ro
         depends_on:
-            - app
-            - queue-worker
+            app:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
+            interval: 20s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
     db:
         image: "mariadb:11"
         platform: linux/amd64

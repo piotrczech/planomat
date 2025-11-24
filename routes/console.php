@@ -7,6 +7,7 @@ use App\Application\UseCases\Notifications\GenerateWeeklySummaryUseCase;
 use App\Application\UseCases\ActivityLog\PruneActivityLogsUseCase;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Artisan;
+use Spatie\Health\Commands\RunHealthChecksCommand;
 
 Schedule::call(function (): void {
     $useCase = app(GenerateWeeklySummaryUseCase::class);
@@ -20,6 +21,8 @@ Schedule::call(function (): void {
 Schedule::call(function (): void {
     app(PruneActivityLogsUseCase::class)->execute(14);
 })->dailyAt('03:00')->name('activity-logs-prune');
+
+Schedule::command(RunHealthChecksCommand::class)->everyMinute();
 
 Artisan::command('mail:send-weekly-summary', function (): void {
     $this->info('Generating and sending weekly summary...');
