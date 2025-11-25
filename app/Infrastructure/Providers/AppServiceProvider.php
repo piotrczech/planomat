@@ -34,6 +34,7 @@ use App\Domain\Interfaces\Services\PdfGeneratorInterface;
 use App\Infrastructure\Services\DomPdfGenerator;
 use Spatie\Health\Facades\Health;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
+use Spatie\Health\Checks\Checks\PingCheck;
 use Spatie\Health\Checks\Checks\QueueCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 
@@ -111,12 +112,25 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinutes(10, 5);
         });
 
-        Health::checks([
+        $checks = [
             DatabaseCheck::new(),
-            QueueCheck::new(),
+            PingCheck::new()
+                ->name('Application')
+                ->url(config('app.url'))
+                ->timeout(10)
+                ->retryTimes(2),
             UsedDiskSpaceCheck::new()
                 ->failWhenUsedSpaceIsAbovePercentage(90)
                 ->daily(),
-        ]);
+        ];
+
+        // Queue check only where queue workers are running
+        if (env('IS_WORKER') === 'true') {
+            $checks[] = QueueCheck::new()
+                ->onQueue('default')
+                ->failWhenHealthJobTakesLongerThanMinutes(10);
+        }
+
+        Health::checks($checks);
     }
 }

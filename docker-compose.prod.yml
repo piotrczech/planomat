@@ -3,7 +3,9 @@ services:
         build:
             context: .
             dockerfile: docker/app/production/Dockerfile
-        restart: unless-stopped
+        restart: always
+        labels:
+            - "autoheal=true"
         ports:
             - "${APP_PORT:-9000}:9000"
         volumes:
@@ -14,11 +16,11 @@ services:
         depends_on:
             - db
         healthcheck:
-            test: ["CMD-SHELL", "curl -f -H \"X-Secret-Token: ${HEALTH_SECRET_TOKEN}\" http://localhost:${APP_PORT:-9000}/health/json || exit 1"]
-            interval: 30s
+            test: ["CMD-SHELL", "php artisan health:check || exit 1"]
+            interval: 120s
             timeout: 10s
-            retries: 5
-            start_period: 30s
+            retries: 3
+            start_period: 20s
     queue-worker:
         build:
             context: .
@@ -49,7 +51,9 @@ services:
         build:
             context: .
             dockerfile: docker/nginx/production/Dockerfile
-        restart: unless-stopped
+        restart: always
+        labels:
+            - "autoheal=true"
         ports:
             - 80:80
             - 443:443
@@ -63,8 +67,8 @@ services:
                 condition: service_healthy
         healthcheck:
             test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
-            interval: 20s
-            timeout: 5s
+            interval: 120s
+            timeout: 10s
             retries: 3
             start_period: 10s
     db:
@@ -82,6 +86,15 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         volumes:
             - "db-data:/var/lib/mysql"
+    autoheal:
+        image: willfarrell/autoheal:latest
+        restart: always
+        environment:
+            - AUTOHEAL_CONTAINER_LABEL=autoheal
+            - CURL_TIMEOUT=30
+            - AUTOHEAL_INTERVAL=5
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
     storage:
