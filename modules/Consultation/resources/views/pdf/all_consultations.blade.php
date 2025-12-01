@@ -88,7 +88,7 @@
                                     @if(!$loop->first)
                                         border-top: 0px solid #000000 !important;
                                     @endif
-                                    @if(count($workerData['lines']) > 1)
+                                    @if(count($workerData['lines']) > 1 && !$loop->last)
                                         border-bottom: 0px solid #000000 !important;
                                     @endif
                                 ">

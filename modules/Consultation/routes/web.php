@@ -23,8 +23,8 @@ Route::middleware(['auth', 'verified'])->prefix('consultations')->group(function
         Route::get('export/all-consultations/pdf', [ConsultationExportController::class, 'downloadAllPdf'])
             ->name('consultations.dean-office.export.all-consultations.pdf');
 
-        Route::get('export/all-consultations/csv', [ConsultationExportController::class, 'downloadAllCsv'])
-            ->name('consultations.dean-office.export.all-consultations.csv');
+        Route::get('export/all-consultations/excel', [ConsultationExportController::class, 'downloadAllExcel'])
+            ->name('consultations.dean-office.export.all-consultations.excel');
 
         Route::get('export/unfilled-consultations/pdf', [ConsultationExportController::class, 'downloadUnfilledPdf'])
             ->name('consultations.dean-office.export.unfilled-consultations.pdf');

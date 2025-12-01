@@ -12,8 +12,6 @@ use Modules\Consultation\Domain\Enums\ConsultationType;
 
 interface ConsultationRepositoryInterface
 {
-    public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection;
-
     /**
      * Creates
      */

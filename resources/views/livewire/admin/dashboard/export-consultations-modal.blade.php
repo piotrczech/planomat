@@ -51,12 +51,12 @@
                                 <span class="font-semibold text-sm">Raport PDF</span>
                             </button>
                             <button
-                                wire:click="export('semester_csv')"
+                                wire:click="export('semester_excel')"
                                 type="button"
                                 class="flex w-full items-center p-3 text-left bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm hover:border-primary-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200"
                             >
                                 <flux:icon name="table-cells" class="w-5 h-5 mr-3 text-neutral-500 dark:text-neutral-400"/>
-                                <span class="font-semibold text-sm">Raport CSV</span>
+                                <span class="font-semibold text-sm">Raport Excel</span>
                             </button>
                             <button
                                 wire:click="export('unfilled_semester')"
@@ -81,12 +81,12 @@
                                 <span class="font-semibold text-sm">Raport PDF</span>
                             </button>
                             <button
-                                wire:click="export('session_csv')"
+                                wire:click="export('session_excel')"
                                 type="button"
                                 class="flex w-full items-center p-3 text-left bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm hover:border-primary-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200"
                             >
                                 <flux:icon name="table-cells" class="w-5 h-5 mr-3 text-neutral-500 dark:text-neutral-400"/>
-                                <span class="font-semibold text-sm">Raport CSV</span>
+                                <span class="font-semibold text-sm">Raport Excel</span>
                             </button>
                             <button
                                 wire:click="export('unfilled_session')"
@@ -109,4 +109,4 @@
             </div>
         </div>
     </div>
-</div>                     {{-- Row 2: New reports for unfilled --}} 
+</div> 

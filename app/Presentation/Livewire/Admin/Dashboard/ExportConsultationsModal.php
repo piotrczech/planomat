@@ -48,10 +48,10 @@ class ExportConsultationsModal extends Component
             ]);
         }
 
-        if (in_array($type, ['semester_csv', 'session_csv'])) {
-            $realType = str_replace('_csv', '', $type);
+        if (in_array($type, ['semester_excel', 'session_excel'])) {
+            $realType = str_replace('_excel', '', $type);
 
-            return redirect()->route('consultations.dean-office.export.all-consultations.csv', [
+            return redirect()->route('consultations.dean-office.export.all-consultations.excel', [
                 'semester' => $semesterToExport,
                 'type' => $realType,
             ]);

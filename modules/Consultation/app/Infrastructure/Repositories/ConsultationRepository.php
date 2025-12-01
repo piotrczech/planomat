@@ -309,11 +309,6 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             ->get();
     }
 
-    public function fetchAllForPdfExportBySemesterAndType(int $semesterId, ConsultationType $type): Collection
-    {
-        return $this->getAllScientificWorkersWithConsultations($semesterId, $type);
-    }
-
     public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type): Collection
     {
         $consultationRelation = match ($type) {
