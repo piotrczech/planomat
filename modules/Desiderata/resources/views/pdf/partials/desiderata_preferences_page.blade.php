@@ -40,16 +40,20 @@
         @php
             $coursePreferences = $desideratum->coursePreferences ?? collect();
             $wantedCourses = $coursePreferences->where('type', CoursePreferenceTypeEnum::WANTED);
-            $couldCourses = $coursePreferences->where('type', CoursePreferenceTypeEnum::COULD);
             $unwantedCourses = $coursePreferences->where('type', CoursePreferenceTypeEnum::UNWANTED);
+            
+            $wantedCourseIds = $wantedCourses->pluck('course_id')->toArray();
+            $unwantedCourseIds = $unwantedCourses->pluck('course_id')->toArray();
+            $excludedCourseIds = array_merge($wantedCourseIds, $unwantedCourseIds);
+            $canTeachCourses = $allCourses->filter(fn($course) => !in_array($course->id, $excludedCourseIds));
         @endphp
         <tr>
             <td style="width: 40%;">Kursy, które <strong>mogę</strong> prowadzić:</td>
             <td style="width: 60%;">
                 @if(!$desideratum->exists)
                     {{ $allCourses->map(fn($course) => $course->name)->join(', ') }}
-                @elseif($couldCourses->isNotEmpty())
-                    {{ $couldCourses->map(fn($pref) => $pref->course?->name ?? 'Błąd')->join(', ') }}
+                @elseif($canTeachCourses->isNotEmpty())
+                    {{ $canTeachCourses->map(fn($course) => $course->name)->join(', ') }}
                 @else
                     Brak wskazanych.
                 @endif
