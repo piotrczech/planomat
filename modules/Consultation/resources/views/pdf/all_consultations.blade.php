@@ -69,7 +69,12 @@
             <thead>
                 <tr>
                     <th colspan="3">
-                        Wydział Matematyki Konsultacje pracowników w semestrze {{ $seasonLabel }} {{ $semester->academic_year }}
+                        @php
+                            $titleKey = $consultationType === ConsultationType::Session
+                                ? 'consultation::consultation.export_pdf_title_session'
+                                : 'consultation::consultation.export_pdf_title_semester';
+                        @endphp
+                        {{ __($titleKey, ['season' => $seasonLabel, 'year' => $semester->academic_year]) }} {{ __('consultation::consultation.export_pdf_faculty') }}
                     </th>
                 </tr>
                 <tr>

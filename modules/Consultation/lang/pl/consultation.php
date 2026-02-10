@@ -185,6 +185,9 @@ return [
     'in_semester_summer' => 'letnim',
     'in_session_winter' => 'zimowej',
     'in_session_summer' => 'letniej',
+    'export_pdf_title_semester' => 'Konsultacje pracowników w semestrze :season :year.',
+    'export_pdf_title_session' => 'Konsultacje pracowników w sesji :season :year.',
+    'export_pdf_faculty' => 'Wydział Matematyki.',
     'no_semester_or_dates_configured' => 'Aktywny semestr nie został odnaleziony lub nie ma poprawnie skonfigurowanych dat.',
 
     'Compare with colleague' => 'Porównaj',

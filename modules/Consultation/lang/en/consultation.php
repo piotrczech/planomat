@@ -188,8 +188,13 @@ return [
     'timeslot_taken' => 'The selected time slot is already taken.',
     'end_time_after_start_time' => 'The consultation end time must be after the start time.',
 
+    'in_semester_winter' => 'winter',
+    'in_semester_summer' => 'summer',
     'in_session_winter' => 'winter',
     'in_session_summer' => 'summer',
+    'export_pdf_title_semester' => 'Staff consultations in :season semester :year.',
+    'export_pdf_title_session' => 'Staff consultations in :season session :year.',
+    'export_pdf_faculty' => 'Faculty of Mathematics.',
 
     'Compare with colleague' => 'Compare',
     'Hide comparison' => 'Hide comparison',
