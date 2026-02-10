@@ -109,6 +109,7 @@ return [
     'No consultations on this day' => 'Brak konsultacji w tym dniu',
     'consultation_singular' => 'konsultacja',
     'consultations_plural' => 'konsultacje',
+    'Session day own count' => 'własne: :own/:total',
 
     'Success' => 'Sukces',
     'Error' => 'Błąd',

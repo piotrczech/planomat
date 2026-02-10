@@ -8,9 +8,30 @@
         showNoConsultationMessage: false,
         selectedDay: null,
         noConsultationDate: null,
-        consultationsForDay: []
+        consultationsForDay: [],
+        workerSelect: null
     }"
     x-init="
+        $watch('$wire.showComparison', (value) => {
+            if (value) {
+                $nextTick(() => {
+                    initTomSelect();
+                });
+            } else {
+                if (workerSelect) {
+                    workerSelect.destroy();
+                    workerSelect = null;
+                }
+            }
+        });
+        
+        $watch('$wire.selectedWorkerId', (value) => {
+            if (!value && workerSelect) {
+                workerSelect.destroy();
+                workerSelect = null;
+            }
+        });
+        
         $watch('$wire.successMessage', (value) => {
             if (value) {
                 showSuccessAlert = true;
@@ -32,6 +53,37 @@
                 }, 5000);
             }
         });
+        
+        $wire.on('consultationDeleted', () => {
+            showSuccessAlert = true;
+            successMessage = '{{ __('consultation::consultation.Consultation successfully deleted') }}';
+            setTimeout(() => { 
+                showSuccessAlert = false;
+            }, 5000);
+        });
+        
+        function initTomSelect() {
+            const selectElement = document.getElementById('worker-select');
+            if (selectElement) {
+                if (workerSelect) {
+                    workerSelect.destroy();
+                    workerSelect = null;
+                }
+                
+                if (!selectElement.tomselect) {
+                    workerSelect = new TomSelect('#worker-select', {
+                        create: false,
+                        searchField: ['name'],
+                        valueField: 'id',
+                        labelField: 'name',
+                        options: {{ json_encode($scientificWorkers) }},
+                        onChange(value) {
+                            $wire.selectWorker(value);
+                        }
+                    });
+                }
+            }
+        }
     "
 >
     <flux:heading
@@ -42,11 +94,68 @@
         {{ $title }}
     </flux:heading>
 
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center space-x-4 w-full md:w-auto">
+            <flux:button
+                wire:click="toggleComparison"
+                variant="outline"
+                icon="users"
+                :class="$showComparison ? 'bg-indigo-100 text-indigo-700' : ''"
+                class="w-full md:w-auto"
+            >
+                {{ $showComparison ? __('consultation::consultation.Hide comparison') : __('consultation::consultation.Compare with colleague') }}
+            </flux:button>
+            
+            @if($showComparison)
+                <flux:button
+                    wire:click="clearComparison"
+                    variant="ghost"
+                    icon="x-mark"
+                    size="sm"
+                >
+                    {{ __('consultation::consultation.Clear comparison') }}
+                </flux:button>
+            @endif
+        </div>
+    </div>
+
     <flux:text class="mb-6">
         <p>
             {{ __('consultation::consultation.My semester consultation description') }}
         </p>
     </flux:text>
+
+    @if($showComparison)
+        <div class="mb-6 pb-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
+            <flux:field>
+                <flux:label>{{ __('consultation::consultation.Select colleague to compare') }}</flux:label>
+                <div wire:ignore>
+                    <select 
+                        id="worker-select" 
+                        class="w-full"
+                    >
+                        <option value="">{{ __('consultation::consultation.Choose a colleague') }}</option>
+                        @foreach($scientificWorkers as $worker)
+                            <option value="{{ $worker['id'] }}">{{ $worker['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </flux:field>
+            
+            @if($selectedWorkerName)
+                <div class="mt-4 flex items-center justify-center space-x-8 text-sm">
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-indigo-100 border border-indigo-300 rounded mr-2"></div>
+                        <span class="font-medium">{{ __('consultation::consultation.Your consultations') }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-green-100 border border-green-300 rounded mr-2"></div>
+                        <span class="font-medium">{{ __('consultation::consultation.Colleague consultations', ['name' => $selectedWorkerName]) }}</span>
+                    </div>
+                </div>
+            @endif
+        </div>
+    @endif
 
     <!-- Komunikat sukcesu -->
     <div x-show="showSuccessAlert" x-transition class="mb-6">
@@ -63,7 +172,6 @@
         </flux:callout>
     </div>
 
-    <!-- Ogólny komunikat o błędach -->
     <div x-show="showErrorAlert" x-transition class="mb-6">
         <flux:callout 
             variant="danger" 
@@ -78,9 +186,7 @@
         </flux:callout>
     </div>
 
-    <!-- Widok kalendarza sesji egzaminacyjnej -->
     <div class="dark:bg-zinc-900 rounded-lg">
-        <!-- Calendar header with month navigation -->
         <div class="flex justify-between items-center mb-4 bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg">
             <div class="flex items-center">
                 <flux:heading
@@ -125,10 +231,20 @@
                 @php
                     $isDisabled = !$day['isInSessionRange'] || !$day['isCurrentMonth'];
                     $isWeekend = in_array($day['dayOfWeek'], [6, 0]); // 6=Saturday, 0=Sunday
-                    $consultationsForDay = collect($consultationEvents)
+                    $myForDay = collect($consultationEvents)
                         ->filter(fn($event) => $event['consultation_date'] === $day['date'])
-                        ->toArray();
+                        ->values()
+                        ->all();
+                    $otherForDay = ($showComparison && $selectedWorkerId && !empty($otherWorkerConsultationEvents))
+                        ? collect($otherWorkerConsultationEvents)->filter(fn($event) => $event['consultation_date'] === $day['date'])->values()->all()
+                        : [];
+                    $consultationsForDay = array_merge(
+                        array_map(fn($e) => $e + ['owner' => 'me', 'ownerName' => 'Ty'], $myForDay),
+                        array_map(fn($e) => $e + ['owner' => 'other', 'ownerName' => $selectedWorkerName ?? ''], $otherForDay)
+                    );
                     $hasConsultations = count($consultationsForDay) > 0;
+                    $ownCount = count($myForDay);
+                    $totalCount = count($consultationsForDay);
                 @endphp
                 <div wire:key="day-{{ $day['date'] }}" 
                     class="aspect-square {{ !$day['isCurrentMonth'] ? 'opacity-40' : '' }} 
@@ -166,11 +282,10 @@
                                       border-x border-b">
                                 @if($hasConsultations && !$isDisabled)
                                     <div class="text-center text-xs font-medium text-indigo-700 dark:text-indigo-200">
-                                        {{ count($consultationsForDay) }} 
-                                        @if(count($consultationsForDay) == 1)
-                                            {{ __('consultation::consultation.consultation_singular') }}
-                                        @else
-                                            {{ __('consultation::consultation.consultations_plural') }}
+                                        {{ $totalCount }}
+                                        {{ $totalCount === 1 ? __('consultation::consultation.consultation_singular') : __('consultation::consultation.consultations_plural') }}
+                                        @if($showComparison && $selectedWorkerId)
+                                            ({{ __('consultation::consultation.Session day own count', ['own' => $ownCount, 'total' => $totalCount]) }})
                                         @endif
                                     </div>
                                 @endif
@@ -228,6 +343,14 @@
                             <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 dark:bg-zinc-850">
                                 <div class="flex justify-between items-start">
                                     <div>
+                                        <div class="flex items-center mb-2">
+                                            <div 
+                                                class="w-3 h-3 rounded mr-2"
+                                                :class="consultation.owner === 'me' ? 'bg-indigo-100 border border-indigo-300' : 'bg-green-100 border border-green-300'"
+                                            ></div>
+                                            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300" x-text="consultation.ownerName || ''"></span>
+                                        </div>
+                                        
                                         <div class="flex items-center">
                                             <flux:icon 
                                                 name="clock" 
@@ -241,13 +364,14 @@
                                                 name="map-pin" 
                                                 class="h-4 w-4 text-zinc-500 dark:text-zinc-400 mr-1.5" 
                                             />
-                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationBuilding"></span>
+                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationBuilding || ''"></span>
                                             <span x-show="consultation.locationRoom">,&nbsp;</span>
-                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationRoom"></span>
+                                            <span class="text-sm text-zinc-600 dark:text-zinc-300" x-text="consultation.locationRoom || ''"></span>
                                         </div>
                                     </div>
                                     
                                     <flux:button
+                                        x-show="consultation.owner === 'me'"
                                         @click="$wire.removeConsultation(consultation.id).then(() => { 
                                             showConsultationDetails = false;
                                             showSuccessAlert = true;

@@ -12,11 +12,17 @@ use Illuminate\Support\Facades\App;
 use Modules\Consultation\Application\UseCases\ScientificWorker\GetSessionConsultationsUseCase;
 use Livewire\Attributes\On;
 use Modules\Consultation\Application\UseCases\ScientificWorker\DeleteSessionConsultationUseCase;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetOtherScientificWorkerSessionConsultationsUseCase;
+use Modules\Consultation\Application\UseCases\ScientificWorker\GetScientificWorkersListUseCase;
 use App\Domain\Enums\SemesterSeasonEnum;
 
 class MySessionConsultationCalendarComponent extends Component
 {
     public array $consultationEvents = [];
+
+    public array $otherWorkerConsultationEvents = [];
+
+    public array $scientificWorkers = [];
 
     public Carbon $currentMonth;
 
@@ -35,6 +41,12 @@ class MySessionConsultationCalendarComponent extends Component
     public bool $calendarEnabled = false;
 
     public string $title = '';
+
+    public ?int $selectedWorkerId = null;
+
+    public ?string $selectedWorkerName = null;
+
+    public bool $showComparison = false;
 
     public function mount(): void
     {
@@ -83,6 +95,62 @@ class MySessionConsultationCalendarComponent extends Component
 
         $this->generateCalendarDays();
         $this->loadConsultations();
+        $this->loadScientificWorkers();
+    }
+
+    private function loadScientificWorkers(): void
+    {
+        $useCase = App::make(GetScientificWorkersListUseCase::class);
+        $workers = $useCase->execute();
+
+        $this->scientificWorkers = $workers->map(function ($worker) {
+            return [
+                'id' => $worker->id,
+                'name' => $worker->fullName(),
+                'academic_title' => $worker->academic_title,
+            ];
+        })->toArray();
+    }
+
+    public function selectWorker($workerId): void
+    {
+        if (empty($workerId) || $workerId === '' || $workerId === null) {
+            $this->clearComparison();
+
+            return;
+        }
+
+        $this->selectedWorkerId = (int) $workerId;
+
+        $selectedWorker = collect($this->scientificWorkers)
+            ->firstWhere('id', $this->selectedWorkerId);
+        $this->selectedWorkerName = $selectedWorker['name'] ?? null;
+
+        $this->loadOtherWorkerSessionConsultations();
+    }
+
+    private function loadOtherWorkerSessionConsultations(): void
+    {
+        if (!$this->selectedWorkerId) {
+            return;
+        }
+
+        $useCase = App::make(GetOtherScientificWorkerSessionConsultationsUseCase::class);
+        $this->otherWorkerConsultationEvents = $useCase->execute($this->selectedWorkerId);
+        $this->showComparison = true;
+    }
+
+    public function toggleComparison(): void
+    {
+        $this->showComparison = !$this->showComparison;
+    }
+
+    public function clearComparison(): void
+    {
+        $this->selectedWorkerId = null;
+        $this->selectedWorkerName = null;
+        $this->otherWorkerConsultationEvents = [];
+        $this->showComparison = false;
     }
 
     public function generateAvailableMonths(): void
