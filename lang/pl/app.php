@@ -89,10 +89,15 @@ return [
 
     'auth.not_registered' => 'Przepraszamy, ale to konto nie jest zarejestrowane w systemie PlanoMAT. Skontaktuj się z administratorem.',
     'auth.failed' => 'Nieprawidłowy email lub hasło. Spróbuj ponownie.',
+    'auth.suspended' => 'To konto jest tymczasowo zawieszone. Skontaktuj się z dziekanatem.',
     'Log out' => 'Wyloguj',
 
     'account_pending' => [
         'title' => 'Konto nie jest częścią systemu PlanoMAT',
         'description' => 'Państwa konto zostało pomyślnie uwierzytelnione w systemie USOS, jednak administrator planoMAT nie wprowadził go do systemu. Jeśli uważają Państwo, że powinno być możliwe logowanie, prosimy o kontakt z dziekanatem.',
+    ],
+    'account_suspended' => [
+        'title' => 'Konto zostało zawieszone',
+        'description' => 'To konto zostało tymczasowo wyłączone w systemie PlanoMAT. W celu przywrócenia dostępu prosimy o kontakt z dziekanatem.',
     ],
 ];

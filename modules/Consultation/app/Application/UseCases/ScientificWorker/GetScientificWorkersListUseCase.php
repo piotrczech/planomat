@@ -14,6 +14,7 @@ final readonly class GetScientificWorkersListUseCase
     {
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
             ->whereNull('deleted_at')
+            ->where('is_active', true)
             ->orderBy('last_name')
             ->orderBy('first_name')
             ->get(['id', 'first_name', 'last_name', 'academic_title']);

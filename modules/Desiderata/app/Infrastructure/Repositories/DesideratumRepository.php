@@ -171,8 +171,16 @@ class DesideratumRepository implements DesideratumRepositoryInterface
 
     public function getAllDesiderataForPdfExport(int $semesterId): Collection
     {
-        return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->select(['id', 'first_name', 'last_name', 'academic_title'])
+        return User::withTrashed()
+            ->where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->where(function ($query) use ($semesterId): void {
+                $query
+                    ->whereNull('deleted_at')
+                    ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
+                        $desiderataQuery->where('semester_id', $semesterId);
+                    });
+            })
+            ->select(['id', 'first_name', 'last_name', 'academic_title', 'email', 'is_active', 'deleted_at'])
             ->with([
                 'desiderata' => function ($query) use ($semesterId): void {
                     $query->where('semester_id', $semesterId)
@@ -194,8 +202,16 @@ class DesideratumRepository implements DesideratumRepositoryInterface
 
     public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback): void
     {
-        User::where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->select(['id', 'first_name', 'last_name', 'academic_title']) // Faktyczne kolumny
+        User::withTrashed()
+            ->where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->where(function ($query) use ($semesterId): void {
+                $query
+                    ->whereNull('deleted_at')
+                    ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
+                        $desiderataQuery->where('semester_id', $semesterId);
+                    });
+            })
+            ->select(['id', 'first_name', 'last_name', 'academic_title', 'email', 'is_active', 'deleted_at'])
             ->with([
                 'desiderata' => function ($query) use ($semesterId): void {
                     $query->where('semester_id', $semesterId)
@@ -218,6 +234,8 @@ class DesideratumRepository implements DesideratumRepositoryInterface
     public function getScientificWorkersWithoutDesiderata(int $semesterId): Collection
     {
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->whereNull('deleted_at')
+            ->where('is_active', true)
             ->whereDoesntHave('desiderata', function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })

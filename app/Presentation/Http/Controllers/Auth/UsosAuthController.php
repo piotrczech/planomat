@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Controllers\Auth;
 
+use App\Application\Exceptions\SuspendedAccountException;
 use App\Application\UseCases\Auth\LoginViaUsosUseCase;
 use App\Domain\Dto\ExternalAuthUserDto;
 use Illuminate\Auth\AuthenticationException;
@@ -72,6 +73,15 @@ final readonly class UsosAuthController
             $useCase->execute($dto);
 
             return redirect()->intended(route('dashboard'));
+        } catch (SuspendedAccountException) {
+            session([
+                'logged_inactive_account' => true,
+                'logged_via_usos' => true,
+            ]);
+
+            Auth::logout();
+
+            return redirect()->route('account.suspended');
         } catch (AuthenticationException $e) {
             session([
                 'logged_via_usos_no_account' => true,

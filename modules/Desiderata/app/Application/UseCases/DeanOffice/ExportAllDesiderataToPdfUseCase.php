@@ -36,7 +36,16 @@ final class ExportAllDesiderataToPdfUseCase
             $reportDate = Carbon::now()->translatedFormat('d F Y H:i');
             $allCourses = $this->getAllCoursesUseCase->execute();
 
-            $totalWorkers = User::where('role', RoleEnum::SCIENTIFIC_WORKER)->count();
+            $totalWorkers = User::withTrashed()
+                ->where('role', RoleEnum::SCIENTIFIC_WORKER)
+                ->where(function ($query) use ($semesterId): void {
+                    $query
+                        ->whereNull('deleted_at')
+                        ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
+                            $desiderataQuery->where('semester_id', $semesterId);
+                        });
+                })
+                ->count();
 
             if ($totalWorkers <= 20) {
                 return $this->generateStandardPdf($semesterId, $semester, $reportDate, $allCourses);

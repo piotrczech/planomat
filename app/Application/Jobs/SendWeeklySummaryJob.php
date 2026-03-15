@@ -26,6 +26,7 @@ final class SendWeeklySummaryJob implements ShouldQueue
     {
         $recipients = User::whereIn('role', [RoleEnum::ADMINISTRATOR, RoleEnum::DEAN_OFFICE_WORKER])
             ->whereNull('deleted_at')
+            ->where('is_active', true)
             ->get();
 
         foreach ($recipients as $recipient) {

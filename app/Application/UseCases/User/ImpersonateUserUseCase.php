@@ -36,6 +36,14 @@ final class ImpersonateUserUseCase
             return false;
         }
 
+        if (!$userToImpersonate->is_active) {
+            Log::warning('[ImpersonateUserUseCase] User is suspended and cannot be impersonated.', [
+                'impersonated_user_id' => $userToImpersonate->id,
+            ]);
+
+            return false;
+        }
+
         if ($adminUser->is($userToImpersonate)) {
             Log::warning('[ImpersonateUserUseCase] Admin user tried to impersonate self.');
 

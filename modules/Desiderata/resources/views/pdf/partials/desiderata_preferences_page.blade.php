@@ -2,12 +2,16 @@
     use App\Domain\Enums\CoursePreferenceTypeEnum;
 
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
+    /** @var \App\Infrastructure\Models\User|null $worker */
     $worker = $desideratum->scientificWorker;
+    $workerLabel = $worker
+        ? ($worker->isArchived() ? $worker->reportIdentityLabel() : $worker->name)
+        : 'Nieznany pracownik';
 @endphp
 
 <div class="page-content">
     <div class="employee-header">
-        {{ $worker->name }}
+        {{ $workerLabel }}
 
         @if(!$desideratum->exists)
             (pracownik nie uzupełnił dokumentu)

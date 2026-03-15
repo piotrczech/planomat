@@ -31,6 +31,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'is_active',
         'usos_id',
     ];
 
@@ -45,6 +46,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => RoleEnum::class,
+            'is_active' => 'boolean',
         ];
     }
 
@@ -90,6 +92,72 @@ class User extends Authenticatable
         return $this->role === $role;
     }
 
+    public function isArchived(): bool
+    {
+        return $this->trashed();
+    }
+
+    public function canBeRestoredWithinWindow(): bool
+    {
+        if (!$this->trashed() || !$this->deleted_at) {
+            return false;
+        }
+
+        return $this->deleted_at->greaterThanOrEqualTo(now()->subDay());
+    }
+
+    public function getIsRestoreAllowedAttribute(): bool
+    {
+        return $this->canBeRestoredWithinWindow();
+    }
+
+    public function getDisplayEmailAttribute(): string
+    {
+        return self::stripArchiveSuffixFromEmail($this->email);
+    }
+
+    public static function stripArchiveSuffixFromEmail(string $email): string
+    {
+        [$localPart, $domainPart] = self::splitEmail($email);
+        $baseLocalPart = preg_replace('/\+archiwizacja\d+$/', '', $localPart) ?? $localPart;
+
+        return $domainPart === ''
+            ? $baseLocalPart
+            : sprintf('%s@%s', $baseLocalPart, $domainPart);
+    }
+
+    public static function formatArchivedEmail(string $baseEmail, int $archiveIndex): string
+    {
+        [$localPart, $domainPart] = self::splitEmail($baseEmail);
+
+        return $domainPart === ''
+            ? sprintf('%s+archiwizacja%d', $localPart, $archiveIndex)
+            : sprintf('%s+archiwizacja%d@%s', $localPart, $archiveIndex, $domainPart);
+    }
+
+    public function getArchivedAtFormattedAttribute(): ?string
+    {
+        return $this->deleted_at?->format('d.m.Y H:i');
+    }
+
+    public function reportIdentityLabel(): string
+    {
+        $label = sprintf('%s (%s)', $this->fullName(), $this->display_email);
+
+        if ($this->isArchived()) {
+            $archivedAt = $this->archived_at_formatted ?? '-';
+            $archivedStatus = __('admin_settings.users.status.Archived At', ['date' => $archivedAt]);
+
+            return sprintf('%s [%s]', $label, $archivedStatus);
+        }
+
+        if (!$this->is_active) {
+            return sprintf('%s [%s]', $label, __('admin_settings.users.status.Suspended'));
+        }
+
+        return $label;
+    }
+
     public function canImpersonate(): bool
     {
         return $this->hasRole(RoleEnum::ADMINISTRATOR) || $this->hasRole(RoleEnum::DEAN_OFFICE_WORKER);
@@ -118,5 +186,19 @@ class User extends Authenticatable
     public function desiderata(): HasMany
     {
         return $this->hasMany(Desideratum::class, 'scientific_worker_id');
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private static function splitEmail(string $email): array
+    {
+        $parts = explode('@', $email, 2);
+
+        if (count($parts) !== 2 || $parts[0] === '' || $parts[1] === '') {
+            return [$email, ''];
+        }
+
+        return [$parts[0], $parts[1]];
     }
 }

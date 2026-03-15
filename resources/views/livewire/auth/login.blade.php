@@ -1,5 +1,6 @@
 <?php
 
+use App\Infrastructure\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -29,6 +30,16 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $this->validate();
 
         $this->ensureIsNotRateLimited();
+
+        $user = User::where('email', $this->email)->first();
+
+        if ($user && !$user->is_active && Auth::validate(['email' => $this->email, 'password' => $this->password])) {
+            session(['logged_inactive_account' => true]);
+            RateLimiter::clear($this->throttleKey());
+            $this->redirectIntended(default: route('account.suspended', absolute: false), navigate: true);
+
+            return;
+        }
 
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
@@ -77,6 +88,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         if (Session::get('logged_via_usos_no_account', false)) {
             $this->redirectIntended(default: route('account.pending', absolute: false), navigate: true);
+        }
+
+        if (Session::get('logged_inactive_account', false)) {
+            $this->redirectIntended(default: route('account.suspended', absolute: false), navigate: true);
         }
     }
 

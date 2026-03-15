@@ -22,5 +22,6 @@ yarn-error.log
 /.vscode
 /.zed
 .cursor
+.codex
 backups/**/*
 !backups/.gitkeep

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Presentation\Http\Middleware\AdminDeanMiddleware;
 use App\Presentation\Http\Middleware\AdminOnlyMiddleware;
+use App\Presentation\Http\Middleware\EnsureActiveUserMiddleware;
 use App\Presentation\Http\Middleware\RequireCurrentSemesterMiddleware;
 use App\Presentation\Http\Middleware\RoleMiddleware;
 use App\Presentation\Http\Middleware\ScientificWorkerMiddleware;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.dean' => AdminDeanMiddleware::class,
             'admin.only' => AdminOnlyMiddleware::class,
             'require.semester' => RequireCurrentSemesterMiddleware::class,
+            'active.user' => EnsureActiveUserMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

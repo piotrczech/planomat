@@ -1,7 +1,10 @@
 @php
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
-    /** @var \App\Infrastructure\Models\User $worker */
+    /** @var \App\Infrastructure\Models\User|null $worker */
     $worker = $desideratum->scientificWorker;
+    $workerLabel = $worker
+        ? ($worker->isArchived() ? $worker->reportIdentityLabel() : $worker->name)
+        : 'Nieznany pracownik';
 
     $unavailableSlotsMap = [];
     if ($desideratum->exists) {
@@ -27,7 +30,7 @@
 
 <div class="page-content">
     <small>
-        {{ $worker->name }}{{ !$desideratum->exists ? ' (pracownik nie uzupełnił dokumentu):' : ':' }}
+        {{ $workerLabel }}{{ !$desideratum->exists ? ' (pracownik nie uzupełnił dokumentu):' : ':' }}
     </small>
 
     <table style="font-size: 9px;">

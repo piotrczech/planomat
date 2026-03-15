@@ -6,6 +6,7 @@ namespace App\Application\UseCases\User;
 
 use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Domain\Enums\RoleEnum;
+use App\Domain\Enums\UserListViewEnum;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class ListUsersUseCase
@@ -18,7 +19,8 @@ final class ListUsersUseCase
         string $search = '',
         int $perPage = 15,
         ?RoleEnum $filterRole = RoleEnum::SCIENTIFIC_WORKER,
+        UserListViewEnum $viewFilter = UserListViewEnum::ACTIVE,
     ): LengthAwarePaginator {
-        return $this->userRepository->getAllPaginated($search, $perPage, $filterRole);
+        return $this->userRepository->getAllPaginated($search, $perPage, $filterRole, $viewFilter);
     }
 }

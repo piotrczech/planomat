@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Presentation\Livewire\Admin\Settings;
 
-use App\Application\UseCases\User\DeleteUserUseCase;
+use App\Application\UseCases\User\ArchiveUserUseCase;
+use App\Application\UseCases\User\GetUserUseCase;
 use App\Application\UseCases\User\ImpersonateUserUseCase;
 use App\Application\UseCases\User\ListUsersUseCase;
+use App\Application\UseCases\User\RestoreUserUseCase;
+use App\Application\UseCases\User\SetUserActiveUseCase;
 use App\Domain\Enums\RoleEnum;
+use App\Domain\Enums\UserListViewEnum;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -27,13 +31,19 @@ class UserManager extends Component
 
     public bool $showEditUserModal = false;
 
-    public bool $showDeleteConfirmationModal = false;
+    public bool $showArchiveConfirmationModal = false;
+
+    public bool $showRestoreErrorModal = false;
+
+    public string $restoreErrorMessage = '';
 
     public ?int $editingUserId = null;
 
-    public ?int $deletingUserId = null;
+    public ?int $archivingUserId = null;
 
     public string $userSearch = '';
+
+    public string $viewFilter = UserListViewEnum::ACTIVE->value;
 
     public RoleEnum $filterRole;
 
@@ -65,19 +75,27 @@ class UserManager extends Component
         $this->resetPage();
     }
 
-    #[On('deleteUserConfirmed')]
-    public function handleDeleteUserConfirmed(DeleteUserUseCase $deleteUserUseCase): void
+    #[On('archiveUserConfirmed')]
+    public function handleArchiveUserConfirmed(ArchiveUserUseCase $archiveUserUseCase): void
     {
-        if ($this->deletingUserId) {
-            if ($this->deletingUserId === Auth::id()) {
-                $this->dispatch('notify', title: __('admin_settings.users.notifications.cannot_delete_self_title'), message: __('admin_settings.users.notifications.cannot_delete_self_message'), type: 'error');
-                $this->closeDeleteConfirmationModal();
+        if ($this->archivingUserId) {
+            if ($this->archivingUserId === Auth::id()) {
+                $this->dispatch('notify', title: __('admin_settings.users.notifications.cannot_archive_self_title'), message: __('admin_settings.users.notifications.cannot_archive_self_message'), type: 'error');
+                $this->closeArchiveConfirmationModal();
 
                 return;
             }
-            $deleteUserUseCase->execute($this->deletingUserId);
-            $this->closeDeleteConfirmationModal();
-            $this->dispatch('notify', title: __('admin_settings.users.notifications.user_deleted_title'), message: __('admin_settings.users.notifications.user_deleted_message'), type: 'success');
+
+            $archived = $archiveUserUseCase->execute($this->archivingUserId);
+            $this->closeArchiveConfirmationModal();
+
+            if (!$archived) {
+                $this->dispatch('notify', title: __('admin_settings.users.notifications.user_status_update_failed_title'), message: __('admin_settings.users.notifications.user_status_update_failed_message'), type: 'error');
+
+                return;
+            }
+
+            $this->dispatch('notify', title: __('admin_settings.users.notifications.user_archived_title'), message: __('admin_settings.users.notifications.user_archived_message'), type: 'success');
             $this->resetPage();
         }
     }
@@ -111,17 +129,80 @@ class UserManager extends Component
         }
     }
 
-    public function openDeleteConfirmationModal(int $userId): void
+    public function openArchiveConfirmationModal(int $userId): void
     {
-        $this->deletingUserId = $userId;
-        $this->showDeleteConfirmationModal = true;
+        $this->archivingUserId = $userId;
+        $this->showArchiveConfirmationModal = true;
     }
 
-    #[On('closeDeleteConfirmationModal')]
-    public function closeDeleteConfirmationModal(): void
+    #[On('closeArchiveConfirmationModal')]
+    public function closeArchiveConfirmationModal(): void
     {
-        $this->deletingUserId = null;
-        $this->showDeleteConfirmationModal = false;
+        $this->archivingUserId = null;
+        $this->showArchiveConfirmationModal = false;
+    }
+
+    public function switchViewFilter(string $filter): void
+    {
+        $parsedFilter = UserListViewEnum::tryFrom($filter);
+
+        if (!$parsedFilter) {
+            return;
+        }
+
+        $this->viewFilter = $parsedFilter->value;
+        $this->resetPage();
+    }
+
+    public function restoreUser(int $userId, RestoreUserUseCase $restoreUserUseCase): void
+    {
+        try {
+            $restored = $restoreUserUseCase->execute($userId);
+
+            if (!$restored) {
+                $this->openRestoreErrorModal((string) __('admin_settings.users.notifications.user_restore_failed_message'));
+
+                return;
+            }
+
+            $this->dispatch('notify', title: __('admin_settings.users.notifications.user_restored_title'), message: __('admin_settings.users.notifications.user_restored_message'), type: 'success');
+            $this->resetPage();
+        } catch (Exception $e) {
+            $this->openRestoreErrorModal($e->getMessage());
+        }
+    }
+
+    public function closeRestoreErrorModal(): void
+    {
+        $this->showRestoreErrorModal = false;
+        $this->restoreErrorMessage = '';
+    }
+
+    public function toggleUserActive(int $userId, SetUserActiveUseCase $setUserActiveUseCase, GetUserUseCase $getUserUseCase): void
+    {
+        if ($userId === Auth::id()) {
+            $this->dispatch('notify', title: __('admin_settings.users.notifications.cannot_suspend_self_title'), message: __('admin_settings.users.notifications.cannot_suspend_self_message'), type: 'error');
+
+            return;
+        }
+
+        $user = $getUserUseCase->execute($userId);
+
+        if (!$user) {
+            $this->dispatch('notify', title: __('admin_settings.users.notifications.user_status_update_failed_title'), message: __('admin_settings.users.notifications.user_status_update_failed_message'), type: 'error');
+
+            return;
+        }
+
+        $updated = $setUserActiveUseCase->execute($userId, !$user->is_active);
+
+        if (!$updated) {
+            $this->dispatch('notify', title: __('admin_settings.users.notifications.user_status_update_failed_title'), message: __('admin_settings.users.notifications.user_status_update_failed_message'), type: 'error');
+
+            return;
+        }
+
+        $this->dispatch('notify', title: __('admin_settings.users.notifications.user_status_updated_title'), message: __('admin_settings.users.notifications.user_status_updated_message'), type: 'success');
     }
 
     public function impersonateUser(int $userIdToImpersonate, ImpersonateUserUseCase $impersonateUserUseCase): void
@@ -156,10 +237,24 @@ class UserManager extends Component
 
     public function render(ListUsersUseCase $listUsersUseCase): View
     {
-        $users = $listUsersUseCase->execute($this->userSearch, $this->perPage, $this->filterRole);
+        $parsedFilter = UserListViewEnum::tryFrom($this->viewFilter) ?? UserListViewEnum::ACTIVE;
+
+        $users = $listUsersUseCase->execute(
+            search: $this->userSearch,
+            perPage: $this->perPage,
+            filterRole: $this->filterRole,
+            viewFilter: $parsedFilter,
+        );
 
         return view('livewire.admin.settings.user-manager', [
             'users' => $users,
+            'isArchivedView' => $parsedFilter === UserListViewEnum::ARCHIVED,
         ]);
+    }
+
+    private function openRestoreErrorModal(string $message): void
+    {
+        $this->restoreErrorMessage = $message;
+        $this->showRestoreErrorModal = true;
     }
 }

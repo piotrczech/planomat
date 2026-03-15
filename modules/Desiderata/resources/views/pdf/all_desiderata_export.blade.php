@@ -121,8 +121,9 @@
                 $desideratum = $worker->desiderata->first();
                 if (!$desideratum) {
                     $desideratum = new \Modules\Desiderata\Infrastructure\Models\Desideratum();
-                    $desideratum->setRelation('scientificWorker', $worker);
                 }
+                // Reuse already loaded user row (also archived), avoid null relation in partials.
+                $desideratum->setRelation('scientificWorker', $worker);
                 
                 if ($loop->iteration % 10 === 0 && function_exists('gc_collect_cycles')) {
                     gc_collect_cycles();

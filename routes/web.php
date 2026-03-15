@@ -26,7 +26,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::middleware(['auth'])->group(function (): void {
+Route::middleware(['auth', 'active.user'])->group(function (): void {
     Route::get('dashboard', DashboardController::class)
         ->name('dashboard');
 

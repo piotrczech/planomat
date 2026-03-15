@@ -269,7 +269,8 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
     public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection
     {
         if ($type === ConsultationType::Semester) {
-            return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            return User::withTrashed()
+                ->where('role', RoleEnum::SCIENTIFIC_WORKER)
                 ->where(function ($query) use ($semesterId): void {
                     $query->whereHas('semesterConsultations', fn ($q) => $q->where('semester_id', $semesterId))
                         ->orWhereHas('partTimeConsultations', fn ($q) => $q->where('semester_id', $semesterId));
@@ -289,7 +290,8 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             default => 'semesterConsultations',
         };
 
-        return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+        return User::withTrashed()
+            ->where('role', RoleEnum::SCIENTIFIC_WORKER)
             ->whereHas($consultationRelation, function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })
@@ -318,6 +320,8 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         };
 
         return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->whereNull('deleted_at')
+            ->where('is_active', true)
             ->whereDoesntHave($consultationRelation, function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })

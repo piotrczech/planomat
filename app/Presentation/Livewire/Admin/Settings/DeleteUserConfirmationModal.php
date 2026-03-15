@@ -13,7 +13,7 @@ class DeleteUserConfirmationModal extends Component
 {
     public ?int $userId = null;
 
-    public ?User $userToDelete = null;
+    public ?User $userToArchive = null;
 
     public bool $isVisible = false;
 
@@ -29,19 +29,19 @@ class DeleteUserConfirmationModal extends Component
     public function loadUser(int $userId, GetUserUseCase $getUserUseCase): void
     {
         $this->userId = $userId;
-        $this->userToDelete = $getUserUseCase->execute($userId);
+        $this->userToArchive = $getUserUseCase->execute($userId);
     }
 
-    public function confirmDeletion(): void
+    public function confirmArchive(): void
     {
         if ($this->userId) {
-            $this->dispatch('deleteUserConfirmed', userId: $this->userId);
+            $this->dispatch('archiveUserConfirmed', userId: $this->userId);
         }
     }
 
     public function cancel(): void
     {
-        $this->dispatch('closeDeleteConfirmationModal');
+        $this->dispatch('closeArchiveConfirmationModal');
     }
 
     public function render(): View

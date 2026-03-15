@@ -83,4 +83,9 @@ return [
     'Log in via USOS' => 'Log in via USOS',
 
     'auth.not_registered' => 'Your account is not registered in Planomat. Please contact the administrator.',
+    'auth.suspended' => 'This account has been temporarily suspended. Please contact the dean office.',
+    'account_suspended' => [
+        'title' => 'Account suspended',
+        'description' => 'This account has been temporarily disabled in Planomat. Please contact the dean office to restore access.',
+    ],
 ];

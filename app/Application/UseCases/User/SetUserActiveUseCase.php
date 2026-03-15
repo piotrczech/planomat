@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace App\Application\UseCases\User;
 
 use App\Domain\Interfaces\UserRepositoryInterface;
-use App\Infrastructure\Models\User;
 
-final class GetUserUseCase
+final class SetUserActiveUseCase
 {
     public function __construct(private readonly UserRepositoryInterface $userRepository)
     {
     }
 
-    public function execute(int $userId, bool $withTrashed = false): ?User
+    public function execute(int $userId, bool $isActive): bool
     {
-        return $this->userRepository->findById($userId, $withTrashed);
+        return $this->userRepository->setActive($userId, $isActive);
     }
 }

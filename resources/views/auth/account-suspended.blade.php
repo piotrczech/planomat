@@ -25,11 +25,11 @@
                 class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-es-lg rounded-ee-lg lg:rounded-ss-lg lg:rounded-ee-none"
             >
                 <flux:heading size="xl" level="2" class="mb-4">
-                    {{ __('app.account_pending.title') }}
+                    {{ __('app.account_suspended.title') }}
                 </flux:heading>
 
                 <flux:text>
-                    {{ __('app.account_pending.description') }}
+                    {{ __('app.account_suspended.description') }}
                 </flux:text>
 
                 <div class="mt-8">

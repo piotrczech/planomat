@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Presentation\Http\Controllers\Auth\AccountPendingController;
+use App\Presentation\Http\Controllers\Auth\AccountSuspendedController;
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
 use App\Presentation\Http\Controllers\Auth\UsosAuthController;
@@ -17,9 +18,12 @@ Route::middleware('guest')->group(function (): void {
 
     Route::get('account/pending', AccountPendingController::class)
         ->name('account.pending');
+
+    Route::get('account/suspended', AccountSuspendedController::class)
+        ->name('account.suspended');
 });
 
-Route::middleware('auth')->group(function (): void {
+Route::middleware(['auth', 'active.user'])->group(function (): void {
     Volt::route('confirm-password', 'auth.confirm-password')
         ->name('password.confirm');
 });

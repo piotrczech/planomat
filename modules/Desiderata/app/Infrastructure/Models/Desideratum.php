@@ -44,7 +44,7 @@ class Desideratum extends Model
 
     public function scientificWorker(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'scientific_worker_id');
+        return $this->belongsTo(User::class, 'scientific_worker_id')->withTrashed();
     }
 
     /**

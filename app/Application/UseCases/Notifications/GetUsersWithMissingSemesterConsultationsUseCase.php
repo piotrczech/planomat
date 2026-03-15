@@ -54,6 +54,7 @@ final readonly class GetUsersWithMissingSemesterConsultationsUseCase
         // Pobierz wszystkich pracowników naukowych
         $scientificWorkers = User::where('role', RoleEnum::SCIENTIFIC_WORKER)
             ->whereNull('deleted_at')
+            ->where('is_active', true)
             ->get();
 
         // Sprawdź którzy nie mają konsultacji semestralnych

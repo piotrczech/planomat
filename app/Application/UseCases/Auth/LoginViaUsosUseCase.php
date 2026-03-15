@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\UseCases\Auth;
 
+use App\Application\Exceptions\SuspendedAccountException;
 use App\Domain\Dto\ExternalAuthUserDto;
 use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Infrastructure\Models\User;
@@ -30,6 +31,12 @@ final readonly class LoginViaUsosUseCase
             Log::warning('USOS login failed – email not found', ['email' => $dto->email]);
 
             throw new AuthenticationException(__('app.auth.not_registered'));
+        }
+
+        if (!$user->is_active) {
+            Log::warning('USOS login blocked – suspended account', ['user_id' => $user->id, 'email' => $user->email]);
+
+            throw new SuspendedAccountException(__('app.auth.suspended'));
         }
 
         if ($user->usos_id !== $dto->id) {
