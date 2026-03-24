@@ -56,7 +56,7 @@ return [
 
     'users' => [
         'Manage Users' => 'Manage Users',
-        'Manage Users Page Description' => '<p>In this section you manage scientific worker accounts and their system access.</p><ul><li><strong>Active</strong> - full account access.</li><li><strong>Suspended</strong> - sign-in is blocked, but the account stays in the system.</li><li><strong>Archived</strong> - the account is moved to the archived tab and can be restored within 24 hours.</li></ul><p>The <strong>Impersonate</strong> option is available for active scientific worker accounts. In full desiderata exports, suspended (not archived) accounts are included, while archived accounts are included only when they have submitted desiderata.</p>',
+        'Manage Users Page Description' => '<p>In this section you manage scientific worker accounts and their system access.</p><ul><li><strong>Active</strong> - full account access.</li><li><strong>Suspended</strong> - sign-in is blocked, but the account stays in the system.</li><li><strong>Archived</strong> - the account is moved to the archived tab and can be restored within 24 hours.</li></ul><p>The <strong>Impersonate</strong> option is available for active scientific worker accounts.</p><p>For consultation and desiderata exports targeting the <strong>active semester</strong>, suspended and archived accounts are excluded. Historical semester exports keep the existing behavior.</p>',
         'Manage Dean Office Users' => 'Manage dean office users',
         'Manage Dean Office Users Page Description' => '<p>In this section you manage dean office worker accounts and their access status.</p><ul><li><strong>Active</strong> - full account access.</li><li><strong>Suspended</strong> - sign-in is blocked, but the account is not archived.</li><li><strong>Archived</strong> - the account is moved to the archived tab with a 24-hour restore window.</li></ul><p>The <strong>Impersonate</strong> option applies to active scientific worker accounts.</p><p>Administrators are editable only at the database level.</p>',
         'Search users by name or email' => 'Search users by name or email...',
@@ -168,8 +168,18 @@ return [
     'consultations' => [
         'Export Consultations' => 'Export Consultations',
         'Choose consultation type to export' => 'Choose the type of consultations you want to export.',
+        'Active Semester Filtering Note' => 'If the export targets the active consultation semester, suspended and archived accounts are excluded.',
         'Semester Consultations' => 'Semester Consultations',
         'Session Consultations' => 'Session Consultations',
+        'Unfilled Semester Consultations' => 'Unfilled (semester)',
+        'Unfilled Session Consultations' => 'Unfilled (session)',
+    ],
+    'desiderata' => [
+        'Export Desiderata' => 'Export Desiderata',
+        'Choose desiderata report type' => 'Choose the desiderata report type you want to export.',
+        'Active Semester Filtering Note' => 'If the export targets the active desiderata semester, suspended and archived accounts are excluded.',
+        'Export All' => 'Export All',
+        'Export Unfilled' => 'Unfilled list',
     ],
     'Cancel' => 'Cancel',
     'Users' => 'Users',

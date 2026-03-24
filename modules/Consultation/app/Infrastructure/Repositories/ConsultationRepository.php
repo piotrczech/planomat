@@ -266,11 +266,19 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
         return sprintf('%d h %d min', floor($totalDuration / 60), $totalDuration % 60);
     }
 
-    public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection
+    public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type, bool $excludeInactiveForActiveSemester = false): Collection
     {
+        $usersQuery = User::withTrashed()
+            ->where('role', RoleEnum::SCIENTIFIC_WORKER);
+
+        if ($excludeInactiveForActiveSemester) {
+            $usersQuery
+                ->whereNull('deleted_at')
+                ->where('is_active', true);
+        }
+
         if ($type === ConsultationType::Semester) {
-            return User::withTrashed()
-                ->where('role', RoleEnum::SCIENTIFIC_WORKER)
+            return $usersQuery
                 ->where(function ($query) use ($semesterId): void {
                     $query->whereHas('semesterConsultations', fn ($q) => $q->where('semester_id', $semesterId))
                         ->orWhereHas('partTimeConsultations', fn ($q) => $q->where('semester_id', $semesterId));
@@ -290,8 +298,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             default => 'semesterConsultations',
         };
 
-        return User::withTrashed()
-            ->where('role', RoleEnum::SCIENTIFIC_WORKER)
+        return $usersQuery
             ->whereHas($consultationRelation, function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })
@@ -311,7 +318,7 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             ->get();
     }
 
-    public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type): Collection
+    public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type, bool $excludeInactiveForActiveSemester = false): Collection
     {
         $consultationRelation = match ($type) {
             ConsultationType::Semester => 'semesterConsultations',
@@ -319,9 +326,13 @@ final class ConsultationRepository implements ConsultationRepositoryInterface
             ConsultationType::PartTime => 'partTimeConsultations',
         };
 
-        return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->whereNull('deleted_at')
-            ->where('is_active', true)
+        $query = User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->whereNull('deleted_at');
+
+        // Keep historical behavior unchanged: unfilled reports already exclude inactive users.
+        $query->where('is_active', true);
+
+        return $query
             ->whereDoesntHave($consultationRelation, function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })

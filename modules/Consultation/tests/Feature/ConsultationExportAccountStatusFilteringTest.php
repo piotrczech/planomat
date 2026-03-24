@@ -17,6 +17,58 @@ class ConsultationExportAccountStatusFilteringTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_all_consultations_export_excludes_inactive_and_archived_for_active_semester(): void
+    {
+        $semester = $this->createSemester();
+
+        $activeWorker = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $inactiveWorker = User::factory()->scientificWorker()->create(['is_active' => false]);
+        $archivedWorker = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $archivedWorker->delete();
+
+        $this->createSessionConsultation($activeWorker, $semester);
+        $this->createSessionConsultation($inactiveWorker, $semester);
+        $this->createSessionConsultation($archivedWorker, $semester);
+
+        $repository = app(ConsultationRepositoryInterface::class);
+        $result = $repository->getAllScientificWorkersWithConsultations(
+            $semester->id,
+            ConsultationType::Session,
+            true,
+        );
+        $resultIds = $result->modelKeys();
+
+        $this->assertContains($activeWorker->id, $resultIds);
+        $this->assertNotContains($inactiveWorker->id, $resultIds);
+        $this->assertNotContains($archivedWorker->id, $resultIds);
+    }
+
+    public function test_all_consultations_export_keeps_historical_behavior_for_non_active_semester(): void
+    {
+        $semester = $this->createSemester();
+
+        $activeWorker = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $inactiveWorker = User::factory()->scientificWorker()->create(['is_active' => false]);
+        $archivedWorker = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $archivedWorker->delete();
+
+        $this->createSessionConsultation($activeWorker, $semester);
+        $this->createSessionConsultation($inactiveWorker, $semester);
+        $this->createSessionConsultation($archivedWorker, $semester);
+
+        $repository = app(ConsultationRepositoryInterface::class);
+        $result = $repository->getAllScientificWorkersWithConsultations(
+            $semester->id,
+            ConsultationType::Session,
+            false,
+        );
+        $resultIds = $result->modelKeys();
+
+        $this->assertContains($activeWorker->id, $resultIds);
+        $this->assertContains($inactiveWorker->id, $resultIds);
+        $this->assertContains($archivedWorker->id, $resultIds);
+    }
+
     public function test_unfilled_consultations_excludes_suspended_and_archived_accounts(): void
     {
         $semester = $this->createSemester();
@@ -45,6 +97,19 @@ class ConsultationExportAccountStatusFilteringTest extends TestCase
         $this->assertNotContains($suspendedWithoutConsultations->id, $resultIds);
         $this->assertNotContains($archivedWithoutConsultations->id, $resultIds);
         $this->assertNotContains($activeWithConsultations->id, $resultIds);
+    }
+
+    private function createSessionConsultation(User $user, Semester $semester): void
+    {
+        SessionConsultation::create([
+            'scientific_worker_id' => $user->id,
+            'semester_id' => $semester->id,
+            'consultation_date' => now()->toDateString(),
+            'start_time' => '10:00:00',
+            'end_time' => '11:00:00',
+            'location_building' => 'A1',
+            'location_room' => '101',
+        ]);
     }
 
     private function createSemester(): Semester

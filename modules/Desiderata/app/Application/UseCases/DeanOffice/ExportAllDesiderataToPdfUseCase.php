@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Modules\Desiderata\Application\UseCases\DeanOffice;
 
 use App\Application\UseCases\Course\GetAllCoursesUseCase;
-use App\Domain\Enums\RoleEnum;
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use Carbon\Carbon;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Domain\Interfaces\SemesterRepositoryInterface;
-use App\Infrastructure\Models\User;
 use App\Domain\Interfaces\Services\PdfGeneratorInterface;
 
 final class ExportAllDesiderataToPdfUseCase
@@ -20,6 +19,7 @@ final class ExportAllDesiderataToPdfUseCase
         private readonly SemesterRepositoryInterface $semesterRepository,
         private readonly GetAllCoursesUseCase $getAllCoursesUseCase,
         private readonly PdfGeneratorInterface $pdfGenerator,
+        private readonly GetActiveDesiderataSemesterUseCase $getActiveDesiderataSemesterUseCase,
     ) {
     }
 
@@ -35,32 +35,25 @@ final class ExportAllDesiderataToPdfUseCase
             $semester = $this->semesterRepository->findOrFail($semesterId);
             $reportDate = Carbon::now()->translatedFormat('d F Y H:i');
             $allCourses = $this->getAllCoursesUseCase->execute();
+            $excludeInactiveForActiveSemester = $this->isExportForActiveSemester($semesterId);
 
-            $totalWorkers = User::withTrashed()
-                ->where('role', RoleEnum::SCIENTIFIC_WORKER)
-                ->where(function ($query) use ($semesterId): void {
-                    $query
-                        ->whereNull('deleted_at')
-                        ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
-                            $desiderataQuery->where('semester_id', $semesterId);
-                        });
-                })
-                ->count();
+            $totalWorkers = $this->desideratumRepository
+                ->countScientificWorkersForPdfExport($semesterId, $excludeInactiveForActiveSemester);
 
             if ($totalWorkers <= 20) {
-                return $this->generateStandardPdf($semesterId, $semester, $reportDate, $allCourses);
+                return $this->generateStandardPdf($semesterId, $semester, $reportDate, $allCourses, $excludeInactiveForActiveSemester);
             }
 
-            return $this->generateChunkedPdf($semesterId, $semester, $reportDate, $allCourses);
+            return $this->generateChunkedPdf($semesterId, $semester, $reportDate, $allCourses, $excludeInactiveForActiveSemester);
         } finally {
             @ini_set('memory_limit', (string) $previousMemoryLimit);
             @ini_set('max_execution_time', $previousMaxExecutionTime);
         }
     }
 
-    private function generateStandardPdf(int $semesterId, object $semester, string $reportDate, \Illuminate\Support\Collection $allCourses): Response
+    private function generateStandardPdf(int $semesterId, object $semester, string $reportDate, \Illuminate\Support\Collection $allCourses, bool $excludeInactiveForActiveSemester): Response
     {
-        $scientificWorkers = $this->desideratumRepository->getAllDesiderataForPdfExport($semesterId);
+        $scientificWorkers = $this->desideratumRepository->getAllDesiderataForPdfExport($semesterId, $excludeInactiveForActiveSemester);
 
         return $this->pdfGenerator->generateFromView(
             view: 'desiderata::pdf.all_desiderata_export',
@@ -76,7 +69,7 @@ final class ExportAllDesiderataToPdfUseCase
         );
     }
 
-    private function generateChunkedPdf(int $semesterId, object $semester, string $reportDate, \Illuminate\Support\Collection $allCourses): Response
+    private function generateChunkedPdf(int $semesterId, object $semester, string $reportDate, \Illuminate\Support\Collection $allCourses, bool $excludeInactiveForActiveSemester): Response
     {
         $allWorkers = collect();
         $chunkSize = 15;
@@ -91,6 +84,7 @@ final class ExportAllDesiderataToPdfUseCase
                     gc_collect_cycles();
                 }
             },
+            $excludeInactiveForActiveSemester,
         );
 
         return $this->pdfGenerator->generateFromView(
@@ -105,5 +99,10 @@ final class ExportAllDesiderataToPdfUseCase
             orientation: 'landscape',
             paperSize: 'a4',
         );
+    }
+
+    private function isExportForActiveSemester(int $semesterId): bool
+    {
+        return $this->getActiveDesiderataSemesterUseCase->execute()?->id === $semesterId;
     }
 }

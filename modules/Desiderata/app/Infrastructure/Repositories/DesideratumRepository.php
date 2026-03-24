@@ -7,6 +7,7 @@ namespace Modules\Desiderata\Infrastructure\Repositories;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use Modules\Desiderata\Infrastructure\Models\Desideratum;
 use App\Domain\Enums\CoursePreferenceTypeEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Modules\Desiderata\Domain\Dto\UpdateOrCreateDesideratumDto;
 use Modules\Desiderata\Infrastructure\Models\DesideratumUnavailableTimeSlot;
@@ -169,17 +170,14 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             ?->toDateTimeString();
     }
 
-    public function getAllDesiderataForPdfExport(int $semesterId): Collection
+    public function countScientificWorkersForPdfExport(int $semesterId, bool $excludeInactiveForActiveSemester = false): int
     {
-        return User::withTrashed()
-            ->where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->where(function ($query) use ($semesterId): void {
-                $query
-                    ->whereNull('deleted_at')
-                    ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
-                        $desiderataQuery->where('semester_id', $semesterId);
-                    });
-            })
+        return $this->buildScientificWorkersForPdfExportQuery($semesterId, $excludeInactiveForActiveSemester)->count();
+    }
+
+    public function getAllDesiderataForPdfExport(int $semesterId, bool $excludeInactiveForActiveSemester = false): Collection
+    {
+        return $this->buildScientificWorkersForPdfExportQuery($semesterId, $excludeInactiveForActiveSemester)
             ->select(['id', 'first_name', 'last_name', 'academic_title', 'email', 'is_active', 'deleted_at'])
             ->with([
                 'desiderata' => function ($query) use ($semesterId): void {
@@ -200,17 +198,9 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             ->get();
     }
 
-    public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback): void
+    public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback, bool $excludeInactiveForActiveSemester = false): void
     {
-        User::withTrashed()
-            ->where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->where(function ($query) use ($semesterId): void {
-                $query
-                    ->whereNull('deleted_at')
-                    ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
-                        $desiderataQuery->where('semester_id', $semesterId);
-                    });
-            })
+        $this->buildScientificWorkersForPdfExportQuery($semesterId, $excludeInactiveForActiveSemester)
             ->select(['id', 'first_name', 'last_name', 'academic_title', 'email', 'is_active', 'deleted_at'])
             ->with([
                 'desiderata' => function ($query) use ($semesterId): void {
@@ -231,17 +221,43 @@ class DesideratumRepository implements DesideratumRepositoryInterface
             ->chunk($chunkSize, $callback);
     }
 
-    public function getScientificWorkersWithoutDesiderata(int $semesterId): Collection
+    public function getScientificWorkersWithoutDesiderata(int $semesterId, bool $excludeInactiveForActiveSemester = false): Collection
     {
-        return User::where('role', RoleEnum::SCIENTIFIC_WORKER)
-            ->whereNull('deleted_at')
-            ->where('is_active', true)
+        $query = User::where('role', RoleEnum::SCIENTIFIC_WORKER)
+            ->whereNull('deleted_at');
+
+        // Keep historical behavior unchanged: unfilled reports already exclude inactive users.
+        $query->where('is_active', true);
+
+        return $query
             ->whereDoesntHave('desiderata', function ($query) use ($semesterId): void {
                 $query->where('semester_id', $semesterId);
             })
             ->orderBy('last_name')
             ->orderBy('first_name')
             ->get();
+    }
+
+    private function buildScientificWorkersForPdfExportQuery(int $semesterId, bool $excludeInactiveForActiveSemester): Builder
+    {
+        $usersQuery = User::withTrashed()
+            ->where('role', RoleEnum::SCIENTIFIC_WORKER);
+
+        if ($excludeInactiveForActiveSemester) {
+            $usersQuery
+                ->whereNull('deleted_at')
+                ->where('is_active', true);
+        } else {
+            $usersQuery->where(function ($query) use ($semesterId): void {
+                $query
+                    ->whereNull('deleted_at')
+                    ->orWhereHas('desiderata', function ($desiderataQuery) use ($semesterId): void {
+                        $desiderataQuery->where('semester_id', $semesterId);
+                    });
+            });
+        }
+
+        return $usersQuery;
     }
 
     public function findLatestByScientificWorkerBeforeSemester(int $workerId, int $currentSemesterId): ?UpdateOrCreateDesideratumDto

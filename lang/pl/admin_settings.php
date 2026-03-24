@@ -120,7 +120,7 @@ return [
     'users' => [
         'Manage Users' => 'Zarządzaj użytkownikami',
         'Users' => 'Użytkownicy',
-        'Manage Users Page Description' => '<p>W tej sekcji zarządzasz kontami pracowników naukowych oraz ich dostępem do systemu.</p><ul><li><strong>Aktywne</strong> - konto ma pełny dostęp.</li><li><strong>Nieaktywne</strong> - konto nie może się zalogować, ale pozostaje w systemie.</li><li><strong>Zarchiwizowane</strong> - konto trafia do zakładki archiwum i można je przywrócić przez 24 godziny.</li></ul><p>Opcja <strong>Zaloguj jako</strong> jest dostępna dla aktywnych kont pracowników naukowych. W eksporcie pełnych dezyderatów konta nieaktywne (i niezarchiwizowane) są uwzględniane, a konta zarchiwizowane tylko wtedy, gdy mają złożony dezyderat.</p>',
+        'Manage Users Page Description' => '<p>W tej sekcji zarządzasz kontami pracowników naukowych oraz ich dostępem do systemu.</p><ul><li><strong>Aktywne</strong> - konto ma pełny dostęp.</li><li><strong>Nieaktywne</strong> - konto nie może się zalogować, ale pozostaje w systemie.</li><li><strong>Zarchiwizowane</strong> - konto trafia do zakładki archiwum i można je przywrócić przez 24 godziny.</li></ul><p>Opcja <strong>Zaloguj jako</strong> jest dostępna dla aktywnych kont pracowników naukowych.</p><p>W eksportach konsultacji i dezyderatów dla <strong>aktywnego semestru</strong> konta nieaktywne i zarchiwizowane są pomijane. Dla semestrów historycznych raporty zachowują dotychczasowe zasady.</p>',
         'Search users by name or email' => 'Szukaj użytkowników...',
         'filter_by_role_all' => 'Wszystkie role',
         'Add User' => 'Dodaj użytkownika',
@@ -246,6 +246,7 @@ return [
     'consultations' => [
         'Export Consultations' => 'Eksportuj konsultacje',
         'Choose consultation type to export' => 'Wybierz rodzaj konsultacji do wyeksportowania',
+        'Active Semester Filtering Note' => 'Jeśli eksport dotyczy aktywnego semestru konsultacji, konta nieaktywne i zarchiwizowane są pomijane.',
         'Semester Consultations' => 'Konsultacje semestralne',
         'Session Consultations' => 'Konsultacje w sesji',
         'Unfilled Semester Consultations' => 'Nieuzupełnione (semestr)',
@@ -256,6 +257,7 @@ return [
     'desiderata' => [
         'Export Desiderata' => 'Eksportuj dezyderaty',
         'Choose desiderata report type' => 'Wybierz rodzaj raportu dezyderat do wyeksportowania',
+        'Active Semester Filtering Note' => 'Jeśli eksport dotyczy aktywnego semestru dezyderatów, konta nieaktywne i zarchiwizowane są pomijane.',
         'Export All' => 'Eksportuj wszystkie',
         'Export Unfilled' => 'Lista nieuzupełnionych',
     ],

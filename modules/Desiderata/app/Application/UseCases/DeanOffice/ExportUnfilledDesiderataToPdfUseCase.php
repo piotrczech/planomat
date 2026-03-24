@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Desiderata\Application\UseCases\DeanOffice;
 
+use App\Application\UseCases\Semester\GetActiveDesiderataSemesterUseCase;
 use Modules\Desiderata\Domain\Interfaces\Repositories\DesideratumRepositoryInterface;
 use App\Domain\Interfaces\Services\PdfGeneratorInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,12 +15,14 @@ final class ExportUnfilledDesiderataToPdfUseCase
     public function __construct(
         private readonly DesideratumRepositoryInterface $desideratumRepository,
         private readonly PdfGeneratorInterface $pdfGenerator,
+        private readonly GetActiveDesiderataSemesterUseCase $getActiveDesiderataSemesterUseCase,
     ) {
     }
 
     public function execute(int $semesterId): Response
     {
-        $unfilledWorkers = $this->desideratumRepository->getScientificWorkersWithoutDesiderata($semesterId);
+        $excludeInactiveForActiveSemester = $this->isExportForActiveSemester($semesterId);
+        $unfilledWorkers = $this->desideratumRepository->getScientificWorkersWithoutDesiderata($semesterId, $excludeInactiveForActiveSemester);
 
         $dataForPdf = [
             'unfilledWorkers' => $unfilledWorkers,
@@ -35,5 +38,10 @@ final class ExportUnfilledDesiderataToPdfUseCase
             orientation: 'portrait',
             paperSize: 'a4',
         );
+    }
+
+    private function isExportForActiveSemester(int $semesterId): bool
+    {
+        return $this->getActiveDesiderataSemesterUseCase->execute()?->id === $semesterId;
     }
 }

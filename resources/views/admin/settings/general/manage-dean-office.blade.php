@@ -16,7 +16,7 @@
                     <flux:icon name="users" class="w-8 h-8 mr-3 inline-block align-middle" />
                     {{ __('admin_settings.users.Manage Dean Office Users') }}
                 </flux:heading>
-                <div class="text-sm text-neutral-500 dark:text-neutral-400 space-y-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1">
+                <div class="text-base leading-relaxed text-neutral-600 dark:text-neutral-300 space-y-3 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1">
                     {!! __('admin_settings.users.Manage Dean Office Users Page Description') !!}
                 </div>
             </div>

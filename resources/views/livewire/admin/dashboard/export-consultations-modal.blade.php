@@ -32,6 +32,9 @@
                         <p class="text-sm text-neutral-500 dark:text-neutral-400">
                             {{ __('admin_settings.consultations.Choose consultation type to export') }}
                         </p>
+                        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                            {{ __('admin_settings.consultations.Active Semester Filtering Note') }}
+                        </p>
                     </div>
                 </div>
 

@@ -52,12 +52,35 @@ class DesiderataExportAccountStatusFilteringTest extends TestCase
         $archivedWithoutDesiderata->delete();
 
         $repository = app(DesideratumRepositoryInterface::class);
-        $result = $repository->getAllDesiderataForPdfExport($semester->id);
+        $result = $repository->getAllDesiderataForPdfExport($semester->id, false);
         $resultIds = $result->modelKeys();
 
         $this->assertContains($suspendedWithoutDesiderata->id, $resultIds);
         $this->assertContains($archivedWithDesiderata->id, $resultIds);
         $this->assertNotContains($archivedWithoutDesiderata->id, $resultIds);
+    }
+
+    public function test_full_desiderata_export_excludes_inactive_and_archived_for_active_semester(): void
+    {
+        $semester = $this->createSemester();
+
+        $activeWithDesiderata = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $this->createDesideratum($activeWithDesiderata, $semester);
+
+        $inactiveWithDesiderata = User::factory()->scientificWorker()->create(['is_active' => false]);
+        $this->createDesideratum($inactiveWithDesiderata, $semester);
+
+        $archivedWithDesiderata = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $archivedWithDesiderata->delete();
+        $this->createDesideratum($archivedWithDesiderata, $semester);
+
+        $repository = app(DesideratumRepositoryInterface::class);
+        $result = $repository->getAllDesiderataForPdfExport($semester->id, true);
+        $resultIds = $result->modelKeys();
+
+        $this->assertContains($activeWithDesiderata->id, $resultIds);
+        $this->assertNotContains($inactiveWithDesiderata->id, $resultIds);
+        $this->assertNotContains($archivedWithDesiderata->id, $resultIds);
     }
 
     public function test_chunked_desiderata_export_returns_same_workers_as_standard_export(): void
@@ -77,7 +100,7 @@ class DesiderataExportAccountStatusFilteringTest extends TestCase
 
         $repository = app(DesideratumRepositoryInterface::class);
 
-        $standardIds = $repository->getAllDesiderataForPdfExport($semester->id)->modelKeys();
+        $standardIds = $repository->getAllDesiderataForPdfExport($semester->id, false)->modelKeys();
 
         $chunkedWorkers = collect();
         $repository->getDesiderataForPdfExportChunked(
@@ -86,6 +109,7 @@ class DesiderataExportAccountStatusFilteringTest extends TestCase
             callback: function ($workers) use ($chunkedWorkers): void {
                 $chunkedWorkers->push(...$workers);
             },
+            excludeInactiveForActiveSemester: false,
         );
         $chunkedIds = $chunkedWorkers->pluck('id')->all();
 
@@ -96,6 +120,44 @@ class DesiderataExportAccountStatusFilteringTest extends TestCase
         $this->assertContains($suspendedWithoutDesiderata->id, $standardIds);
         $this->assertContains($archivedWithDesiderata->id, $standardIds);
         $this->assertNotContains($archivedWithoutDesiderata->id, $standardIds);
+    }
+
+    public function test_chunked_desiderata_export_excludes_inactive_and_archived_for_active_semester(): void
+    {
+        $semester = $this->createSemester();
+
+        $activeWithDesiderata = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $this->createDesideratum($activeWithDesiderata, $semester);
+
+        $inactiveWithDesiderata = User::factory()->scientificWorker()->create(['is_active' => false]);
+        $this->createDesideratum($inactiveWithDesiderata, $semester);
+
+        $archivedWithDesiderata = User::factory()->scientificWorker()->create(['is_active' => true]);
+        $archivedWithDesiderata->delete();
+        $this->createDesideratum($archivedWithDesiderata, $semester);
+
+        $repository = app(DesideratumRepositoryInterface::class);
+
+        $standardIds = $repository->getAllDesiderataForPdfExport($semester->id, true)->modelKeys();
+
+        $chunkedWorkers = collect();
+        $repository->getDesiderataForPdfExportChunked(
+            semesterId: $semester->id,
+            chunkSize: 2,
+            callback: function ($workers) use ($chunkedWorkers): void {
+                $chunkedWorkers->push(...$workers);
+            },
+            excludeInactiveForActiveSemester: true,
+        );
+        $chunkedIds = $chunkedWorkers->pluck('id')->all();
+
+        sort($standardIds);
+        sort($chunkedIds);
+
+        $this->assertSame($standardIds, $chunkedIds);
+        $this->assertContains($activeWithDesiderata->id, $standardIds);
+        $this->assertNotContains($inactiveWithDesiderata->id, $standardIds);
+        $this->assertNotContains($archivedWithDesiderata->id, $standardIds);
     }
 
     private function createDesideratum(User $user, Semester $semester): void

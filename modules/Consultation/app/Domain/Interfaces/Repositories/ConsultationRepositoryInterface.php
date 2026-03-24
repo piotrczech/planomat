@@ -47,7 +47,7 @@ interface ConsultationRepositoryInterface
 
     public function getConsultationSummaryTime(int $scientificWorkerId): ?string;
 
-    public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type): Collection;
+    public function getAllScientificWorkersWithConsultations(int $semesterId, ConsultationType $type, bool $excludeInactiveForActiveSemester = false): Collection;
 
-    public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type): Collection;
+    public function getScientificWorkersWithoutConsultations(int $semesterId, ConsultationType $type, bool $excludeInactiveForActiveSemester = false): Collection;
 }

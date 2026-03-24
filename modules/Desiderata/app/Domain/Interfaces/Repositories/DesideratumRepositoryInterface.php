@@ -19,11 +19,13 @@ interface DesideratumRepositoryInterface
 
     public function getLastUpdateDate(int $userId, int $semesterId): ?string;
 
-    public function getAllDesiderataForPdfExport(int $semesterId): Collection;
+    public function countScientificWorkersForPdfExport(int $semesterId, bool $excludeInactiveForActiveSemester = false): int;
 
-    public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback): void;
+    public function getAllDesiderataForPdfExport(int $semesterId, bool $excludeInactiveForActiveSemester = false): Collection;
 
-    public function getScientificWorkersWithoutDesiderata(int $semesterId): Collection;
+    public function getDesiderataForPdfExportChunked(int $semesterId, int $chunkSize, callable $callback, bool $excludeInactiveForActiveSemester = false): void;
+
+    public function getScientificWorkersWithoutDesiderata(int $semesterId, bool $excludeInactiveForActiveSemester = false): Collection;
 
     public function findLatestByScientificWorkerBeforeSemester(int $workerId, int $currentSemesterId): ?UpdateOrCreateDesideratumDto;
 }

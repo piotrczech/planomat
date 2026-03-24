@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Consultation\Application\UseCases\DeanOffice;
 
+use App\Application\UseCases\Semester\GetActiveConsultationSemesterUseCase;
 use Modules\Consultation\Application\Services\ConsultationReportService;
 use Modules\Consultation\Domain\Interfaces\Repositories\ConsultationRepositoryInterface;
 use App\Domain\Interfaces\Services\PdfGeneratorInterface;
@@ -20,6 +21,7 @@ final class ExportAllConsultationsToPdfUseCase
         private readonly PdfGeneratorInterface $pdfGenerator,
         private readonly ConsultationReportService $reportService,
         private readonly SemesterRepositoryInterface $semesterRepository,
+        private readonly GetActiveConsultationSemesterUseCase $getActiveConsultationSemesterUseCase,
     ) {
     }
 
@@ -31,7 +33,13 @@ final class ExportAllConsultationsToPdfUseCase
             throw ValidationException::withMessages(['type' => 'Invalid consultation type provided.']);
         }
 
-        $scientificWorkers = $this->consultationRepository->getAllScientificWorkersWithConsultations($semesterId, $consultationType);
+        $excludeInactiveForActiveSemester = $this->isExportForActiveSemester($semesterId);
+
+        $scientificWorkers = $this->consultationRepository->getAllScientificWorkersWithConsultations(
+            $semesterId,
+            $consultationType,
+            $excludeInactiveForActiveSemester,
+        );
 
         $processedData = $this->reportService->prepareAllConsultationsReportData($scientificWorkers, $consultationType);
 
@@ -53,5 +61,10 @@ final class ExportAllConsultationsToPdfUseCase
             orientation: 'portrait',
             paperSize: 'a4',
         );
+    }
+
+    private function isExportForActiveSemester(int $semesterId): bool
+    {
+        return $this->getActiveConsultationSemesterUseCase->execute()?->id === $semesterId;
     }
 }
