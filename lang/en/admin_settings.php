@@ -56,9 +56,9 @@ return [
 
     'users' => [
         'Manage Users' => 'Manage Users',
-        'Manage Users Page Description' => 'Add, edit, and archive system users and manage their roles.',
+        'Manage Users Page Description' => '<p>In this section you manage scientific worker accounts and their system access.</p><ul><li><strong>Active</strong> - full account access.</li><li><strong>Suspended</strong> - sign-in is blocked, but the account stays in the system.</li><li><strong>Archived</strong> - the account is moved to the archived tab and can be restored within 24 hours.</li></ul><p>The <strong>Impersonate</strong> option is available for active scientific worker accounts. In full desiderata exports, suspended (not archived) accounts are included, while archived accounts are included only when they have submitted desiderata.</p>',
         'Manage Dean Office Users' => 'Manage dean office users',
-        'Manage Dean Office Users Page Description' => 'Add, edit, and archive dean office worker accounts. Please note that besides this user group, there are also administrators in the system.',
+        'Manage Dean Office Users Page Description' => '<p>In this section you manage dean office worker accounts and their access status.</p><ul><li><strong>Active</strong> - full account access.</li><li><strong>Suspended</strong> - sign-in is blocked, but the account is not archived.</li><li><strong>Archived</strong> - the account is moved to the archived tab with a 24-hour restore window.</li></ul><p>The <strong>Impersonate</strong> option applies to active scientific worker accounts.</p><p>Administrators are editable only at the database level.</p>',
         'Search users by name or email' => 'Search users by name or email...',
         'filter_by_role_all' => 'All Roles',
         'Add User' => 'Add User',

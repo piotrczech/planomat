@@ -13,6 +13,7 @@ return [
     'Last updated by You' => 'Ostatnia aktualizacja przez Ciebie',
     'Never' => 'Nigdy',
     'Information' => 'Informacja',
+    'Unknown worker' => 'Nieznany pracownik',
     'You already have desiderata submitted. You can still edit them.' => 'Dezyderaty zostały już przez uzupełnione - w razie potrzeby (jeszcze) można je edytować.',
     'Success' => 'Sukces',
     'Error' => 'Błąd',

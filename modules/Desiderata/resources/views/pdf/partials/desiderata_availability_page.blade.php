@@ -2,9 +2,14 @@
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
     /** @var \App\Infrastructure\Models\User|null $worker */
     $worker = $desideratum->scientificWorker;
-    $workerLabel = $worker
-        ? ($worker->isArchived() ? $worker->reportIdentityLabel() : $worker->name)
-        : 'Nieznany pracownik';
+    $workerLabel = $worker?->name ?? __('desiderata::desiderata.Unknown worker');
+    $workerStatusNote = null;
+
+    if ($worker?->isArchived()) {
+        $workerStatusNote = __('admin_settings.users.status.Archived At', ['date' => $worker->archived_at_formatted ?? '-']);
+    } elseif ($worker && !$worker->is_active) {
+        $workerStatusNote = __('admin_settings.users.status.Suspended');
+    }
 
     $unavailableSlotsMap = [];
     if ($desideratum->exists) {
@@ -30,7 +35,11 @@
 
 <div class="page-content">
     <small>
-        {{ $workerLabel }}{{ !$desideratum->exists ? ' (pracownik nie uzupełnił dokumentu):' : ':' }}
+        {{ $workerLabel }}
+        @if($workerStatusNote)
+            [{{ $workerStatusNote }}]
+        @endif
+        {{ !$desideratum->exists ? ' (pracownik nie uzupełnił dokumentu):' : ':' }}
     </small>
 
     <table style="font-size: 9px;">

@@ -4,14 +4,22 @@
     /** @var \Modules\Desiderata\Infrastructure\Models\Desideratum $desideratum */
     /** @var \App\Infrastructure\Models\User|null $worker */
     $worker = $desideratum->scientificWorker;
-    $workerLabel = $worker
-        ? ($worker->isArchived() ? $worker->reportIdentityLabel() : $worker->name)
-        : 'Nieznany pracownik';
+    $workerLabel = $worker?->name ?? __('desiderata::desiderata.Unknown worker');
+    $workerStatusNote = null;
+
+    if ($worker?->isArchived()) {
+        $workerStatusNote = __('admin_settings.users.status.Archived At', ['date' => $worker->archived_at_formatted ?? '-']);
+    } elseif ($worker && !$worker->is_active) {
+        $workerStatusNote = __('admin_settings.users.status.Suspended');
+    }
 @endphp
 
 <div class="page-content">
     <div class="employee-header">
         {{ $workerLabel }}
+        @if($workerStatusNote)
+            <span style="font-size: 11px; font-weight: normal;">[{{ $workerStatusNote }}]</span>
+        @endif
 
         @if(!$desideratum->exists)
             (pracownik nie uzupełnił dokumentu)

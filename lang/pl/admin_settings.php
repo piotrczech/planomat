@@ -120,7 +120,7 @@ return [
     'users' => [
         'Manage Users' => 'Zarządzaj użytkownikami',
         'Users' => 'Użytkownicy',
-        'Manage Users Page Description' => 'Dodawaj, edytuj i archiwizuj użytkowników systemu oraz zarządzaj ich rolami.',
+        'Manage Users Page Description' => '<p>W tej sekcji zarządzasz kontami pracowników naukowych oraz ich dostępem do systemu.</p><ul><li><strong>Aktywne</strong> - konto ma pełny dostęp.</li><li><strong>Nieaktywne</strong> - konto nie może się zalogować, ale pozostaje w systemie.</li><li><strong>Zarchiwizowane</strong> - konto trafia do zakładki archiwum i można je przywrócić przez 24 godziny.</li></ul><p>Opcja <strong>Zaloguj jako</strong> jest dostępna dla aktywnych kont pracowników naukowych. W eksporcie pełnych dezyderatów konta nieaktywne (i niezarchiwizowane) są uwzględniane, a konta zarchiwizowane tylko wtedy, gdy mają złożony dezyderat.</p>',
         'Search users by name or email' => 'Szukaj użytkowników...',
         'filter_by_role_all' => 'Wszystkie role',
         'Add User' => 'Dodaj użytkownika',
@@ -140,7 +140,7 @@ return [
         ],
         'status' => [
             'Active' => 'Aktywne',
-            'Suspended' => 'Zawieszone',
+            'Suspended' => 'Nieaktywne',
             'Archived' => 'Zarchiwizowane',
             'Archived At' => 'zarchiwizowano: :date',
         ],
@@ -227,7 +227,7 @@ return [
             'id_exists' => 'Użytkownik o podanym ID nie istnieje.',
         ],
         'Manage Dean Office Users' => 'Zarządzaj kontami pracowników dziekanatu',
-        'Manage Dean Office Users Page Description' => 'Dodawaj, edytuj i archiwizuj konta dla pracowników dziekanatu. Proszę pamiętać, że oprócz tej grupy użytkowników w systemie istnieją również administratorzy (aktualnie dostępni do modyfikacji tylko z poziomu bazy danych).',
+        'Manage Dean Office Users Page Description' => '<p>W tej sekcji zarządzasz kontami pracowników dziekanatu oraz ich statusem dostępu.</p><ul><li><strong>Aktywne</strong> - konto ma pełny dostęp.</li><li><strong>Nieaktywne</strong> - konto nie może się zalogować, ale nie jest zarchiwizowane.</li><li><strong>Zarchiwizowane</strong> - konto trafia do zakładki archiwum z 24-godzinnym oknem przywrócenia.</li></ul><p>Opcja <strong>Zaloguj jako</strong> dotyczy aktywnych kont pracowników naukowych.</p><p>Administratorzy są dostępni do modyfikacji wyłącznie z poziomu bazy danych.</p>',
     ],
     'activity_log' => [
         'Activity Log' => 'Log aktywności',
