@@ -1,0 +1,15 @@
+.git
+.env.*
+!.env.example
+backups
+node_modules
+vendor
+storage/logs/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/data/*
+storage/app/private/*
+storage/app/public/*
+
+# The current production image intentionally copies .env (COPY . ./).
+# Moving secrets out of the image requires a separate deployment change.

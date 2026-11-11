@@ -6,8 +6,6 @@ services:
         restart: always
         labels:
             - "autoheal=true"
-        ports:
-            - "${APP_PORT:-9000}:9000"
         volumes:
             - storage:/var/www/html/storage:rw
             - public:/var/www/html/public:rw
@@ -75,7 +73,7 @@ services:
         image: "mariadb:11"
         platform: linux/amd64
         ports:
-            - "${FORWARD_DB_PORT:-3306}:3306"
+            - "127.0.0.1:${FORWARD_DB_PORT:-3306}:3306"
         restart: always
         environment:
             MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
@@ -83,7 +81,6 @@ services:
             MYSQL_DATABASE: "${DB_DATABASE}"
             MYSQL_USER: "${DB_USERNAME}"
             MYSQL_PASSWORD: "${DB_PASSWORD}"
-            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         volumes:
             - "db-data:/var/lib/mysql"
     autoheal:
@@ -98,5 +95,9 @@ services:
 
 volumes:
     storage:
+        external: true
+        name: "${PLANOMAT_STORAGE_VOLUME:-planomat_storage}"
     public:
     db-data:
+        external: true
+        name: "${PLANOMAT_DB_VOLUME:-planomat_db-data}"

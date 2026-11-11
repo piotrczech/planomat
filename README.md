@@ -58,6 +58,14 @@ The application will be available at: http://localhost
 
 A separate Docker image is prepared for the production environment `docker-compose.prod.yml`
 
+Database and storage volumes are external, so `docker compose down -v` does not remove them. On a fresh server create them once before the first start:
+```bash
+docker volume create planomat_db-data
+docker volume create planomat_storage
+```
+
+Deploy with `docker/scripts/prod/restart.sh` (it dumps the database first), manual dump: `docker/scripts/prod/export-db.sh`. Dumps are saved to `backups/` and kept for 14 days (`KEEP_DAYS`).
+
 ## Technologies
 
 - Laravel 11
